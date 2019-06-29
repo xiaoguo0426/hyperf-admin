@@ -15,12 +15,24 @@ class LoginController extends BaseController
 
     public function index()
     {
-        $method = $this->isPost();
-        var_dump($method);
+        try {
+            $method = $this->isPost();
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access');
+            }
 
-        $user_name = $this->request->post('user_name', '');
-        $pass_word = $this->request->post('pass_word', '');
+            $user_name = $this->request->post('user_name', '');
+            $pass_word = $this->request->post('password', '');
 
+
+
+        } catch (\Exception $exception) {
+            return [
+                'success' => false,
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
+        }
 
     }
 
