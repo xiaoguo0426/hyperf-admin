@@ -17,7 +17,7 @@ class LoginController extends BaseController
 
     public function index()
     {
-        var_dump(111);
+
         try {
             if (!$this->isPost()) {
                 throw new \Exception('invalid access');
