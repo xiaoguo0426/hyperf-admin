@@ -23,7 +23,7 @@ class SaltCommand extends HyperfCommand
     {
         $this->container = $container;
 
-        parent::__construct('salt:init');
+        parent::__construct('salt:gen');
     }
 
     public function configure()
@@ -33,7 +33,8 @@ class SaltCommand extends HyperfCommand
 
     public function handle()
     {
-        if (!file_exists(BASE_PATH . '/.env')) {
+        $env_file = BASE_PATH . '/.env';
+        if (!file_exists($env_file)) {
             $this->error('.env file not exists!');
             return;
         }
@@ -42,28 +43,35 @@ class SaltCommand extends HyperfCommand
 
         $length = 16;
 
-        if (function_exists('openssl_random_pseudo_bytes')) {
-            $app_key = bin2hex(openssl_random_pseudo_bytes(16));
+        if (function_exists('random_bytes')) {
+            $app_key = bin2hex(random_bytes($length));
+        } else if (function_exists('openssl_random_pseudo_bytes')) {
+            $app_key = bin2hex(openssl_random_pseudo_bytes($length));
         } else {
             $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
             $app_key = substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
         }
         $env['APP_KEY'] = $app_key;
 
+        $handle = fopen($env_file, 'w+');
+
         foreach ($env as $key => $val) {
             $name = strtoupper($key);
             if (is_array($val)) {
                 foreach ($val as $k => $v) {
                     $item = $name . '_' . strtoupper($k);
-                    putenv("$item=$v");
+                    fwrite($handle, "$item=$v" . PHP_EOL);
+//                    putenv("$item=$v");
                 }
             } else {
-                putenv("$name=$val");
+//                putenv("$name=$val");
+                fwrite($handle, "$name=$val" . PHP_EOL);
             }
         }
 
+        fclose($handle);
+
         $this->line($app_key, 'info');
-        $this->line(BASE_PATH, 'info');
     }
 }
 

@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Util\Prefix;
+use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
 use App\Controller\BaseController;
+use Hyperf\Redis\RedisFactory;
 
 /**
  * @AutoController()
@@ -36,6 +39,51 @@ class LoginController extends BaseController
             if (!$validate->check($data)) {
                 throw new \Exception($validate->getError());
             }
+
+            $user = Db::table('system_users')->where([
+                'username' => $username,
+            ])->select('*')->first();
+
+            if (empty($user)) {
+                throw new \Exception('账号不存在！');
+            }
+            if (0 == $user->status) {
+                throw new \Exception('账号已被禁用，请联系管理员！');
+            }
+
+            $max_count = 5;//可重试次数
+
+            $redis = $this->container->get(RedisFactory::class)->get('default');
+
+            $key = Prefix::getLoginErrCount($username);
+
+            $login_err_count = $redis->get($key);
+            if (false === $login_err_count) {
+                $login_err_count = 0;
+                $redis->set($key, $login_err_count, 3600);
+            }
+            if ($login_err_count >= $max_count) {
+                throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！');
+            }
+            //判断连续输错次数  可重试5次
+            if (!password_verify($password, $user->password)) {
+                //错误次数+1
+                $redis->incr($key);
+                $login_err_count++;
+                $diff = $max_count - $login_err_count;
+
+                if ($diff) {
+                    throw new \Exception("账号或密码错误，还有{$diff}次尝试机会！");
+                } else {
+                    throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！');
+                }
+            }
+            //清除错误次数
+            $redis->del($key);
+            //存入session
+
+            $this->setMsg('登录成功！');
+            return $this->success();
 
 
         } catch (\Exception $exception) {
