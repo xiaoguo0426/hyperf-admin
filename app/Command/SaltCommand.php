@@ -43,14 +43,8 @@ class SaltCommand extends HyperfCommand
 
         $length = 16;
 
-        if (function_exists('random_bytes')) {
-            $app_key = bin2hex(random_bytes($length));
-        } else if (function_exists('openssl_random_pseudo_bytes')) {
-            $app_key = bin2hex(openssl_random_pseudo_bytes($length));
-        } else {
-            $pool = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-            $app_key = substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
-        }
+        $app_key = uuid($length);
+
         $env['APP_KEY'] = $app_key;
 
         $handle = fopen($env_file, 'w+');

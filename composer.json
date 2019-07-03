@@ -42,7 +42,8 @@
         "hyperf/config-apollo": "~1.0.0",
         "hyperf/constants": "~1.0.3",
         "topthink/think-validate": "^2.0",
-        "hyperf/model-cache": "~1.0.3"
+        "hyperf/model-cache": "~1.0.3",
+        "firebase/php-jwt": "^5.0"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",
@@ -65,7 +66,7 @@
         "psr-4": {
             "App\\": "app/"
         },
-        "files": []
+        "files": ["app/Helper/helper.php"]
     },
     "autoload-dev": {
         "psr-4": {

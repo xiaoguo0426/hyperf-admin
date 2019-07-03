@@ -15,7 +15,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LogLevel;
 
 return [
-    'app_name' => env('APP_NAME', 'skeleton'),
+    'app_name' => env('APP_NAME', 'onetech'),
     StdoutLoggerInterface::class => [
         'log_level' => [
             LogLevel::ALERT,
@@ -28,5 +28,5 @@ return [
             LogLevel::WARNING,
         ],
     ],
-    'app_key' => env('APP_KEY')
+    'app_key' => env('APP_KEY', '1234567890')
 ];

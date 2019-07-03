@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Service\AccessToken;
 use App\Util\Prefix;
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -81,6 +82,10 @@ class LoginController extends BaseController
             //清除错误次数
             $redis->del($key);
             //存入session
+
+            $accessToken = new AccessToken();
+
+            $accessToken->createToken(12, $username, 'root');
 
             $this->setMsg('登录成功！');
             return $this->success();
