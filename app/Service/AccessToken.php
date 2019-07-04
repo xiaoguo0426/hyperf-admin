@@ -5,7 +5,9 @@ namespace App\Service;
 
 use App\Exception\InvalidConfigException;
 use App\Exception\LoginException;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use InvalidArgumentException;
 
 class AccessToken
 {
@@ -19,6 +21,8 @@ class AccessToken
     private static $alg;
 
     private static $app_key;
+
+    private $message;
 
     public function __construct()
     {
@@ -53,13 +57,30 @@ class AccessToken
         return JWT::encode($payload, self::$app_key, self::$alg);
     }
 
-    public function decode(string $jwt): ?array
+    public function decode(string $jwt)
     {
         try {
+            $decode = json_decode(json_encode(JWT::decode($jwt, self::$app_key, [self::$alg])), true);
 
+            return $decode;
+        } catch (ExpiredException $exception) {
+            //过期token
+            $this->message = $exception->getMessage();
+            return false;
+        } catch (InvalidArgumentException $exception) {
+            //参数错误
+            $this->message = $exception->getMessage();
+            return false;
         } catch (\Exception $exception) {
-
+            //其他错误
+            $this->message = $exception->getMessage();
+            return false;
         }
+    }
+
+    public function getMessage()
+    {
+        return $this->message;
     }
 
     /**
@@ -73,7 +94,7 @@ class AccessToken
             throw new LoginException('参数有误！');
         }
 
-        $token = [
+        $payload = [
             "jti" => self::$jti,//JWT 的唯一身份标识，主要用来作为一次性 token, 从而回避重放攻击。
             "iss" => self::$iss,//JWT 签发者
             "sub" => $user_id,//JWT 所面向的用户
@@ -82,13 +103,11 @@ class AccessToken
             "nbf" => self::$nbf,//定义在什么时间之前，该 JWT 都是不可用的
             "exp" => self::$exp//JWT 的过期时间，这个过期时间必须要大于签发时间
         ];
-        $jwt = JWT::encode($token, self::$app_key, self::$alg);
 
+        $jwt = $this->encode($payload);
         echo $jwt;
 
-        $decode = JWT::decode($jwt, self::$app_key, [self::$alg]);
-
-        var_dump($decode);
+        var_dump($this->decode($jwt));
     }
 
 }

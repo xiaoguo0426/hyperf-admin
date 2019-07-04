@@ -90,7 +90,6 @@ class LoginController extends BaseController
             $this->setMsg('登录成功！');
             return $this->success();
 
-
         } catch (\Exception $exception) {
             return [
                 'success' => false,
