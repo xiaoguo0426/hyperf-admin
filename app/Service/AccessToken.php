@@ -48,7 +48,7 @@ class AccessToken
         self::$iat = $cur_time;//JWT 的签发时间
         self::$nbf = $cur_time;//定义在什么时间之前，该 JWT 都是不可用的
         self::$jti = uuid(16);//JWT 的唯一身份标识，主要用来作为一次性 token, 从而回避重放攻击。
-        self::$exp = $cur_time + 6 * 60 * 60;
+        self::$exp = $cur_time + 30 * 60;
         self::$alg = "HS256";
     }
 
@@ -57,24 +57,25 @@ class AccessToken
         return JWT::encode($payload, self::$app_key, self::$alg);
     }
 
-    public function decode(string $jwt)
+    public function decode(string $jwt): ?array
     {
         try {
-            $decode = json_decode(json_encode(JWT::decode($jwt, self::$app_key, [self::$alg])), true);
+            $decode = JWT::decode($jwt, self::$app_key, [self::$alg]);
 
-            return $decode;
+            return (array)$decode;
         } catch (ExpiredException $exception) {
             //过期token
             $this->message = $exception->getMessage();
-            return false;
+            return null;
+
         } catch (InvalidArgumentException $exception) {
             //参数错误
             $this->message = $exception->getMessage();
-            return false;
+            return null;
         } catch (\Exception $exception) {
             //其他错误
             $this->message = $exception->getMessage();
-            return false;
+            return null;
         }
     }
 
@@ -84,8 +85,10 @@ class AccessToken
     }
 
     /**
-     *
      * @param int $user_id
+     * @param string $username
+     * @param string $role
+     * @return string
      */
     public function createToken(int $user_id, string $username, string $role)
     {
@@ -101,13 +104,54 @@ class AccessToken
             "aud" => self::$aud,//接收 JWT 的一方
             "iat" => self::$iat,//JWT 的签发时间
             "nbf" => self::$nbf,//定义在什么时间之前，该 JWT 都是不可用的
-            "exp" => self::$exp//JWT 的过期时间，这个过期时间必须要大于签发时间
+            "exp" => self::$exp,//JWT 的过期时间，这个过期时间必须要大于签发时间
+            "username" => $username,
+            "role" => $role,
+            "user_id" => $user_id
         ];
 
         $jwt = $this->encode($payload);
-        echo $jwt;
 
-        var_dump($this->decode($jwt));
+        return $jwt;
+    }
+
+    public function checkToken(string $token): bool
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $jwt = $this->decode($token);
+
+        if (is_null($jwt)) {
+            return false;
+        }
+
+        return true;
+
+    }
+
+    public function refreshToken($token): string
+    {
+        if (empty($token)) {
+            throw new LoginException('参数有误！');
+        }
+
+        $jwt = $this->decode($token);
+
+        if (is_null($jwt)) {
+            throw new LoginException($this->getMessage());
+        }
+
+        $user_id = $jwt['user_id'];
+
+        $username = $jwt['username'];
+
+        $role = $jwt['role'];
+
+        $token = $this->createToken($user_id, $username, $role);
+
+        return $token;
     }
 
 }

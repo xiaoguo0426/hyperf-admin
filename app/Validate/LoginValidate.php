@@ -10,6 +10,7 @@ class LoginValidate extends Validate
     protected $rule = [
         'username' => 'require|min:5',
         'password' => 'require|min:5',
+        'token' => 'require'
     ];
 
     protected $message = [
@@ -17,6 +18,12 @@ class LoginValidate extends Validate
         'username.min' => '登录账号长度不能少于5位有效字符！',
         'password.require' => '登录密码不能为空！',
         'password.min' => '登录密码长度不能少于5位有效字符！',
+        'token.require' => '凭证缺失！'
+    ];
+
+    protected $scene = [
+        'login' => ['username', 'password'],
+        'refreshToken' => ['token']
     ];
 
 }

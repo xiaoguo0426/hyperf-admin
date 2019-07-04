@@ -37,7 +37,7 @@ class LoginController extends BaseController
 
             $validate = new LoginValidate();
 
-            if (!$validate->check($data)) {
+            if (!$validate->scene('login')->check($data)) {
                 throw new \Exception($validate->getError());
             }
 
@@ -85,10 +85,12 @@ class LoginController extends BaseController
 
             $accessToken = new AccessToken();
 
-            $accessToken->createToken(12, $username, 'root');
+            $jwt = $accessToken->createToken(12, $username, 'root');
 
             $this->setMsg('登录成功！');
-            return $this->success();
+            return $this->success([
+                'token' => $jwt
+            ]);
 
         } catch (\Exception $exception) {
             return [
@@ -98,6 +100,44 @@ class LoginController extends BaseController
             ];
         }
 
+    }
+
+    public function refreshToken()
+    {
+
+        try {
+
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access');
+            }
+
+            $token = $this->request->header('token', '');
+
+            $data = [
+                'token' => $token,
+            ];
+
+            $validate = new LoginValidate();
+
+            if (!$validate->scene('refreshToken')->check($data)) {
+                throw new \Exception($validate->getError());
+            }
+
+            $accessToken = new AccessToken();
+
+            $refresh = $accessToken->refreshToken($token);
+
+            return $this->success([
+                'token' => $refresh
+            ]);
+
+        } catch (\Exception $exception) {
+            return [
+                'success' => false,
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
+        }
     }
 
 }
