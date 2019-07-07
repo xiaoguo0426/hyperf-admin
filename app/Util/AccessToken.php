@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Service;
+namespace App\Util;
 
 use App\Exception\InvalidConfigException;
 use App\Exception\LoginException;
@@ -11,7 +11,6 @@ use InvalidArgumentException;
 
 class AccessToken
 {
-
     private static $iss;
     private static $aud;
     private static $iat;
@@ -65,15 +64,18 @@ class AccessToken
             return (array)$decode;
         } catch (ExpiredException $exception) {
             //过期token
-            $this->message = $exception->getMessage();
+            $this->message = 'token过期！';
             return null;
 
         } catch (InvalidArgumentException $exception) {
             //参数错误
-            $this->message = $exception->getMessage();
+            $this->message = 'token缺失！';
             return null;
-        } catch (\Exception $exception) {
-            //其他错误
+        } catch (\UnexpectedValueException $exception) {
+            //token无效
+            $this->message = 'token无效！';
+            return null;
+        }catch (\Exception $exception){
             $this->message = $exception->getMessage();
             return null;
         }

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
-use App\Service\AccessToken;
+use App\Util\AccessToken;
 use App\Util\Prefix;
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -88,16 +88,11 @@ class LoginController extends BaseController
             $jwt = $accessToken->createToken(12, $username, 'root');
 
             $this->setMsg('登录成功！');
-            return $this->success([
-                'token' => $jwt
-            ]);
+
+            return $this->success(['token' => $jwt]);
 
         } catch (\Exception $exception) {
-            return [
-                'success' => false,
-                'msg' => $exception->getMessage(),
-                'data' => []
-            ];
+            return $this->error($exception->getMessage());
         }
 
     }
@@ -127,17 +122,16 @@ class LoginController extends BaseController
 
             $refresh = $accessToken->refreshToken($token);
 
-            return $this->success([
-                'token' => $refresh
-            ]);
+            return $this->success(['token' => $refresh]);
 
         } catch (\Exception $exception) {
-            return [
-                'success' => false,
-                'msg' => $exception->getMessage(),
-                'data' => []
-            ];
+            return $this->error($exception->getMessage());
         }
+    }
+
+    public function test()
+    {
+        var_dump(123123);
     }
 
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Traits\DataFormat;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
@@ -12,10 +13,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
  */
 class BaseController extends Controller
 {
-
-    protected $msg = '';
-
-    protected $data = [];
+    use DataFormat;
 
     public function isPost()
     {
@@ -25,35 +23,6 @@ class BaseController extends Controller
     public function isGet()
     {
         return $this->request->isMethod('get');
-    }
-
-    public function setMsg($msg)
-    {
-        $this->msg = $msg;
-    }
-
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    public function success(array $data = [])
-    {
-        return [
-            'success' => true,
-            'msg' => $this->msg ?: '获取成功！',
-            'data' => $data
-        ];
-
-    }
-
-    public function error(string $msg)
-    {
-        return [
-            'success' => false,
-            'msg' => $msg ?: $this->msg,
-            'data' => []
-        ];
     }
 
 }
