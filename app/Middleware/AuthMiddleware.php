@@ -53,15 +53,6 @@ class AuthMiddleware implements MiddlewareInterface
 
         $token = $this->request->header('token');
 
-        if (empty($token)) {
-            $this->response->json(
-                [
-                    'code' => 1,
-                    'msg' => '',
-                    'data' => [],
-                ]
-            );
-        }
         //todo 检查token
         $instance = new AccessToken();
         $check = $instance->checkToken($token);

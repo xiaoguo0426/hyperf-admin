@@ -22,6 +22,7 @@ class Auth
      */
     public static function checkNode($node)
     {
+        //todo 如果当前登录会员是admin账号，则开放所有权限
         //todo 基于redis的bitmap实现的额权限校验
         return true;
 

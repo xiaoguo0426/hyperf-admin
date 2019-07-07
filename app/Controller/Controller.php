@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Traits\DataFormat;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
 abstract class Controller
 {
+    use DataFormat;
     /**
      * @var ContainerInterface
      */
@@ -38,5 +40,15 @@ abstract class Controller
         $this->container = $container;
         $this->request = $container->get(RequestInterface::class);
         $this->response = $container->get(ResponseInterface::class);
+    }
+
+    public function isPost()
+    {
+        return $this->request->isMethod('post');
+    }
+
+    public function isGet()
+    {
+        return $this->request->isMethod('get');
     }
 }

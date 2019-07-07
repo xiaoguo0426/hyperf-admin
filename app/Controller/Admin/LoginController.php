@@ -8,15 +8,15 @@ use App\Util\Prefix;
 use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
-use App\Controller\BaseController;
 use Hyperf\Redis\RedisFactory;
+use App\Controller\Controller;
 
 /**
  * @AutoController()
  * Class LoginController
  * @package App\Controller
  */
-class LoginController extends BaseController
+class LoginController extends Controller
 {
 
     public function index()
