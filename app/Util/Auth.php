@@ -13,7 +13,7 @@ class Auth
      */
     public static function ignores()
     {
-        return ['/admin/login/index'];
+        return ['/admin/login/index', '/admin/login/refreshToken'];
     }
 
     /**

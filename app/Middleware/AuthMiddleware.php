@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
+use App\Exception\LoginException;
 use App\Traits\DataFormat;
 use App\Util\AccessToken;
 use App\Util\Auth;
@@ -53,13 +54,13 @@ class AuthMiddleware implements MiddlewareInterface
 
         $token = $this->request->header('token');
 
-        //todo 检查token
-        $instance = new AccessToken();
-        $check = $instance->checkToken($token);
-
-        if (!$check) {
+        try {
+            //todo 检查token
+            $instance = new AccessToken();
+            $instance->checkToken($token);
+        } catch (LoginException $exception) {
             return $this->response->json(
-                $this->error($instance->getMessage(), -1)
+                $this->error($exception->getMessage(), -1)
             );
         }
 
