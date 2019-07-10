@@ -43,7 +43,8 @@
         "hyperf/constants": "~1.0.3",
         "topthink/think-validate": "^2.0",
         "hyperf/model-cache": "~1.0.3",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "doctrine/dbal": "^2.9"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

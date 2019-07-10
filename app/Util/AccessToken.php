@@ -22,11 +22,11 @@ class AccessToken
 
     private static $rexp;
 
+    const SCOPE_ROLE = 'role_access';
+
+    const SCOPE_REFRESH = 'refresh_access';
+
     private static $app_key;
-
-    private $message;
-
-    private $code;
 
     private $data;
 
@@ -86,16 +86,6 @@ class AccessToken
         }
     }
 
-    private function setCode($code)
-    {
-        $this->code = $code;
-    }
-
-    public function getCode()
-    {
-        return $this->code;
-    }
-
     public function setData($data)
     {
         $this->data = $data;
@@ -131,8 +121,8 @@ class AccessToken
 
         $payload = $this->_getPayload();
 
-        $payload['scopes'] = 'role_access';
-
+        $payload['scopes'] = self::SCOPE_ROLE;
+var_dump($payload);
         $token = $this->encode($payload);
 
         return $token;
@@ -142,7 +132,7 @@ class AccessToken
     {
         $payload = $this->_getPayload();
 
-        $payload['scopes'] = 'refresh_access';
+        $payload['scopes'] = self::SCOPE_REFRESH;
         $payload['exp'] = self::$rexp;
 
         $refresh = $this->encode($payload);
@@ -159,6 +149,10 @@ class AccessToken
         $jwt = $this->decode($token);
         if (is_null($jwt)) {
             throw new LoginException('token无效！', -1);
+        }
+
+        if (self::SCOPE_ROLE !== $jwt['scopes']) {
+            throw new LoginException('refresh-token参数非法！', -2);
         }
 
         return true;
@@ -180,6 +174,10 @@ class AccessToken
 
         if (is_null($jwt)) {
             throw new LoginException('refresh-token参数有误！', -2);
+        }
+
+        if (self::SCOPE_REFRESH !== $jwt['scopes']) {
+            throw new LoginException('refresh-token参数非法！', -2);
         }
 
         $data = $jwt['data'];

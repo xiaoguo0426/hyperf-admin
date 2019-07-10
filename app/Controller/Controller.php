@@ -12,14 +12,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Traits\DataFormat;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
 abstract class Controller
 {
-    use DataFormat;
     /**
      * @var ContainerInterface
      */

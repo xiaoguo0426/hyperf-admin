@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Exception\LoginException;
-use App\Traits\DataFormat;
 use App\Util\AccessToken;
 use App\Util\Auth;
 use Hyperf\HttpServer\Contract\RequestInterface;
@@ -18,7 +17,6 @@ use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 
 class AuthMiddleware implements MiddlewareInterface
 {
-    use DataFormat;
     /**
      * @var ContainerInterface
      */

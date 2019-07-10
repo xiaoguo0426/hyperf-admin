@@ -4,12 +4,10 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Exception\LoginException;
+use App\Service\Admin\LoginService;
 use App\Util\AccessToken;
-use App\Util\Prefix;
-use Hyperf\DbConnection\Db;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
-use Hyperf\Redis\RedisFactory;
 use App\Controller\Controller;
 
 /**
@@ -42,67 +40,27 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $user = Db::table('system_users')->where([
-                'username' => $username,
-            ])->select('*')->first();
+            $service = new LoginService();
 
-            if (empty($user)) {
-                throw new \Exception('账号不存在！', 1);
-            }
-            if (0 == $user->status) {
-                throw new \Exception('账号已被禁用，请联系管理员！', 1);
-            }
+            $tokens = $service->login($username, $password);
 
-            $max_count = 5;//可重试次数
-
-            $redis = $this->container->get(RedisFactory::class)->get('default');
-
-            $key = Prefix::getLoginErrCount($username);
-
-            $login_err_count = $redis->get($key);
-            if (false === $login_err_count) {
-                $login_err_count = 0;
-                $redis->set($key, $login_err_count, 3600);
-            }
-            if ($login_err_count >= $max_count) {
-                throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
-            }
-            //判断连续输错次数  可重试5次
-            if (!password_verify($password, $user->password)) {
-                //错误次数+1
-                $redis->incr($key);
-                $login_err_count++;
-                $diff = $max_count - $login_err_count;
-
-                if ($diff) {
-                    throw new \Exception("账号或密码错误，还有{$diff}次尝试机会！", 1);
-                } else {
-                    throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
-                }
-            }
-            //清除错误次数
-            $redis->del($key);
-            //存入session
-
-            $accessToken = new AccessToken();
-
-            $accessToken->setData([
-                'user_id' => 12,
-                'user_name' => $username,
-                'role' => 'root'
-            ]);
-            $token = $accessToken->createToken();
-
-            $refresh_token = $accessToken->createRefreshToken();
-
-            $this->setMsg('登录成功！');
-
-            return $this->success(compact('token', 'refresh_token'));
-
+            return [
+                'code' => 0,//成功
+                'msg' => '登录成功！',
+                'data' => $tokens
+            ];
         } catch (LoginException $exception) {
-            return $this->error($exception->getMessage(), $exception->getCode());
+            return [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
         } catch (\Exception $exception) {
-            return $this->error($exception->getMessage(), $exception->getCode());
+            return [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
         }
 
     }
@@ -124,22 +82,28 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $accessToken = new AccessToken();
+            $service = new LoginService();
 
-            $token = $accessToken->refreshToken($refresh_token);
+            $token = $service->refreshToken($refresh_token);
 
-            return $this->success(compact('token'));
-
+            return [
+                'code' => 0,//成功
+                'msg' => '刷新成功！',
+                'data' => compact('token')
+            ];
         } catch (LoginException $exception) {
-            return $this->error($exception->getMessage(), $exception->getCode());
+            return [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
         } catch (\Exception $exception) {
-            return $this->error($exception->getMessage(), $exception->getCode());
+            return [
+                'code' => $exception->getCode(),
+                'msg' => $exception->getMessage(),
+                'data' => []
+            ];
         }
-    }
-
-    public function test()
-    {
-        var_dump(123123);
     }
 
 }
