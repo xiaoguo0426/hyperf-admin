@@ -19,6 +19,7 @@ class Auth
     /**
      * 检查节点权限
      * @param $node
+     * @return bool
      */
     public static function checkNode($node)
     {

@@ -122,7 +122,7 @@ class AccessToken
         $payload = $this->_getPayload();
 
         $payload['scopes'] = self::SCOPE_ROLE;
-var_dump($payload);
+
         $token = $this->encode($payload);
 
         return $token;

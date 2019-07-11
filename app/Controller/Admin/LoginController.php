@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 
 use App\Exception\LoginException;
 use App\Service\Admin\LoginService;
-use App\Util\AccessToken;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
 use App\Controller\Controller;
@@ -44,23 +43,12 @@ class LoginController extends Controller
 
             $tokens = $service->login($username, $password);
 
-            return [
-                'code' => 0,//成功
-                'msg' => '登录成功！',
-                'data' => $tokens
-            ];
+            return $this->response->success($tokens, '登录成功！');
+
         } catch (LoginException $exception) {
-            return [
-                'code' => $exception->getCode(),
-                'msg' => $exception->getMessage(),
-                'data' => []
-            ];
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {
-            return [
-                'code' => $exception->getCode(),
-                'msg' => $exception->getMessage(),
-                'data' => []
-            ];
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
         }
 
     }

@@ -58,14 +58,19 @@ class AuthMiddleware implements MiddlewareInterface
             $instance->checkToken($token);
         } catch (LoginException $exception) {
             return $this->response->json(
-                $this->error($exception->getMessage(), -1)
+//                $this->error($exception->getMessage(), -1)
+                [
+                    'msg' => $exception->getMessage()
+                ]
             );
         }
 
         //todo 检查用户与节点权限
         if (!Auth::checkNode($cur_node)) {
             return $this->response->json(
-                $this->error('您没有访问改节点的权限！', 1)
+                [
+                    'msg' => '您没有访问改节点的权限！'
+                ]
             );
         }
 
