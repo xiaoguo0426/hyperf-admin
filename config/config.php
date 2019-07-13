@@ -28,5 +28,6 @@ return [
             LogLevel::WARNING,
         ],
     ],
-    'app_key' => env('APP_KEY', '1234567890')
+    'app_key' => env('APP_KEY', '1234567890'),
+    'controller_path' => BASE_PATH . DS . 'app' . DS . 'Controller' . DS
 ];
