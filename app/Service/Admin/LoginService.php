@@ -4,9 +4,12 @@
 namespace App\Service\Admin;
 
 
+use App\Constants\Constants;
+use App\Exception\LoginException;
 use App\Model\SystemUserModel;
 use App\Service\BaseService;
 use App\Util\AccessToken;
+use App\Util\Payload;
 use App\Util\Prefix;
 
 class LoginService extends BaseService
@@ -61,14 +64,38 @@ class LoginService extends BaseService
 
         $accessToken = new AccessToken();
 
-        $accessToken->setData([
+
+        $app_name = config('app_name', '');
+
+        $app_key = config('app_key', '');
+
+        if (empty($app_key) || empty($app_name)) {
+            throw new LoginException('配置有误！', 1);
+        }
+
+        $cur_time = time();
+
+        $payload = new Payload();
+
+        $payload['jti'] = uuid(16);
+        $payload['iss'] = $app_name;
+        $payload['sub'] = 'api.onetech.site';
+        $payload['aud'] = 'api.onetech.site';
+        $payload['ita'] = $cur_time;
+        $payload['nbf'] = $cur_time;
+        $payload['exp'] = $cur_time + 3600;
+        $payload['scopes'] = Constants::SCOPE_ROLE;
+        $payload['data'] = [
             'user_id' => $user->id,
             'user_name' => $user->username,
             'role' => $user->role
-        ]);
-        $token = $accessToken->createToken();
+        ];
+        $token = $accessToken->createToken($payload);
 
-        $refresh_token = $accessToken->createRefreshToken();
+        $payload['exp'] = $cur_time + 84300;
+        $payload['scopes'] = Constants::SCOPE_REFRESH;
+
+        $refresh_token = $accessToken->createToken($payload);
 
         return compact('token', 'refresh_token');
 

@@ -55,12 +55,14 @@ class AuthMiddleware implements MiddlewareInterface
         try {
             //todo 检查token
             $instance = new AccessToken();
-            $instance->checkToken($token);
+            $payload = $instance->checkToken($token);
+            var_dump($payload);
         } catch (LoginException $exception) {
             return $this->response->json(
-//                $this->error($exception->getMessage(), -1)
                 [
-                    'msg' => $exception->getMessage()
+                    'code' => $exception->getCode(),
+                    'msg' => $exception->getMessage(),
+                    'data' => []
                 ]
             );
         }
@@ -69,10 +71,16 @@ class AuthMiddleware implements MiddlewareInterface
         if (!Auth::checkNode($cur_node)) {
             return $this->response->json(
                 [
-                    'msg' => '您没有访问改节点的权限！'
+                    'code' => '1',
+                    'msg' => '您没有访问改节点的权限！',
+                    'data' => []
                 ]
             );
         }
+
+        $this->request->withAttribute('sys_user', $payload->data);
+
+        \Hyperf\Utils\Context::set(ServerRequestInterface::class, $this->request);
 
         return $handler->handle($request);//交给下个一个中间件处理
     }
