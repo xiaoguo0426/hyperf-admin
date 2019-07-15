@@ -123,9 +123,7 @@ class AccessToken
 
         $payload['scopes'] = self::SCOPE_ROLE;
 
-        $token = $this->encode($payload);
-
-        return $token;
+        return $this->encode($payload);
     }
 
     public function createRefreshToken()
@@ -135,9 +133,7 @@ class AccessToken
         $payload['scopes'] = self::SCOPE_REFRESH;
         $payload['exp'] = self::$rexp;
 
-        $refresh = $this->encode($payload);
-
-        return $refresh;
+        return $this->encode($payload);
     }
 
     public function checkToken(string $token): bool
@@ -184,9 +180,7 @@ class AccessToken
 
         $this->setData($data);
 
-        $token = $this->createToken();
-
-        return $token;
+        return $this->createToken();
     }
 
 }

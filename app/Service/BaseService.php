@@ -17,7 +17,7 @@ class BaseService
 
     public function __construct()
     {
-        $this->container = ApplicationContext::getContainer();;
+        $this->container = ApplicationContext::getContainer();
     }
 
     public function getRedis()
