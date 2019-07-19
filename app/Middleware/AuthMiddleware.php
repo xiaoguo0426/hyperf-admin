@@ -61,7 +61,7 @@ class AuthMiddleware implements MiddlewareInterface
             return $this->response->json(
                 [
                     'code' => $exception->getCode(),
-                    'msg' => $exception->getMessage().'123',
+                    'msg' => $exception->getMessage(),
                     'data' => []
                 ]
             );

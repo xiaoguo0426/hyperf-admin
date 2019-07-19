@@ -8,7 +8,7 @@ use App\Util\Node;
 
 class NodeService extends BaseService
 {
-    public function getList()
+    public function getList(): array
     {
         $controller_path = config('controller_path', '');
         $nodes = Node::getClassNodes($controller_path);
@@ -31,9 +31,26 @@ class NodeService extends BaseService
         return $list;
     }
 
-    public function toTree(array $list)
+    public function toTree(array $list): array
     {
+        $new = [];
+        foreach ($list as $key => $item) {
+            if (false !== strpos($key, '/')) {
+                $pnode = $item['pnode'];
+                if (!isset($new[$pnode])) {
 
+                    $new[$pnode] = [
+                        'pnode' => '',
+                        'node' => $pnode,
+                        'title' => $item['title']
+                    ];
+                }
+
+            }
+            $new[$key] = $item;
+        }
+
+        return $new;
     }
 
 }

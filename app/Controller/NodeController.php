@@ -25,11 +25,11 @@ class NodeController extends Controller
 
             $list = $service->getList();
 
-//            $tree = $service->toTree($list);
+            $tree = $service->toTree($list);
 
-            $tree = arr2tree($list, 'node', 'pnode', 'list');
+            $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
 
-            return $this->response->success($tree);
+            return $this->response->success($multi_tree);
 
         } catch (\Exception $exception) {
 
