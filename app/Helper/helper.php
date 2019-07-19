@@ -13,6 +13,12 @@ function uuid($length)
     return $uuid;
 }
 
+/**
+ *
+ * @param $arr_str
+ * @param string $delimiter
+ * @return array
+ */
 function multi_str2tree($arr_str, $delimiter = '/')
 {
 
@@ -37,4 +43,23 @@ function multi_str2tree($arr_str, $delimiter = '/')
     }
 
     return $res;
+}
+
+/**
+ *
+ * @param $list
+ * @param string $id
+ * @param string $pid
+ * @param string $son
+ * @return array|mixed
+ */
+function arr2tree($list, $id = 'id', $pid = 'pid', $son = 'sub')
+{
+    list($tree, $map) = [[], []];
+    foreach ($list as $item) $map[$item[$id]] = $item;
+    foreach ($list as $item) if (isset($item[$pid]) && isset($map[$item[$pid]])) {
+        $map[$item[$pid]][$son][] = &$map[$item[$id]];
+    } else $tree[] = &$map[$item[$id]];
+    unset($map);
+    return $tree;
 }

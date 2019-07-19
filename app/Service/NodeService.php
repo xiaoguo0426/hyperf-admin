@@ -17,25 +17,22 @@ class NodeService extends BaseService
 
         $list = [];
 
-        foreach ($nodes as $key_node => $node_name) {
-            $list[$key_node] = [
-                'pnode' => substr($key_node, 0, strrpos($key_node, '/')),
-                'node' => $key_node,
+        $merge = array_merge($nodes, $methods);
+
+        foreach ($merge as $key_node => $node_name) {
+            $lower = strtolower($key_node);
+            $list[$lower] = [
+                'pnode' => substr($lower, 0, strrpos($lower, '/')),
+                'node' => $lower,
                 'title' => $node_name
             ];
         }
 
-        foreach ($methods as $key_node => $methodwn) {
-            $list[$key_node] = [
-                'pnode' => substr($key_node, 0, strrpos($key_node, '/')),
-                'node' => $key_node,
-                'title' => $node_name
-            ];
-        }
+        return $list;
+    }
 
-        var_dump($list);
-
-
+    public function toTree(array $list)
+    {
 
     }
 

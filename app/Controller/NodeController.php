@@ -20,10 +20,20 @@ class NodeController extends Controller
      */
     public function list()
     {
-        $service = new NodeService();
+        try {
+            $service = new NodeService();
 
-        $list = $service->getList();
-//        var_dump($list);
+            $list = $service->getList();
+
+//            $tree = $service->toTree($list);
+
+            $tree = arr2tree($list, 'node', 'pnode', 'list');
+
+            return $this->response->success($tree);
+
+        } catch (\Exception $exception) {
+
+        }
 
     }
 
