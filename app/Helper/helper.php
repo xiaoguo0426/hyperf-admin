@@ -12,3 +12,29 @@ function uuid($length)
     }
     return $uuid;
 }
+
+function multi_str2tree($arr_str, $delimiter = '/')
+{
+
+    $res = array();
+
+    $format = function ($str, $delimiter) {
+        $arr = explode($delimiter, $str);
+        $result = null;
+        // 弹出最后一个元素
+        for ($i = count($arr) - 1; $i >= 0; $i--) {
+            if ($result === null) {
+                $result = $arr[$i];
+            } else {
+                $result = array($arr[$i] => $result);
+            }
+        }
+        return $result;
+    };
+
+    foreach ($arr_str as $string) {
+        $res = array_merge_recursive($res, $format($string, $delimiter));
+    }
+
+    return $res;
+}

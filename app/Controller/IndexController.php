@@ -11,7 +11,11 @@ declare(strict_types=1);
  */
 
 namespace App\Controller;
-
+/**
+ * 默认控制器
+ * Class IndexController
+ * @package App\Controller
+ */
 class IndexController extends Controller
 {
     public function index()

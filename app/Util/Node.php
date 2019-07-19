@@ -13,7 +13,7 @@ class Node
      * @var array
      */
     private static $ignoreController = [
-        'api.', 'wap.', 'web.',
+        'Controller', 'Admin/LoginController', 'IndexController'
     ];
 
     /**
@@ -21,8 +21,7 @@ class Node
      * @var array
      */
     private static $ignoreAction = [
-        '_', 'redirect', 'assign', 'callback',
-        'initialize', 'success', 'error', 'fetch',
+        '__construct', 'isPost', 'isGet',
     ];
 
     /**
@@ -30,16 +29,16 @@ class Node
      * @return array
      * @throws \ReflectionException
      */
-    public static function getClassTreeNode($dir)
+    public static function getClassNodes($dir)
     {
         if (!is_dir($dir)) {
             throw new FileException('目录不存在！');
         }
         $nodes = [];
         self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
-            list($node, $comment) = [trim($prenode, '/'), $reflection->getDocComment()];
+            list($node, $comment) = [str_replace('Controller', '', trim($prenode, '/')), $reflection->getDocComment()];
             $nodes[$node] = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $comment));
-            if (stripos($nodes[$node], '@') !== false){
+            if (stripos($nodes[$node], '@') !== false) {
                 $nodes[$node] = '';
             }
         });
@@ -54,16 +53,43 @@ class Node
      */
     public static function eachController($dir, $callable)
     {
+        $app_namespace = config('app_namespace');
         foreach (self::scanDir($dir) as $file) {
-            if (!preg_match("|/(\w+)/Controller/(.+)\.php$|", strtr($file, '\\', '/'), $matches)) continue;
-            list($module, $controller) = [$matches[1], strtr($matches[2], '/', '.')];
-            foreach (self::$ignoreController as $ignore) if (stripos($controller, $ignore) === 0) continue 2;
-            $class = substr(strtr(env('app_namespace') . $matches[0], '/', '\\'), 0, -4);
+            if (!preg_match("|/Controller/(.+)\.php$|", strtr($file, '\\', '/'), $matches)) continue;
+            $controller = $matches[1];
+            foreach (self::$ignoreController as $ignore) {
+                if (stripos($controller, $ignore) === 0) {
+                    continue 2;
+                }
+            }
+            $class = substr(strtr($app_namespace . $matches[0], '/', '\\'), 0, -4);
             if (class_exists($class)) {
-                call_user_func($callable, new \ReflectionClass($class), Node::parseString("{$module}/{$controller}/"));
+                call_user_func($callable, new \ReflectionClass($class), $controller);
             }
         }
     }
+
+    /**
+     * 获取方法节点列表
+     * @param string $dir 控制器根路径
+     * @return array
+     * @throws \ReflectionException
+     */
+    public static function getMethodNodes($dir)
+    {
+        $nodes = [];
+        self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $action = $method->getName();
+                foreach (self::$ignoreAction as $ignore) if (stripos($action, $ignore) === 0) continue 2;
+                $node = str_replace('Controller', '', $prenode) . '/' . $action;
+                $nodes[$node] = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $method->getDocComment()));
+                if (stripos($nodes[$node], '@') !== false) $nodes[$node] = '';
+            }
+        });
+        return $nodes;
+    }
+
 
     /**
      * @param $dir
@@ -84,23 +110,6 @@ class Node
             }
         }
         return $data;
-    }
-
-    /**
-     * @param $node
-     * @return string
-     */
-    public
-    static function parseString($node)
-    {
-        if (count($nodes = explode('/', $node)) > 1) {
-            $dots = [];
-            foreach (explode('.', $nodes[1]) as $dot) {
-                $dots[] = trim(preg_replace("/[A-Z]/", "_\\0", $dot), "_");
-            }
-            $nodes[1] = join('.', $dots);
-        }
-        return strtolower(join('/', $nodes));
     }
 
 }

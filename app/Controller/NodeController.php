@@ -23,7 +23,7 @@ class NodeController extends Controller
         $service = new NodeService();
 
         $list = $service->getList();
-        var_dump($list);
+//        var_dump($list);
 
     }
 
