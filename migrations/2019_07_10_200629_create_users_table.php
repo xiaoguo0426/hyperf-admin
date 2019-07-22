@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 use Hyperf\Database\Schema\Schema;
 use Hyperf\Database\Schema\Blueprint;

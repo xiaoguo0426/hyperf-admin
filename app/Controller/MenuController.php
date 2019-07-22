@@ -14,9 +14,9 @@ use Hyperf\HttpServer\Annotation\AutoController;
 class MenuController extends Controller
 {
     /**
-     *
+     *列表
      */
-    public function index()
+    public function getList()
     {
 
     }

@@ -17,6 +17,7 @@ class LoginService extends BaseService
     /**
      * @param $username
      * @param $password
+     * @return array
      * @throws \Exception
      */
     public function login($username, $password): array
@@ -27,7 +28,7 @@ class LoginService extends BaseService
         if (empty($user)) {
             throw new \Exception('账号不存在！', 1);
         }
-        if (0 == $user->status) {
+        if (0 === intval($user->status)) {
             throw new \Exception('账号已被禁用，请联系管理员！', 1);
         }
 

@@ -44,8 +44,9 @@ class AuthMiddleware implements MiddlewareInterface
         //检查节点
         //检查TOKEN
         $cur_node = $this->request->getUri()->getPath();
+
         foreach (Auth::ignores() as $ignore) {
-            if ($ignore == $cur_node) {
+            if ($ignore === $cur_node) {
                 return $handler->handle($request);//交给下个一个中间件处理
             }
         }
