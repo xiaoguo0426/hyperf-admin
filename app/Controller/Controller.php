@@ -50,4 +50,24 @@ abstract class Controller
     {
         return $this->request->isMethod('get');
     }
+
+    public function getAdmin()
+    {
+        return $this->request->admin;
+    }
+
+    public function getAdminID()
+    {
+        return $this->request->admin['user_id'];
+    }
+
+    public function getAdminName()
+    {
+        return $this->request->admin['user_name'];
+    }
+
+    public function getAdminRole()
+    {
+        return $this->request->admin['role'];
+    }
 }

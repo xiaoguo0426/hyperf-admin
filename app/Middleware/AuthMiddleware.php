@@ -57,7 +57,6 @@ class AuthMiddleware implements MiddlewareInterface
             //todo 检查token
             $instance = new AccessToken();
             $payload = $instance->checkToken($token);
-            var_dump($payload);
         } catch (LoginException $exception) {
             return $this->response->json(
                 [
@@ -79,9 +78,10 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
 
-        $this->request->withAttribute('sys_user', $payload->data);
+//        $request->withAttribute('sys_user', $payload->data);
+        $this->request->admin = (array) $payload->data;
 
-        \Hyperf\Utils\Context::set(ServerRequestInterface::class, $this->request);
+//        \Hyperf\Utils\Context::set(ServerRequestInterface::class, $request);
 
         return $handler->handle($request);//交给下个一个中间件处理
     }

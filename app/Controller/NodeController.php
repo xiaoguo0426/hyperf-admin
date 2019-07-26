@@ -21,6 +21,7 @@ class NodeController extends Controller
     public function list()
     {
         try {
+
             $service = new NodeService();
 
             $list = $service->getList();
