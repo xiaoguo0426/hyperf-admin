@@ -9,7 +9,7 @@ date_default_timezone_set('Asia/Shanghai');
 
 !defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
 !defined('DS') && define('DS', DIRECTORY_SEPARATOR);
-
+!defined('RUNTIME_PATH') && define('RUNTIME_PATH', BASE_PATH . '/runtime/');
 
 require BASE_PATH . '/vendor/autoload.php';
 

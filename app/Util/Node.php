@@ -21,7 +21,7 @@ class Node
      * @var array
      */
     private static $ignoreAction = [
-        '__construct', 'isPost', 'isGet',
+        '__construct', 'isPost', 'isGet', 'getAdmin', 'getAdminID', 'getAdminName', 'getAdminRole'
     ];
 
     /**
