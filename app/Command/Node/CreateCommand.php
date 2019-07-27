@@ -29,7 +29,7 @@ class CreateCommand extends HyperfCommand
 
     public function configure()
     {
-        $this->setDescription('Hyperf Node Create Command');
+        $this->setDescription('Hyperf Nodes Create Command');
     }
 
     public function handle()
@@ -43,6 +43,8 @@ class CreateCommand extends HyperfCommand
         $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
 
         file_put_contents(RUNTIME_PATH . 'nodes.php', "<?php \n return " . var_export($multi_tree, true) . ";");
+
+        $this->comment('Nodes Data has successfully created!');
     }
 
 }

@@ -12,7 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 /**
  * @Command
  */
-class ClearCommand extends HyperfCommand
+class RefreshCommand extends HyperfCommand
 {
     /**
      * @var ContainerInterface
@@ -23,18 +23,22 @@ class ClearCommand extends HyperfCommand
     {
         $this->container = $container;
 
-        parent::__construct('node:clear');
+        parent::__construct('node:refresh');
     }
 
     public function configure()
     {
-        $this->setDescription('Hyperf Node Clear Command');
+        $this->setDescription('Hyperf Nodes Refresh Command');
     }
 
     public function handle()
     {
+        $nodes_path = RUNTIME_PATH . 'nodes.php';
+        file_exists($nodes_path) && unlink($nodes_path);
 
+        $this->call('node:create');
 
+        $this->comment('Nodes Data has successfully Refreshed!');
     }
 
 }
