@@ -22,7 +22,7 @@ class LoginController extends Controller
 
         try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 1);
+                throw new \Exception('invalid access', 200);
             }
 
             $username = $this->request->post('username', '');//admin
