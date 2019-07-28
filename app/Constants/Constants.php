@@ -11,4 +11,8 @@ class Constants
 
     const SCOPE_REFRESH = 'refresh_access';
 
+    const STATUS_ACTIVE = 1;
+
+    const STATUS_FORBID = 0;
+
 }

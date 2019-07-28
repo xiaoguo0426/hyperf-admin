@@ -24,6 +24,7 @@ class AuthValidate extends Validate
     ];
 
     protected $scene = [
+        'info' => ['id'],
         'add' => ['title', 'desc'],
         'edit' => ['id', 'title', 'desc'],
         'del' => ['id'],
