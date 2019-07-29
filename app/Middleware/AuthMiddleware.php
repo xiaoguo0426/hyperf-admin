@@ -67,8 +67,10 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
 
+        $admin = (array)$payload->data;
+
         //todo 检查用户与节点权限
-        if (!Auth::checkNode($cur_node)) {
+        if ('admin' !== $admin['user_name'] &&  !Auth::checkNode($admin['role_id'], $cur_node)) {
             return $this->response->json(
                 [
                     'code' => '1',
@@ -79,7 +81,7 @@ class AuthMiddleware implements MiddlewareInterface
         }
 
 //        $request->withAttribute('sys_user', $payload->data);
-        $this->request->admin = (array) $payload->data;
+        $this->request->admin = $admin;
 
 //        \Hyperf\Utils\Context::set(ServerRequestInterface::class, $request);
 

@@ -5,12 +5,16 @@ namespace App\Service\Admin;
 
 
 use App\Constants\Constants;
+use App\Exception\EmptyException;
 use App\Exception\LoginException;
+use App\Exception\StatusException;
 use App\Model\SystemUserModel;
+use App\Service\AuthService;
 use App\Service\BaseService;
 use App\Util\AccessToken;
 use App\Util\Payload;
 use App\Util\Prefix;
+use App\Util\Redis;
 
 class LoginService extends BaseService
 {
@@ -34,7 +38,7 @@ class LoginService extends BaseService
 
         $max_count = 5;//可重试次数
 
-        $redis = $this->getRedis();
+        $redis = Redis::getInstance();
 
         $key = Prefix::getLoginErrCount($username);
 
@@ -61,10 +65,18 @@ class LoginService extends BaseService
         }
         //清除错误次数
         $redis->del($key);
-        //存入session
+
+        //查询角色名称
+        $authService = new AuthService();
+        $auth = $authService->info($user->role_id);
+        if (!$auth) {
+            throw new EmptyException('当前用户角色不存在，请联系管理员！');
+        }
+        if (1 != $auth->status) {
+            throw new StatusException('当前用户角色被禁用，请联系管理员！');
+        }
 
         $accessToken = new AccessToken();
-
 
         $app_name = config('app_name', '');
 
@@ -89,7 +101,8 @@ class LoginService extends BaseService
         $payload['data'] = [
             'user_id' => $user->id,
             'user_name' => $user->username,
-            'role' => $user->role
+            'role_id' => $user->role_id,
+            'role_name' => $auth->title
         ];
         $token = $accessToken->createToken($payload);
 

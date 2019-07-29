@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Service\AuthService;
+use App\Service\NodeService;
 use App\Validate\AuthValidate;
 use App\Exception\InvalidArgumentsException;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -16,7 +17,10 @@ use Hyperf\HttpServer\Annotation\AutoController;
  */
 class AuthController extends Controller
 {
-
+    /**
+     * 列表
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function list()
     {
         try {
@@ -76,7 +80,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 详情
+     * 角色详情
      */
     public function info()
     {
@@ -93,7 +97,7 @@ class AuthController extends Controller
 
             $method = __FUNCTION__;
             $validate = new AuthValidate();
-            if (!$validate->scene($method)->check($data)) {
+            if (!$validate->scene('base')->check($data)) {
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
@@ -127,9 +131,11 @@ class AuthController extends Controller
 
             $method = __FUNCTION__;
             $validate = new AuthValidate();
-            if (!$validate->scene($method)->check($data)) {
+            if (!$validate->scene('base')->check($data)) {
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
+
+            //TODO 该角色下是否存在用户
 
             $service = new AuthService();
 
@@ -169,7 +175,7 @@ class AuthController extends Controller
 
             $method = __FUNCTION__;
             $validate = new AuthValidate();
-            if (!$validate->scene($method)->check($data)) {
+            if (!$validate->scene('base')->check($data)) {
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
@@ -206,9 +212,11 @@ class AuthController extends Controller
             ];
             $method = __FUNCTION__;
             $validate = new AuthValidate();
-            if (!$validate->scene($method)->check($data)) {
+            if (!$validate->scene('base')->check($data)) {
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
+
+            //TODO 该角色下是否存在用户
 
             $service = new AuthService();
 
@@ -244,7 +252,7 @@ class AuthController extends Controller
 
             $method = __FUNCTION__;
             $validate = new AuthValidate();
-            if (!$validate->scene($method)->check($data)) {
+            if (!$validate->scene('base')->check($data)) {
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
@@ -257,6 +265,80 @@ class AuthController extends Controller
             }
 
             return $this->response->success([], '激活权限成功！');
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
+    }
+
+    /**
+     * 获取节点数据
+     */
+    public function getAuthNodes()
+    {
+        try {
+            if (!$this->isGet()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+            $id = $this->request->query('id', '');
+
+            $data = [
+                'id' => $id,
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new AuthValidate();
+            if (!$validate->scene('base')->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            $service = new AuthService();
+
+            $list = $service->$method($id);
+
+            return $this->response->success($list);
+
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
+
+    }
+
+    /**
+     * 保存节点数据
+     */
+    public function saveAuthNodes()
+    {
+
+        try {
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+            $id = $this->request->post('id', '');
+            $nodes = $this->request->post('nodes', []);
+
+            $data = [
+                'id' => $id,
+                'nodes' => $nodes
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new AuthValidate();
+            if (!$validate->scene('saveAuthNodes')->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            $service = new AuthService();
+
+            $res = $service->$method($id, $nodes);
+
+            return $this->response->success([], '保存成功！');
+
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {

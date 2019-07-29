@@ -10,4 +10,9 @@ class Prefix
         return 'system-user-err-count::' . $unique;
     }
 
+    public static function authNodes($unique)
+    {
+        return 'system-user-auth::' . $unique;
+    }
+
 }

@@ -6,6 +6,8 @@ namespace App\Service;
 use App\Constants\Constants;
 use App\Exception\EmptyException;
 use App\Model\SystemAuthModel;
+use App\Util\Prefix;
+use App\Util\Redis;
 
 class AuthService extends BaseService
 {
@@ -46,7 +48,7 @@ class AuthService extends BaseService
 
     public function info(int $id)
     {
-        return SystemAuthModel::query()->where('id', $id)->get();
+        return SystemAuthModel::query()->where('id', $id)->first();
     }
 
     /**
@@ -64,7 +66,7 @@ class AuthService extends BaseService
     {
         $info = $this->info($id);
 
-        if ($info->isEmpty()) {
+        if (!$info) {
             throw new EmptyException();
         }
 
@@ -79,7 +81,7 @@ class AuthService extends BaseService
 
         $info = $this->info($id);
 
-        if ($info->isEmpty()) {
+        if (!$info) {
             throw new EmptyException();
         }
 
@@ -92,13 +94,74 @@ class AuthService extends BaseService
     {
         $info = $this->info($id);
 
-        if ($info->isEmpty()) {
+        if (!$info) {
             throw new EmptyException();
         }
 
         return SystemAuthModel::query()->where('id', $id)->update([
             'status' => Constants::STATUS_ACTIVE
         ]);
+    }
+
+    public function getAuthNodes(int $id): array
+    {
+
+        $nodeService = new NodeService();
+
+        $list = $nodeService->getList();
+
+        $redis = Redis::getInstance();
+
+        $key = Prefix::authNodes($id);
+
+//        $members = $redis->sMembers($key);
+//
+//        foreach ($list as &$item) {
+//            $md5 = md5($item['node']);
+//            $item['is_check'] = in_array($md5, $members);//todo 与用户保存数据对比
+//        }
+
+        foreach ($list as &$item) {
+            $md5 = md5($item['node']);
+            $item['is_check'] = $redis->sIsMember($key, $md5);
+        }
+
+        unset($item);
+
+        $tree = $nodeService->toTree($list);
+
+        $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
+
+        return $multi_tree;
+
+    }
+
+    /**
+     * 保存节点数据
+     * @param int $id
+     * @param array $nodes
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveAuthNodes(int $id, array $nodes): bool
+    {
+
+        $nodes_data = [];
+        foreach ($nodes as $node) {
+            $nodes_data[] = md5($node);
+        }
+
+        $redis = Redis::getInstance();
+
+        $key = Prefix::authNodes($id);
+
+        $add = $redis->sAddArray($key, $nodes_data);
+
+        if (false === $add) {
+            throw new \Exception('保存失败！');
+        }
+
+        return true;
     }
 
 

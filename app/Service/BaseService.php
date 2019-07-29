@@ -20,9 +20,4 @@ class BaseService
         $this->container = ApplicationContext::getContainer();
     }
 
-    public function getRedis()
-    {
-        return $this->container->get(RedisFactory::class)->get('default');
-    }
-
 }

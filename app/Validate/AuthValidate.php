@@ -11,6 +11,7 @@ class AuthValidate extends Validate
         'id' => 'require',
         'title' => 'require|min:5|max:30',
         'desc' => 'require|min:5|max:255',
+        'nodes' => 'require'
     ];
 
     protected $message = [
@@ -21,15 +22,19 @@ class AuthValidate extends Validate
         'desc.require' => '权限描述不能为空！',
         'desc.min' => '权限描述长度不能少于5位有效字符！',
         'desc.max' => '权限描述长度不能大于255位有效字符！',
+        'nodes.require' => '节点数据不能为空！',
     ];
 
     protected $scene = [
-        'info' => ['id'],
+        'base' => ['id'],
         'add' => ['title', 'desc'],
         'edit' => ['id', 'title', 'desc'],
-        'del' => ['id'],
-        'forbid' => ['id'],
-        'resume' => ['id']
+        'saveAuthNodes' => ['id', 'nodes']
     ];
+
+//    protected function checkAuthNodes($fieldValue)
+//    {
+//        var_dump($fieldValue);
+//    }
 
 }
