@@ -67,10 +67,10 @@ class AuthController extends Controller
             $res = $service->add($title, $desc);
 
             if (false === $res) {
-                throw new \Exception('新增权限失败！', 200);
+                throw new \Exception('新增失败！', 200);
             }
 
-            return $this->response->success([], '新增权限成功！');
+            return $this->response->success([], '新增成功！');
 
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
@@ -142,10 +142,10 @@ class AuthController extends Controller
             $res = $service->$method($id);
 
             if (false === $res) {
-                throw new \Exception('删除权限失败！', 200);
+                throw new \Exception('删除失败！', 200);
             }
 
-            return $this->response->success($res, '删除权限成功！');
+            return $this->response->success($res, '删除成功！');
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {
@@ -184,10 +184,10 @@ class AuthController extends Controller
             $res = $service->$method($id, $title, $desc);
 
             if (false === $res) {
-                throw new \Exception('编辑权限失败！', 200);
+                throw new \Exception('编辑失败！', 200);
             }
 
-            return $this->response->success([], '编辑权限成功！');
+            return $this->response->success([], '编辑成功！');
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {
@@ -223,10 +223,10 @@ class AuthController extends Controller
             $res = $service->$method($id);
 
             if (false === $res) {
-                throw new \Exception('禁用权限失败！', 200);
+                throw new \Exception('禁用失败！', 200);
             }
 
-            return $this->response->success([], '禁用权限成功！');
+            return $this->response->success([], '禁用成功！');
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {
@@ -261,10 +261,10 @@ class AuthController extends Controller
             $res = $service->$method($id);
 
             if (false === $res) {
-                throw new \Exception('激活权限失败！', 200);
+                throw new \Exception('激活失败！', 200);
             }
 
-            return $this->response->success([], '激活权限成功！');
+            return $this->response->success([], '激活成功！');
         } catch (InvalidArgumentsException $exception) {
             return $this->response->fail($exception->getCode(), $exception->getMessage());
         } catch (\Exception $exception) {

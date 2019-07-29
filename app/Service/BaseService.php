@@ -3,7 +3,6 @@
 
 namespace App\Service;
 
-use Hyperf\Redis\RedisFactory;
 use Psr\Container\ContainerInterface;
 use Hyperf\Utils\ApplicationContext;
 

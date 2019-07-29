@@ -8,6 +8,7 @@ class MenuValidate extends Validate
 {
 
     protected $rule = [
+        'id' => 'require',
         'pid' => 'require',
         'title' => 'require|min:2|max:10',
         'uri' => 'require',
@@ -16,6 +17,7 @@ class MenuValidate extends Validate
     ];
 
     protected $message = [
+        'id.require' => '参数id不能为空！',
         'pid.require' => '参数pid不能为空！',
         'title.require' => '菜单名称不能为空！',
         'title.min' => '菜单名称长度不能少于2位有效字符！',

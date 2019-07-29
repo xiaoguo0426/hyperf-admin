@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Controller;
 
 use App\Exception\InvalidArgumentsException;
+use App\Service\MenuService;
 use App\Validate\MenuValidate;
 use Hyperf\HttpServer\Annotation\AutoController;
 
@@ -31,10 +33,18 @@ class MenuController extends Controller
                 throw new \Exception('invalid access', 200);
             }
 
-            $id = $this->request->post('id', '');
+            $pid = $this->request->post('pid', '');
+            $title = $this->request->post('title', '');
+            $uri = $this->request->post('uri', '');
+            $params = $this->request->post('params', '');
+            $icon = $this->request->post('icon', '');
+            $sort = $this->request->post('sort', 0);
 
             $data = [
-                'id' => $id,
+                'pid' => $pid,
+                'title' => $title,
+                'uri' => $uri,
+                'params' => $params,
             ];
 
             $method = __FUNCTION__;
@@ -43,15 +53,13 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            //TODO 该角色下是否存在用户
+            $service = new MenuService();
 
-//            $service = new AuthService();
-//
-//            $res = $service->$method($id);
-//
-//            if (false === $res) {
-//                throw new \Exception('删除权限失败！', 200);
-//            }
+            $res = $service->add($pid, $title, $uri, $params, $icon, $sort);
+
+            if (false === $res) {
+                throw new \Exception('添加失败！', 200);
+            }
 
             return $this->response->success([], '添加成功！');
         } catch (InvalidArgumentsException $exception) {
@@ -66,6 +74,48 @@ class MenuController extends Controller
      */
     public function edit()
     {
+        try {
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+            $id = $this->request->post('id', '');
+            $pid = $this->request->post('pid', '');
+            $title = $this->request->post('title', '');
+            $uri = $this->request->post('uri', '');
+            $params = $this->request->post('params', '');
+            $icon = $this->request->post('icon', '');
+            $sort = $this->request->post('sort', 0);
+
+            $data = [
+                'id' => $id,
+                'pid' => $pid,
+                'title' => $title,
+                'uri' => $uri,
+                'params' => $params,
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new MenuValidate();
+            if (!$validate->scene($method)->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            $service = new MenuService();
+
+            $res = $service->edit($id, $pid, $title, $uri, $params, $icon, $sort);
+
+            if (false === $res) {
+                throw new \Exception('编辑失败！', 200);
+            }
+
+            return $this->response->success([], '编辑成功！');
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
+
     }
 
     /**
@@ -73,7 +123,118 @@ class MenuController extends Controller
      */
     public function del()
     {
+        try {
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access', 200);
+            }
 
+            $id = $this->request->post('id', '');
+
+            $data = [
+                'id' => $id,
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new MenuValidate();
+            if (!$validate->scene('base')->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            //TODO 该角色下是否存在用户
+
+            $service = new MenuService();
+
+            $res = $service->$method($id);
+
+            if (false === $res) {
+                throw new \Exception('删除失败！', 200);
+            }
+
+            return $this->response->success($res, '删除成功！');
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
     }
 
+    /**
+     * 禁用菜单
+     */
+    public function forbid()
+    {
+        try {
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+            $id = $this->request->post('id', '');
+
+            $data = [
+                'id' => $id,
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new MenuValidate();
+            if (!$validate->scene('base')->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            //TODO 该角色下是否存在用户
+
+            $service = new MenuService();
+
+            $res = $service->$method($id);
+
+            if (false === $res) {
+                throw new \Exception('禁用失败！', 200);
+            }
+
+            return $this->response->success($res, '禁用成功！');
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
+    }
+
+    /**
+     * 启用菜单
+     */
+    public function resume()
+    {
+        try {
+            if (!$this->isPost()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+            $id = $this->request->post('id', '');
+
+            $data = [
+                'id' => $id,
+            ];
+
+            $method = __FUNCTION__;
+            $validate = new MenuValidate();
+            if (!$validate->scene('base')->check($data)) {
+                throw new InvalidArgumentsException($validate->getError(), 200);
+            }
+
+            //TODO 该角色下是否存在用户
+
+            $service = new MenuService();
+
+            $res = $service->$method($id);
+
+            if (false === $res) {
+                throw new \Exception('启用失败！', 200);
+            }
+
+            return $this->response->success($res, '启用成功！');
+        } catch (InvalidArgumentsException $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
+    }
 }
