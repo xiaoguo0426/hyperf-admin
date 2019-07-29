@@ -6,6 +6,7 @@ namespace App\Service;
 use App\Constants\Constants;
 use App\Exception\EmptyException;
 use App\Model\SystemAuthModel;
+use App\Util\Auth;
 use App\Util\Prefix;
 use App\Util\Redis;
 
@@ -110,20 +111,8 @@ class AuthService extends BaseService
 
         $list = $nodeService->getList();
 
-        $redis = Redis::getInstance();
-
-        $key = Prefix::authNodes($id);
-
-//        $members = $redis->sMembers($key);
-//
-//        foreach ($list as &$item) {
-//            $md5 = md5($item['node']);
-//            $item['is_check'] = in_array($md5, $members);//todo 与用户保存数据对比
-//        }
-
         foreach ($list as &$item) {
-            $md5 = md5($item['node']);
-            $item['is_check'] = $redis->sIsMember($key, $md5);
+            $item['is_check'] = Auth::checkNode($id, $item['node']);
         }
 
         unset($item);
