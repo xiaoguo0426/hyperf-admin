@@ -8,6 +8,7 @@ use App\Exception\LoginException;
 use App\Util\AccessToken;
 use App\Util\Auth;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -15,6 +16,11 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 
+/**
+ * 权限验证中间件
+ * Class AuthMiddleware
+ * @package App\Middleware
+ */
 class AuthMiddleware implements MiddlewareInterface
 {
     /**
@@ -56,7 +62,7 @@ class AuthMiddleware implements MiddlewareInterface
         try {
             //todo 检查token
             $instance = new AccessToken();
-            $payload = $instance->checkToken($token);
+            $jwt = $instance->checkToken($token);
         } catch (LoginException $exception) {
             return $this->response->json(
                 [
@@ -67,10 +73,10 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
 
-        $admin = (array)$payload->data;
+        $admin = (array)($jwt->data);
 
         //todo 检查用户与节点权限
-        if ('admin' !== $admin['user_name'] &&  !Auth::checkNode($admin['role_id'], $cur_node)) {
+        if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node)) {
             return $this->response->json(
                 [
                     'code' => '1',
@@ -80,10 +86,8 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
 
-//        $request->withAttribute('sys_user', $payload->data);
-        $this->request->admin = $admin;
-
-//        \Hyperf\Utils\Context::set(ServerRequestInterface::class, $request);
+        $request = $request->withAttribute('admin', $admin);
+        Context::set(ServerRequestInterface::class, $request);
 
         return $handler->handle($request);//交给下个一个中间件处理
     }

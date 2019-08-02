@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 return [
     'http' => [
-        \App\Middleware\AuthMiddleware::class
+        \App\Middleware\AuthMiddleware::class,
+        \App\Middleware\LogMiddleware::class
     ],
 ];

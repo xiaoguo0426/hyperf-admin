@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Service\Admin;
+namespace App\Logic\Admin;
 
 
 use App\Constants\Constants;
@@ -10,21 +10,14 @@ use App\Exception\LoginException;
 use App\Exception\StatusException;
 use App\Model\SystemUserModel;
 use App\Service\AuthService;
-use App\Service\BaseService;
 use App\Util\AccessToken;
 use App\Util\Payload;
 use App\Util\Prefix;
 use App\Util\Redis;
 
-class LoginService extends BaseService
+class LoginLogic
 {
-    /**
-     * @param $username
-     * @param $password
-     * @return array
-     * @throws \Exception
-     */
-    public function login($username, $password): array
+    public function login(string $username, string $password)
     {
 
         $user = SystemUserModel::query()->where('username', $username)->first();
@@ -96,7 +89,7 @@ class LoginService extends BaseService
         $payload['aud'] = 'api.onetech.site';
         $payload['ita'] = $cur_time;
         $payload['nbf'] = $cur_time;
-        $payload['exp'] = $cur_time + 3600;
+        $payload['exp'] = $cur_time + 3600 * 24 * 10;
         $payload['scopes'] = Constants::SCOPE_ROLE;
         $payload['data'] = [
             'user_id' => $user->id,
@@ -112,16 +105,50 @@ class LoginService extends BaseService
         $refresh_token = $accessToken->createToken($payload);
 
         return compact('token', 'refresh_token');
-
     }
 
-    public function refreshToken($refresh): string
+    public function refreshToken($refresh): array
     {
 
         $accessToken = new AccessToken();
 
-        return $accessToken->refreshToken($refresh);
+        $jwt = $accessToken->checkRefreshToken($refresh);
+
+        $data = (array)($jwt['data']);
+
+
+        $accessToken = new AccessToken();
+
+        $app_name = config('app_name', '');
+
+        $app_key = config('app_key', '');
+
+        if (empty($app_key) || empty($app_name)) {
+            throw new LoginException('配置有误！', 1);
+        }
+
+        $cur_time = time();
+
+        $payload = new Payload();
+
+        $payload['jti'] = uuid(16);
+        $payload['iss'] = $app_name;
+        $payload['sub'] = 'api.onetech.site';
+        $payload['aud'] = 'api.onetech.site';
+        $payload['ita'] = $cur_time;
+        $payload['nbf'] = $cur_time;
+        $payload['exp'] = $cur_time + 3600;
+        $payload['scopes'] = Constants::SCOPE_ROLE;
+        $payload['data'] = $data;
+
+        $token = $accessToken->createToken($payload);
+
+        $payload['exp'] = $cur_time + 84300;
+        $payload['scopes'] = Constants::SCOPE_REFRESH;
+
+        $refresh_token = $accessToken->createToken($payload);
+
+        return compact('token', 'refresh_token');
 
     }
-
 }

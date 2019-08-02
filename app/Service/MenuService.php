@@ -12,7 +12,17 @@ class MenuService extends BaseService
 
     public function list()
     {
+        $list = SystemMenuModel::all([
+            'id',
+            'pid',
+            'title',
+            'uri',
+            'sort',
+            'icon',
+            'status'
+        ])->sortByDesc('sort')->values()->toArray();
 
+        return $list;
 
     }
 
@@ -35,12 +45,6 @@ class MenuService extends BaseService
 
     public function edit(int $id, int $pid, string $title, string $uri = '', string $params = '#', string $icon = '', $sort = 0)
     {
-        $info = $this->info($id);
-
-        if (!$info) {
-            throw new EmptyException();
-        }
-
         return SystemMenuModel::query()->where('id', $id)->update([
             'pid' => $pid,
             'title' => $title,

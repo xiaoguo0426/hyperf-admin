@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Exception\InvalidArgumentsException;
+use App\Logic\MenuLogic;
 use App\Service\MenuService;
+use App\Util\Data;
 use App\Validate\MenuValidate;
 use Hyperf\HttpServer\Annotation\AutoController;
+use Hyperf\Utils\Context;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * 菜单管理器
@@ -18,9 +22,27 @@ class MenuController extends Controller
     /**
      *列表
      */
-    public function getList()
+    public function list()
     {
 
+        var_dump($this->getAdminName());
+        try {
+            if (!$this->isGet()) {
+                throw new \Exception('invalid access', 200);
+            }
+
+//            $service = new MenuService();
+            $logic = new MenuLogic();
+
+            $list = $logic->list();
+
+            $data = Data::toTree($list, 'id', 'pid');
+
+            return $this->response->success($data);
+
+        } catch (\Exception $exception) {
+            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        }
     }
 
     /**
@@ -53,9 +75,9 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new MenuService();
+            $logic = new MenuLogic();
 
-            $res = $service->add($pid, $title, $uri, $params, $icon, $sort);
+            $res = $logic->add($pid, $title, $uri, $params, $icon, $sort);
 
             if (false === $res) {
                 throw new \Exception('添加失败！', 200);
@@ -101,9 +123,9 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new MenuService();
+            $logic = new MenuLogic();
 
-            $res = $service->edit($id, $pid, $title, $uri, $params, $icon, $sort);
+            $res = $logic->edit($id, $pid, $title, $uri, $params, $icon, $sort);
 
             if (false === $res) {
                 throw new \Exception('编辑失败！', 200);
@@ -140,11 +162,9 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            //TODO 该角色下是否存在用户
+            $logic = new MenuLogic();
 
-            $service = new MenuService();
-
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('删除失败！', 200);
@@ -180,11 +200,9 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            //TODO 该角色下是否存在用户
+            $logic = new MenuLogic();
 
-            $service = new MenuService();
-
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('禁用失败！', 200);
@@ -220,11 +238,9 @@ class MenuController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            //TODO 该角色下是否存在用户
+            $logic = new MenuLogic();
 
-            $service = new MenuService();
-
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('启用失败！', 200);

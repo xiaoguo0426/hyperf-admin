@@ -49,25 +49,28 @@ abstract class Controller
     public function isGet()
     {
         return $this->request->isMethod('get');
-    }
+         }
 
     public function getAdmin()
     {
-        return $this->request->admin;
+        return $this->request->getAttribute('admin');
     }
 
     public function getAdminID()
     {
-        return $this->request->admin['user_id'];
+        $admin = $this->getAdmin();
+        return $admin['user_id'];
     }
 
     public function getAdminName()
     {
-        return $this->request->admin['user_name'];
+        $admin = $this->getAdmin();
+        return $admin['user_name'];
     }
 
     public function getAdminRole()
     {
-        return $this->request->admin['role'];
+        $admin = $this->getAdmin();
+        return $admin['role'];
     }
 }

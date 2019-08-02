@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Command\Node;
 
-use App\Service\NodeService;
+use App\Logic\NodeLogic;
 use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerInterface;
 use Hyperf\Command\Annotation\Command;
-use Symfony\Component\Console\Input\InputArgument;
+use App\Util\Data;
 
 /**
  * @Command
@@ -34,11 +34,11 @@ class CreateCommand extends HyperfCommand
 
     public function handle()
     {
-        $service = new NodeService();
+        $logic = new NodeLogic();
 
-        $list = $service->getList();
+        $list = $logic->getList();
 
-        $tree = $service->toTree($list);
+        $tree = $logic->toTree($list);
 
         $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
 

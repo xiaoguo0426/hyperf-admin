@@ -3,8 +3,8 @@
 
 namespace App\Controller;
 
+use App\Logic\AuthLogic;
 use App\Service\AuthService;
-use App\Service\NodeService;
 use App\Validate\AuthValidate;
 use App\Exception\InvalidArgumentsException;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -19,7 +19,6 @@ class AuthController extends Controller
 {
     /**
      * 列表
-     * @return \Psr\Http\Message\ResponseInterface
      */
     public function list()
     {
@@ -28,9 +27,9 @@ class AuthController extends Controller
                 throw new \Exception('invalid access', 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $list = $service->list();
+            $list = $logic->list();
 
             return $this->response->success($list);
 
@@ -62,9 +61,9 @@ class AuthController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->add($title, $desc);
+            $res = $logic->add($title, $desc);
 
             if (false === $res) {
                 throw new \Exception('新增失败！', 200);
@@ -101,9 +100,9 @@ class AuthController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             return $this->response->success($res);
         } catch (InvalidArgumentsException $exception) {
@@ -137,9 +136,9 @@ class AuthController extends Controller
 
             //TODO 该角色下是否存在用户
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('删除失败！', 200);
@@ -179,9 +178,9 @@ class AuthController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->$method($id, $title, $desc);
+            $res = $logic->$method($id, $title, $desc);
 
             if (false === $res) {
                 throw new \Exception('编辑失败！', 200);
@@ -218,9 +217,9 @@ class AuthController extends Controller
 
             //TODO 该角色下是否存在用户
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('禁用失败！', 200);
@@ -256,9 +255,9 @@ class AuthController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $res = $service->$method($id);
+            $res = $logic->$method($id);
 
             if (false === $res) {
                 throw new \Exception('激活失败！', 200);
@@ -294,9 +293,9 @@ class AuthController extends Controller
                 throw new InvalidArgumentsException($validate->getError(), 200);
             }
 
-            $service = new AuthService();
+            $logic = new AuthLogic();
 
-            $list = $service->$method($id);
+            $list = $logic->$method($id);
 
             return $this->response->success($list);
 

@@ -64,20 +64,41 @@ class AccessToken
             throw new LoginException('token不能为空！', -1);
         }
 
-        $jwt = $this->decode($token);
+        $decode = $this->decode($token);
 
-        if (is_null($jwt)) {
+        if (is_null($decode)) {
             throw new LoginException('token无效！', -1);
         }
 
-        $payload = new Payload($jwt);
+        $jwt = new Payload($decode);
 
-        if (Constants::SCOPE_ROLE !== $payload['scopes']) {
+        if (Constants::SCOPE_ROLE !== $jwt->scopes) {
+            throw new LoginException('token参数非法！', -2);
+        }
+
+        return $jwt;
+
+    }
+
+    public function checkRefreshToken(string $refresh)
+    {
+        if (empty($refresh)) {
+            throw new LoginException('token不能为空！', -1);
+        }
+
+        $decode = $this->decode($refresh);
+
+        if (is_null($decode)) {
+            throw new LoginException('token无效！', -1);
+        }
+
+        $jwt = new Payload($decode);
+
+        if (Constants::SCOPE_REFRESH !== $jwt->scopes) {
             throw new LoginException('refresh-token参数非法！', -2);
         }
 
-        return $payload;
-
+        return $jwt->toArray();
     }
 
     /**
@@ -102,7 +123,6 @@ class AccessToken
         }
 
         $data = $jwt['data'];
-
         return '';
     }
 

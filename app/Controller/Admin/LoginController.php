@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Exception\LoginException;
-use App\Service\Admin\LoginService;
+use App\Logic\Admin\LoginLogic;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
 use App\Controller\Controller;
@@ -39,9 +39,8 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $service = new LoginService();
-
-            $tokens = $service->login($username, $password);
+            $logic = new LoginLogic();
+            $tokens = $logic->login($username, $password);
 
             return $this->response->success($tokens, '登录成功！');
 
@@ -70,14 +69,14 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $service = new LoginService();
+            $logic = new LoginLogic();
 
-            $token = $service->refreshToken($refresh_token);
+            $tokens = $logic->refreshToken($refresh_token);
 
             return [
                 'code' => 0,//成功
                 'msg' => '刷新成功！',
-                'data' => compact('token')
+                'data' => $tokens
             ];
         } catch (LoginException $exception) {
             return [

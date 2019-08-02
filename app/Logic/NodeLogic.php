@@ -1,12 +1,12 @@
 <?php
 
 
-namespace App\Service;
+namespace App\Logic;
 
 
 use App\Util\Node;
 
-class NodeService extends BaseService
+class NodeLogic
 {
     public function getList(): array
     {
@@ -52,5 +52,4 @@ class NodeService extends BaseService
 
         return $new;
     }
-
 }
