@@ -25,7 +25,6 @@ class MenuController extends Controller
     public function list()
     {
 
-        var_dump($this->getAdminName());
         try {
             if (!$this->isGet()) {
                 throw new \Exception('invalid access', 200);

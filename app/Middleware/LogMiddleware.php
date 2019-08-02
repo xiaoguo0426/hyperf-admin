@@ -34,6 +34,10 @@ class LogMiddleware implements MiddlewareInterface
         var_dump($request->getHeaders());
         var_dump($request->getMethod());
         var_dump($request->getQueryParams());
+        var_dump($request->getUri()->getHost());
+        var_dump($request->getUri()->getAuthority());
+        var_dump($request->getUri()->getPath());
+        var_dump($request->getUri()->getScheme());
         return $handler->handle($request);
     }
 }
