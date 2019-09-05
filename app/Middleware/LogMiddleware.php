@@ -30,14 +30,14 @@ class LogMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        var_dump($request->getAttributes());
-        var_dump($request->getHeaders());
-        var_dump($request->getMethod());
-        var_dump($request->getQueryParams());
-        var_dump($request->getUri()->getHost());
-        var_dump($request->getUri()->getAuthority());
-        var_dump($request->getUri()->getPath());
-        var_dump($request->getUri()->getScheme());
+//        var_dump($request->getAttributes());
+//        var_dump($request->getHeaders());
+//        var_dump($request->getMethod());
+//        var_dump($request->getQueryParams());
+//        var_dump($request->getUri()->getHost());
+//        var_dump($request->getUri()->getAuthority());
+//        var_dump($request->getUri()->getPath());
+//        var_dump($request->getUri()->getScheme());
         return $handler->handle($request);
     }
 }

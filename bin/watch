@@ -10,6 +10,8 @@
 
 # 监听目录
 WATCH_DIR="${PWD}"
+
+APP_DIR="${WATCH_DIR}/app/"
 # 监听扩展名（多个用/分隔）
 WATCH_EXT="php/env"
 # 运行命令
@@ -80,21 +82,21 @@ fi
 
 START="🚀 Start @ $(date "+%Y-%m-%d %H:%M:%S")"
 echo -e ${START}
-echo -e "\n ================================ \n ${START}\n ================================ \n" >> ${WATCH_LOG}
+echo -e "\n ================================ \n ${START}\n ================================ \n"
 
 # 后台运行并将输出保存到监听日志路径
 nohup ${RUN_CMD} >> ${WATCH_LOG} 2>&1 &
-
+echo -e ${APP_DIR}
 # 开始监听
-${FS_WATCH} -Ee"\.json|\.lock|.idea|vendor|runtime" --event IsFile ${WATCH_DIR} | while read file
+${FS_WATCH} -Ee "\.json|\.lock|.idea|vendor|runtime" -r -l 2 ${APP_DIR} | while read file
 do
     # 如果匹配监听扩展名
     if [[ ${WATCH_EXT} =~ ${file##*.} ]];then
         # 重启进程
         ps -ef | grep "${RUN_CMD}" | grep -v grep | awk '{print $2}' | xargs kill
         RESTART="🔄 Restart @ $(date "+%Y-%m-%d %H:%M:%S")"
-        echo -e "\n ================================ \n ${RESTART}\n 👉 $file was modified.\n ================================ \n" >> ${WATCH_LOG}
-        # nohup ${RUN_CMD} >> ${WATCH_LOG} 2>&1 &
+        echo -e "\n ================================ \n ${RESTART}\n 👉 $file was modified.\n ================================ \n"
+        nohup ${RUN_CMD} >> ${WATCH_LOG} 2>&1 &
         echo ${RESTART}
     fi
 done

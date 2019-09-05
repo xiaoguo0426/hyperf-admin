@@ -15,6 +15,12 @@ use Hyperf\Utils\Filesystem\FileNotFoundException;
 class NodeController extends Controller
 {
 
+    public function test()
+    {
+
+        return $this->response->success([], '编辑成功！');
+    }
+
     /**
      * 获取节点数据
      */

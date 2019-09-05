@@ -1,11 +1,10 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Logic;
 
 use App\Exception\EmptyException;
 use App\Service\AuthService;
-use App\Service\NodeService;
 use App\Util\Auth;
 
 class AuthLogic
