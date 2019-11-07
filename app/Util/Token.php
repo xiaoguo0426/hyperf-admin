@@ -8,17 +8,24 @@ use App\Exception\InvalidConfigException;
 use App\Exception\LoginException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
+use Hyperf\Utils\Traits\StaticInstance;
 use InvalidArgumentException;
 
-class AccessToken
+class Token
 {
-    private static $alg;
+    use StaticInstance;
+
+    private static $alg = 'HS256';
 
     private static $app_key;
 
+    private $user;
+
+    private $user_id;
+
     public function __construct()
     {
-        self::$alg = 'HS256';
+//        self::$alg = 'HS256';
         self::$app_key = config('app_key');
     }
 
@@ -27,28 +34,45 @@ class AccessToken
         return JWT::encode($payload, self::$app_key, self::$alg);
     }
 
+    /**
+     * @param string $jwt
+     * @return array
+     */
     public function decode(string $jwt): array
     {
+        $msg = '';
+        $code = -1;
         try {
             $decode = JWT::decode($jwt, self::$app_key, [self::$alg]);
+
+            $data = $decode->data;
+            $this->user = $data;
+            $this->user_id = $data['user_id'];
 
             return (array)$decode;
         } catch (ExpiredException $exception) {
             //过期token
-            throw new LoginException('token过期！', -1);
+            //throw new LoginException('token过期！', -1);
+            $msg = 'token过期！';
         } catch (InvalidArgumentException $exception) {
             //参数错误
-            throw new LoginException('token参数非法！', -1);
+            //throw new LoginException('token参数非法！', -1);
+            $msg = 'token参数非法！';
         } catch (\UnexpectedValueException $exception) {
             //token无效
-            throw new LoginException('token无效！', -1);
+            //throw new LoginException('token无效！', -1);
+            $msg = 'token无效！';
         } catch (\Exception $exception) {
-            throw new LoginException($exception->getMessage(), -1);
+            //throw new LoginException($exception->getMessage(), -1);
+            $msg = $exception->getMessage();
+        } finally {
+            throw new LoginException($msg, $code);
         }
     }
 
     /**
      * 创建token
+     * @param Payload $payload
      * @return string
      */
     public function createToken(Payload $payload)
@@ -123,7 +147,17 @@ class AccessToken
         }
 
         $data = $jwt['data'];
-        return '';
+        return $data;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->user_id;
+    }
+
+    public function getUser(): array
+    {
+        return $this->user;
     }
 
 }

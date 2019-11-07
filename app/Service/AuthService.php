@@ -56,27 +56,41 @@ class AuthService extends BaseService
      */
     public function del(int $id): bool
     {
-        return SystemAuthModel::query()->where('id', $id)->delete();
+        return (bool)SystemAuthModel::query()->where('id', $id)->delete();
     }
 
+    /**
+     * @param int $id
+     * @param string $title
+     * @param string $desc
+     * @return bool
+     */
     public function edit(int $id, string $title, string $desc): bool
     {
-        return SystemAuthModel::query()->where('id', $id)->update([
+        return (bool)SystemAuthModel::query()->where('id', $id)->update([
             'title' => $title,
             'desc' => $desc
         ]);
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function forbid(int $id): bool
     {
-        return SystemAuthModel::query()->where('id', $id)->update([
+        return (bool)SystemAuthModel::query()->where('id', $id)->update([
             'status' => Constants::STATUS_FORBID
         ]);
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function resume(int $id): bool
     {
-        return SystemAuthModel::query()->where('id', $id)->update([
+        return (bool)SystemAuthModel::query()->where('id', $id)->update([
             'status' => Constants::STATUS_ACTIVE
         ]);
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Exception\LoginException;
-use App\Util\AccessToken;
+use App\Util\Token;
 use App\Util\Auth;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\Utils\Context;
@@ -56,12 +56,11 @@ class AuthMiddleware implements MiddlewareInterface
             }
         }
 
-        $token = $this->request->header('token');
+        $token = $this->request->header('token', '');
 
         try {
             //todo 检查token
-            $instance = new AccessToken();
-            $jwt = $instance->checkToken($token);
+            $jwt = Token::instance()->checkToken($token);
         } catch (LoginException $exception) {
             return $this->response->json(
                 [
@@ -85,8 +84,8 @@ class AuthMiddleware implements MiddlewareInterface
             );
         }
 
-        $request = $request->withAttribute('admin', $admin);
-        Context::set(ServerRequestInterface::class, $request);
+//        $request = $request->withAttribute('admin', $admin);
+//        Context::set(ServerRequestInterface::class, $request);
 
         return $handler->handle($request);//交给下个一个中间件处理
     }

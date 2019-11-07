@@ -20,12 +20,11 @@ class IndexController extends Controller
 {
     public function index()
     {
-        $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();
 
         return [
             'method' => $method,
-            'message' => "Hello {$user}.",
+            'message' => "这是一个默认的请求",
         ];
     }
 }

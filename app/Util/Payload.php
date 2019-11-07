@@ -4,6 +4,11 @@ declare(strict_types=1);
 namespace App\Util;
 
 
+use App\Constants\Constants;
+
+/**
+ * @property string scopes 权限范围 Constants::SCOPE_ROLE 访问权限  Constants::SCOPE_REFRESH 刷新权限
+ */
 class Payload implements \ArrayAccess
 {
 
