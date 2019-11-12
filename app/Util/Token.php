@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Util;
 
 use App\Constants\Constants;
-use App\Exception\InvalidConfigException;
 use App\Exception\LoginException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -25,7 +24,6 @@ class Token
 
     public function __construct()
     {
-//        self::$alg = 'HS256';
         self::$app_key = config('app_key');
     }
 
@@ -37,36 +35,25 @@ class Token
     /**
      * @param string $jwt
      * @return array
+     * @throws \Exception
      */
     public function decode(string $jwt): array
     {
-        $msg = '';
-        $code = -1;
         try {
             $decode = JWT::decode($jwt, self::$app_key, [self::$alg]);
-
-            $data = $decode->data;
-            $this->user = $data;
-            $this->user_id = $data['user_id'];
-
+            $user = $decode->data;
+            $this->user = $user;
+            $this->user_id = $user->user_id;
             return (array)$decode;
         } catch (ExpiredException $exception) {
             //过期token
-            //throw new LoginException('token过期！', -1);
-            $msg = 'token过期！';
+            throw new LoginException('token过期！', -1);
         } catch (InvalidArgumentException $exception) {
             //参数错误
-            //throw new LoginException('token参数非法！', -1);
-            $msg = 'token参数非法！';
+            throw new LoginException('token参数非法！', -1);
         } catch (\UnexpectedValueException $exception) {
             //token无效
-            //throw new LoginException('token无效！', -1);
-            $msg = 'token无效！';
-        } catch (\Exception $exception) {
-            //throw new LoginException($exception->getMessage(), -1);
-            $msg = $exception->getMessage();
-        } finally {
-            throw new LoginException($msg, $code);
+            throw new LoginException('token无效！', -1);
         }
     }
 
@@ -82,6 +69,11 @@ class Token
         return $token;
     }
 
+    /**
+     * @param string $token
+     * @return Payload
+     * @throws \Exception
+     */
     public function checkToken(string $token): Payload
     {
         if (empty($token)) {
@@ -104,12 +96,17 @@ class Token
 
     }
 
+    /**
+     *
+     * @param string $refresh
+     * @return array
+     * @throws \Exception
+     */
     public function checkRefreshToken(string $refresh)
     {
         if (empty($refresh)) {
             throw new LoginException('token不能为空！', -1);
         }
-
         $decode = $this->decode($refresh);
 
         if (is_null($decode)) {
@@ -123,12 +120,14 @@ class Token
         }
 
         return $jwt->toArray();
+
     }
 
     /**
      * 刷新token
      * @param $refresh
      * @return string
+     * @throws \Exception
      */
     public function refreshToken($refresh): string
     {
@@ -148,6 +147,8 @@ class Token
 
         $data = $jwt['data'];
         return $data;
+
+
     }
 
     public function getUserId(): string

@@ -10,23 +10,30 @@ use App\Exception\LoginException;
 use App\Exception\StatusException;
 use App\Model\SystemUserModel;
 use App\Service\AuthService;
-use App\Util\AccessToken;
 use App\Util\Payload;
 use App\Util\Prefix;
 use App\Util\Redis;
+use App\Util\Token;
+use Exception;
 
 class LoginLogic
 {
+    /**
+     * @param string $username
+     * @param string $password
+     * @return array
+     * @throws Exception
+     */
     public function login(string $username, string $password)
     {
 
         $user = SystemUserModel::query()->where('username', $username)->first();
 
         if (empty($user)) {
-            throw new \Exception('账号不存在！', 1);
+            throw new Exception('账号不存在！', 1);
         }
         if (0 === intval($user->status)) {
-            throw new \Exception('账号已被禁用，请联系管理员！', 1);
+            throw new Exception('账号已被禁用，请联系管理员！', 1);
         }
 
         $max_count = 5;//可重试次数
@@ -41,7 +48,7 @@ class LoginLogic
             $redis->set($key, $login_err_count, 3600);
         }
         if ($login_err_count >= $max_count) {
-            throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
+            throw new Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
         }
         //判断连续输错次数  可重试5次
         if (!password_verify($password, $user->password)) {
@@ -51,16 +58,18 @@ class LoginLogic
             $diff = $max_count - $login_err_count;
 
             if ($diff) {
-                throw new \Exception("账号或密码错误，还有{$diff}次尝试机会！", 1);
+                throw new Exception("账号或密码错误，还有{$diff}次尝试机会！", 1);
             } else {
-                throw new \Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
+                throw new Exception('尝试次数达到上限，锁定一小时内禁止登录！', 1);
             }
         }
         //清除错误次数
         $redis->del($key);
 
         //查询角色名称
-        $authService = new AuthService();
+//        $authService = new AuthService();
+        $authService = di(AuthService::class);
+
         $auth = $authService->info($user->role_id);
         if (!$auth) {
             throw new EmptyException('当前用户角色不存在，请联系管理员！');
@@ -68,8 +77,6 @@ class LoginLogic
         if (1 != $auth->status) {
             throw new StatusException('当前用户角色被禁用，请联系管理员！');
         }
-
-        $accessToken = new AccessToken();
 
         $app_name = config('app_name', '');
 
@@ -97,6 +104,9 @@ class LoginLogic
             'role_id' => $user->role_id,
             'role_name' => $auth->title
         ];
+
+        $accessToken = Token::instance();
+
         $token = $accessToken->createToken($payload);
 
         $payload['exp'] = $cur_time + 84300;
@@ -107,25 +117,20 @@ class LoginLogic
         return compact('token', 'refresh_token');
     }
 
+    /**
+     * @param $refresh
+     * @return array
+     * @throws Exception
+     */
     public function refreshToken($refresh): array
     {
-
-        $accessToken = new AccessToken();
+        $accessToken = Token::instance();
 
         $jwt = $accessToken->checkRefreshToken($refresh);
 
         $data = (array)($jwt['data']);
 
-
-        $accessToken = new AccessToken();
-
         $app_name = config('app_name', '');
-
-        $app_key = config('app_key', '');
-
-        if (empty($app_key) || empty($app_name)) {
-            throw new LoginException('配置有误！', 1);
-        }
 
         $cur_time = time();
 

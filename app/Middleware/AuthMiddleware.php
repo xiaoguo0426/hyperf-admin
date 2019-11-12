@@ -61,24 +61,24 @@ class AuthMiddleware implements MiddlewareInterface
         try {
             //todo 检查token
             $jwt = Token::instance()->checkToken($token);
-        } catch (LoginException $exception) {
+
+            $admin = (array)($jwt->data);
+
+            //todo 检查用户与节点权限
+            if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node)) {
+                return $this->response->json(
+                    [
+                        'code' => '1',
+                        'msg' => '您没有访问改节点的权限！',
+                        'data' => []
+                    ]
+                );
+            }
+        } catch (\Throwable $throwable) {
             return $this->response->json(
                 [
-                    'code' => $exception->getCode(),
-                    'msg' => $exception->getMessage(),
-                    'data' => []
-                ]
-            );
-        }
-
-        $admin = (array)($jwt->data);
-
-        //todo 检查用户与节点权限
-        if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node)) {
-            return $this->response->json(
-                [
-                    'code' => '1',
-                    'msg' => '您没有访问改节点的权限！',
+                    'code' => $throwable->getCode(),
+                    'msg' => $throwable->getMessage(),
                     'data' => []
                 ]
             );

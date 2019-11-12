@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Exception\LoginException;
 use App\Logic\Admin\LoginLogic;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
 use App\Controller\Controller;
@@ -16,6 +17,11 @@ use App\Controller\Controller;
  */
 class LoginController extends Controller
 {
+    /**
+     * @Inject()
+     * @var LoginLogic
+     */
+    private $logic;
 
     public function index()
     {
@@ -39,8 +45,8 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $logic = new LoginLogic();
-            $tokens = $logic->login($username, $password);
+//            $logic = new LoginLogic();
+            $tokens = $this->logic->login($username, $password);
 
             return $this->response->success($tokens, '登录成功！');
 
@@ -69,25 +75,21 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-            $logic = new LoginLogic();
-
-            $tokens = $logic->refreshToken($refresh_token);
+            $tokens = $this->logic->refreshToken($refresh_token);
 
             return [
                 'code' => 0,//成功
                 'msg' => '刷新成功！',
                 'data' => $tokens
             ];
-        } catch (LoginException $exception) {
+        } catch (\Exception $throwable) {
+//            var_dump($throwable->getFile());
+//            var_dump($throwable->getLine());
+//            var_dump($throwable->getMessage());
+//            var_dump($throwable->getTraceAsString());
             return [
-                'code' => $exception->getCode(),
-                'msg' => $exception->getMessage(),
-                'data' => []
-            ];
-        } catch (\Exception $exception) {
-            return [
-                'code' => $exception->getCode(),
-                'msg' => $exception->getMessage(),
+                'code' => -1,
+                'msg' => $throwable->getMessage(),
                 'data' => []
             ];
         }
