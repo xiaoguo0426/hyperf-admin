@@ -45,7 +45,6 @@ class LoginController extends Controller
                 throw new \Exception($validate->getError());
             }
 
-//            $logic = new LoginLogic();
             $tokens = $this->logic->login($username, $password);
 
             return $this->response->success($tokens, '登录成功！');

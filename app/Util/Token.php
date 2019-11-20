@@ -151,12 +151,12 @@ class Token
 
     }
 
-    public function getUserId(): string
+    public function getUserId(): int
     {
         return $this->user_id;
     }
 
-    public function getUser(): array
+    public function getUser(): object
     {
         return $this->user;
     }
