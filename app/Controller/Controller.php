@@ -49,28 +49,33 @@ abstract class Controller
     public function isGet()
     {
         return $this->request->isMethod('get');
-         }
-
-    public function getAdmin()
-    {
-        return $this->request->getAttribute('admin');
     }
 
-    public function getAdminID()
+    public function isAjax()
     {
-        $admin = $this->getAdmin();
-        return $admin['user_id'];
+        return $this->request->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
     }
 
-    public function getAdminName()
-    {
-        $admin = $this->getAdmin();
-        return $admin['user_name'];
-    }
+//    public function getAdmin()
+//    {
+//        return $this->request->getAttribute('admin');
+//    }
 
-    public function getAdminRole()
-    {
-        $admin = $this->getAdmin();
-        return $admin['role'];
-    }
+//    public function getAdminID()
+//    {
+//        $admin = $this->getAdmin();
+//        return $admin['user_id'];
+//    }
+//
+//    public function getAdminName()
+//    {
+//        $admin = $this->getAdmin();
+//        return $admin['user_name'];
+//    }
+//
+//    public function getAdminRole()
+//    {
+//        $admin = $this->getAdmin();
+//        return $admin['role'];
+//    }
 }

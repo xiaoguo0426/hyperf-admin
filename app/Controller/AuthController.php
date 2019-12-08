@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Logic\AuthLogic;
 use App\Service\AuthService;
 use App\Validate\AuthValidate;
+use Hyperf\Di\Annotation\Inject;
 use App\Exception\InvalidArgumentsException;
 use Hyperf\HttpServer\Annotation\AutoController;
 
@@ -17,6 +18,12 @@ use Hyperf\HttpServer\Annotation\AutoController;
  */
 class AuthController extends Controller
 {
+
+    /**
+     * @Inject()
+     * @var AuthLogic
+     */
+    private $logic;
     /**
      * 列表
      */
@@ -27,9 +34,7 @@ class AuthController extends Controller
                 throw new \Exception('invalid access', 200);
             }
 
-            $logic = new AuthLogic();
-
-            $list = $logic->list();
+            $list = $this->logic->list();
 
             return $this->response->success($list);
 

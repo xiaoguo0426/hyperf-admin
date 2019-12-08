@@ -15,7 +15,7 @@ class Redis
     public static function getInstance($db = 'default')
     {
         if (empty(self::$instance[$db])) {
-            $instance = ApplicationContext::getContainer()->get(RedisFactory::class)->get($db);
+            $instance = di(RedisFactory::class)->get($db);
             self::$instance[$db] = $instance;
         }
 

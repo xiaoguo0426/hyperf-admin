@@ -11,19 +11,13 @@ class AuthService extends BaseService
 {
     /**
      * 列表操作
-     * @return array
+     * @param $where
+     * @param $fields
+     * @return \Hyperf\Database\Model\Builder[]|\Hyperf\Database\Model\Collection
      */
-    public function list(): array
+    public function select(array $where = [], string $fields = '')
     {
-        $list = SystemAuthModel::all([
-            'id',
-            'title',
-            'desc',
-            'sort',
-            'status'
-        ])->sortByDesc('sort')->values()->toArray();
-
-        return $list;
+        return SystemAuthModel::query()->where($where)->orderByDesc('sort')->orderByDesc('id')->get($fields);
     }
 
     /**

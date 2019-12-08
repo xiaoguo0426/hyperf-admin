@@ -16,11 +16,11 @@ class AuthLogic
      */
     public function list(): array
     {
-        $service = new AuthService();
+        $where = [];
+        $fields = '*';
+        $list = di(AuthService::class)->select($where, $fields);
 
-        $list = $service->list();
-
-        return $list;
+        return $list->toArray();
     }
 
     /**

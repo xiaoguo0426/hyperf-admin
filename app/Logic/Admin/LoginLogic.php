@@ -10,6 +10,7 @@ use App\Exception\LoginException;
 use App\Exception\StatusException;
 use App\Model\SystemUserModel;
 use App\Service\AuthService;
+use App\Service\UserService;
 use App\Util\Payload;
 use App\Util\Prefix;
 use App\Util\Redis;
@@ -27,7 +28,8 @@ class LoginLogic
     public function login(string $username, string $password)
     {
 
-        $user = SystemUserModel::query()->where('username', $username)->first();
+//        $user = SystemUserModel::query()->where('username', $username)->first();
+        $user = di(UserService::class)->getUserByName($username);
 
         if (empty($user)) {
             throw new Exception('账号不存在！', 1);
