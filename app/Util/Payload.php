@@ -12,7 +12,7 @@ use App\Constants\Constants;
 class Payload implements \ArrayAccess
 {
 
-    private $container = [];
+    private $container;
 
     public function __construct($container = [])
     {

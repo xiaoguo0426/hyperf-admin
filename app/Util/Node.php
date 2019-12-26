@@ -29,7 +29,7 @@ class Node
      * @return array
      * @throws \ReflectionException
      */
-    public static function getClassNodes($dir)
+    public static function getClassNodes($dir): array
     {
         if (!is_dir($dir)) {
             throw new FileException('目录不存在！');
@@ -51,7 +51,7 @@ class Node
      * @param $callable
      * @throws \ReflectionException
      */
-    public static function eachController($dir, $callable)
+    public static function eachController($dir, $callable): void
     {
         $app_namespace = config('app_namespace');
         foreach (self::scanDir($dir) as $file) {
@@ -75,7 +75,7 @@ class Node
      * @return array
      * @throws \ReflectionException
      */
-    public static function getMethodNodes($dir)
+    public static function getMethodNodes($dir): array
     {
         $nodes = [];
         self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
@@ -97,7 +97,7 @@ class Node
      * @param string $ext
      * @return array
      */
-    public static function scanDir($dir, $data = [], $ext = 'php')
+    public static function scanDir($dir, $data = [], $ext = 'php'): array
     {
         foreach (scandir($dir) as $curr) {
             if (strpos($curr, '.') !== 0) {

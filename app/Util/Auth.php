@@ -14,7 +14,7 @@ class Auth
      * 忽略节点
      * @return array
      */
-    public static function ignores()
+    public static function ignores(): array
     {
         return ['/', 'index/index', '/admin/login/index', '/admin/login/refreshToken'];
     }
@@ -25,7 +25,7 @@ class Auth
      * @param string $node
      * @return bool
      */
-    public static function checkNode(int $role_id, string $node)
+    public static function checkNode(int $role_id, string $node): bool
     {
         //todo 如果当前登录会员是admin账号，则开放所有权限
         //todo 基于redis的bitmap实现的额权限校验  sad..没有实现这个功能，用集合方式实现
@@ -37,13 +37,4 @@ class Auth
         return $redis->sIsMember($key, md5($node));
 
     }
-
-    /**
-     * 是否已经登录
-     */
-    public static function isLogin()
-    {
-
-    }
-
 }

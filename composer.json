@@ -46,7 +46,9 @@
         "firebase/php-jwt": "^5.0",
         "doctrine/dbal": "^2.9",
         "hyperf/translation": "^1.1",
-        "hyperf/validation": "^1.1"
+        "hyperf/validation": "^1.1",
+        "hyperf/elasticsearch": "^1.1",
+        "hyperf/db": "^1.1"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

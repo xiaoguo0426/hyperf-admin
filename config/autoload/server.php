@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -36,6 +37,7 @@ return [
         'open_http2_protocol' => true,
         'max_request' => 100000,
         'socket_buffer_size' => 2 * 1024 * 1024,
+        'daemonize' => 1,
     ],
     'callbacks' => [
         SwooleEvent::ON_BEFORE_START => [Hyperf\Framework\Bootstrap\ServerStartCallback::class, 'beforeStart'],
