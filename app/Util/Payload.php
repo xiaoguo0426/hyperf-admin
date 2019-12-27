@@ -3,9 +3,6 @@ declare(strict_types=1);
 
 namespace App\Util;
 
-
-use App\Constants\Constants;
-
 /**
  * @property string scopes 权限范围 Constants::SCOPE_ROLE 访问权限  Constants::SCOPE_REFRESH 刷新权限
  */
@@ -62,31 +59,31 @@ class Payload implements \ArrayAccess
         unset($this->container[$key]);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
-        if (is_null($offset)) {
+        if ($offset === null) {
             $this->container[] = $value;
         } else {
             $this->container[$offset] = $value;
         }
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->container[$offset]);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->container[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        return isset($this->container[$offset]) ? $this->container[$offset] : null;
+        return $this->container[$offset] ?? null;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->container;
     }

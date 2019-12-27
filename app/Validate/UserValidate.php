@@ -15,7 +15,7 @@ class UserValidate extends Validate
         'username' => 'require|min:4|max:20',
         'nickname' => 'require|min:4|max:20',
         'gender' => 'require|in:0,1',
-        'avatar' => 'require',
+//        'avatar' => 'require',
         'mobile' => 'require|checkMobile',
         'email' => 'email',
         'remark' => '',

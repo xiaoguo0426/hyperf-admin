@@ -14,6 +14,9 @@ return [
     'handler' => [
         'http' => [
             App\Exception\Handler\AppExceptionHandler::class,
+            App\Exception\Handler\InvalidArgumentsExceptionHandler::class,
+            App\Exception\Handler\UserExceptionHandler::class,
+            
         ],
     ],
 ];

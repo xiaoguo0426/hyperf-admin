@@ -3,6 +3,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Exception\InvalidArgumentsException;
 use App\Exception\UserNotFoundException;
 use App\Logic\Admin\UserLogic;
 use App\Validate\UserValidate;
@@ -79,42 +80,37 @@ class UserController extends Controller
     public function edit()
     {
 
-        try {
-            $user_id = Token::instance()->getUserId();
+        $user_id = Token::instance()->getUserId();
 
-            $role_id = $this->request->post('role_id', '');
-            $nickname = $this->request->post('nickname', '');
-            $gender = $this->request->post('gender', '');
-            $avatar = $this->request->post('avatar', '');
-            $mobile = $this->request->post('mobile', '');
-            $email = $this->request->post('email', '');
-            $remark = $this->request->post('remark', '');
+        $role_id = $this->request->post('role_id', '');
+        $nickname = $this->request->post('nickname', '');
+        $gender = $this->request->post('gender', '');
+        $avatar = $this->request->post('avatar', '');
+        $mobile = $this->request->post('mobile', '');
+        $email = $this->request->post('email', '');
+        $remark = $this->request->post('remark', '');
 
-            $data = [
-                'id' => $user_id,
-                'role_id' => $role_id,
-                'nickname' => $nickname,
-                'gender' => $gender,
-                'avatar' => $avatar,
-                'mobile' => $mobile,
-                'email' => $email,
-                'remark' => $remark,
-            ];
+        $data = [
+            'id' => $user_id,
+            'role_id' => $role_id,
+            'nickname' => $nickname,
+            'gender' => $gender,
+            'avatar' => $avatar,
+            'mobile' => $mobile,
+            'email' => $email,
+            'remark' => $remark,
+        ];
 
-            $validate = di(UserValidate::class);
+        $validate = di(UserValidate::class);
 
-            if (!$validate->scene('edit')->check($data)) {
-                throw new \Exception($validate->getError());
-            }
-
-            $save = $this->logic->save($user_id, $role_id, $nickname, $gender, $avatar, $mobile, $email, $remark);
-            var_dump($save);
-            return $this->response->success([], '保存成功！');
-        } catch (UserNotFoundException $exception) {
-            return $this->response->fail(1, $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail(1, $exception->getMessage());
+        if (!$validate->scene('edit')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError());
         }
+
+        $this->logic->save($user_id, $role_id, $nickname, $gender, $avatar, $mobile, $email, $remark);
+
+        return $this->response->success([], '保存成功！');
+
     }
 
     /**

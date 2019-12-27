@@ -16,7 +16,6 @@ use App\Util\Log;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
@@ -53,13 +52,16 @@ class DbQueryExecutedListener implements ListenerInterface
     {
         if ($event instanceof QueryExecuted) {
             $sql = $event->sql;
+            $time = $event->time;
+
             if (!Arr::isAssoc($event->bindings)) {
                 foreach ($event->bindings as $key => $value) {
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-            echo sprintf('[%s] %s', $event->time, $sql) . PHP_EOL;
-            $this->logger->info(sprintf('[%s] %s', $event->time, $sql));
+            //毫秒
+            echo sprintf('[%s ms] %s', $time, $sql) . PHP_EOL;
+            $this->logger->info(sprintf('[%s ms] %s', $time, $sql));
         }
     }
 }

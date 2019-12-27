@@ -64,9 +64,7 @@ class Token
      */
     public function createToken(Payload $payload)
     {
-        $token = $this->encode($payload->toArray());
-
-        return $token;
+        return $this->encode($payload->toArray());
     }
 
     /**
@@ -82,7 +80,7 @@ class Token
 
         $decode = $this->decode($token);
 
-        if (is_null($decode)) {
+        if ($decode === null) {
             throw new LoginException('token无效！', -1);
         }
 
@@ -102,14 +100,14 @@ class Token
      * @return array
      * @throws \Exception
      */
-    public function checkRefreshToken(string $refresh)
+    public function checkRefreshToken(string $refresh): array
     {
         if (empty($refresh)) {
             throw new LoginException('token不能为空！', -1);
         }
         $decode = $this->decode($refresh);
 
-        if (is_null($decode)) {
+        if ($decode === null) {
             throw new LoginException('token无效！', -1);
         }
 
@@ -137,7 +135,7 @@ class Token
 
         $jwt = $this->decode($refresh);
 
-        if (is_null($jwt)) {
+        if ($jwt === null) {
             throw new LoginException('refresh-token参数有误！', -2);
         }
 
@@ -145,8 +143,7 @@ class Token
             throw new LoginException('refresh-token参数非法！', -2);
         }
 
-        $data = $jwt['data'];
-        return $data;
+        return $jwt['data'];
 
 
     }
