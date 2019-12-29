@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace App\Exception\Handler;
 
-use App\Exception\UserNotFoundException;
+use App\Exception\LoginException;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
-class UserExceptionHandler extends ExceptionHandler
+class LoginExceptionHandler extends ExceptionHandler
 {
 
     /**
@@ -21,13 +22,14 @@ class UserExceptionHandler extends ExceptionHandler
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         // TODO: Implement handle() method.
-        if ($throwable instanceof UserNotFoundException) {
+        if ($throwable instanceof LoginException) {
 
             // 格式化输出
             $data = json_encode([
                 'code' => $throwable->getCode(),
                 'message' => $throwable->getMessage(),
             ], JSON_UNESCAPED_UNICODE);
+
             // 阻止异常冒泡
             $this->stopPropagation();
             return $response->withStatus(200)->withBody(new SwooleStream($data));

@@ -5,7 +5,7 @@ namespace App\Exception;
 
 use Throwable;
 
-class InvalidArgumentsException extends \InvalidArgumentException
+class InvalidArgumentsException extends BaseException
 {
     /**
      * InvalidArgumentsException constructor.

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace App\Listener;
 
 use App\Util\Log;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -31,10 +32,13 @@ class DbQueryExecutedListener implements ListenerInterface
      */
     private $logger;
 
+    private $stdLog;
+
     public function __construct(ContainerInterface $container)
     {
 //        $this->logger = $container->get(LoggerFactory::class)->get('sql', 'sql');
         $this->logger = Log::get('sql', 'sql');
+        $this->stdLog = di(StdoutLoggerInterface::class);
     }
 
 
@@ -59,9 +63,15 @@ class DbQueryExecutedListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
+            //检测sql执行时间大于某个值，需要提醒
+
+            $method = $time > 100 ? 'warning' : 'info';
+
+            $log = sprintf('[%s ms] %s', $time, $sql);
             //毫秒
-            echo sprintf('[%s ms] %s', $time, $sql) . PHP_EOL;
-            $this->logger->info(sprintf('[%s ms] %s', $time, $sql));
+            $this->stdLog->$method($log);
+
+            $this->logger->$method($log);
         }
     }
 }

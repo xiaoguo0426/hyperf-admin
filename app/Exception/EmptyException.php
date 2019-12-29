@@ -1,12 +1,11 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Exception;
 
-use Hyperf\Server\Exception\ServerException;
 use Throwable;
 
-class EmptyException extends ServerException
+class EmptyException extends BaseException
 {
     public function __construct($message = "数据不存在！", $code = 200, Throwable $previous = null)
     {

@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Exception\InvalidRequestMethodException;
 use App\Exception\LoginException;
 use App\Logic\Admin\LoginLogic;
+use http\Exception\InvalidArgumentException;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
@@ -26,9 +28,8 @@ class LoginController extends Controller
     public function index()
     {
 
-        try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
+                throw new InvalidRequestMethodException();
             }
 
             $username = $this->request->post('username', '');//admin
@@ -42,18 +43,18 @@ class LoginController extends Controller
             $validate = new LoginValidate();
 
             if (!$validate->scene('login')->check($data)) {
-                throw new \Exception($validate->getError());
+                throw new InvalidArgumentException($validate->getError());
             }
 
             $tokens = $this->logic->login($username, $password);
 
             return $this->response->success($tokens, '登录成功！');
 
-        } catch (LoginException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        }
+//        } catch (LoginException $exception) {
+//            return $this->response->fail($exception->getCode(), $exception->getMessage());
+//        } catch (\Exception $exception) {
+//            return $this->response->fail($exception->getCode(), $exception->getMessage());
+//        }
 
     }
 
@@ -82,16 +83,17 @@ class LoginController extends Controller
                 'data' => $tokens
             ];
         } catch (\Exception $throwable) {
-//            var_dump($throwable->getFile());
-//            var_dump($throwable->getLine());
-//            var_dump($throwable->getMessage());
-//            var_dump($throwable->getTraceAsString());
             return [
                 'code' => -1,
                 'msg' => $throwable->getMessage(),
                 'data' => []
             ];
         }
+    }
+
+    public function captcha()
+    {
+
     }
 
 }
