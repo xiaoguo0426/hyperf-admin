@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
+use App\Exception\ResultException;
 use App\Logic\MenuLogic;
 use App\Service\MenuService;
 use App\Util\Data;
@@ -25,23 +27,19 @@ class MenuController extends Controller
     public function list()
     {
 
-        try {
-            if (!$this->isGet()) {
-                throw new \Exception('invalid access', 200);
-            }
+        if (!$this->isGet()) {
+            throw new InvalidAccessException();
+        }
 
 //            $service = new MenuService();
-            $logic = new MenuLogic();
+        $logic = new MenuLogic();
 
-            $list = $logic->list();
+        $list = $logic->list();
 
-            $data = Data::toTree($list, 'id', 'pid');
+        $data = Data::toTree($list, 'id', 'pid');
 
-            return $this->response->success($data);
+        return $this->response->success($data);
 
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        }
     }
 
     /**
@@ -49,45 +47,40 @@ class MenuController extends Controller
      */
     public function add()
     {
-        try {
-            if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
-            }
-
-            $pid = $this->request->post('pid', '');
-            $title = $this->request->post('title', '');
-            $uri = $this->request->post('uri', '');
-            $params = $this->request->post('params', '');
-            $icon = $this->request->post('icon', '');
-            $sort = $this->request->post('sort', 0);
-
-            $data = [
-                'pid' => $pid,
-                'title' => $title,
-                'uri' => $uri,
-                'params' => $params,
-            ];
-
-            $method = __FUNCTION__;
-            $validate = new MenuValidate();
-            if (!$validate->scene($method)->check($data)) {
-                throw new InvalidArgumentsException($validate->getError(), 200);
-            }
-
-            $logic = new MenuLogic();
-
-            $res = $logic->add($pid, $title, $uri, $params, $icon, $sort);
-
-            if (false === $res) {
-                throw new \Exception('添加失败！', 200);
-            }
-
-            return $this->response->success([], '添加成功！');
-        } catch (InvalidArgumentsException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        if (!$this->isPost()) {
+            throw new InvalidAccessException();
         }
+
+        $pid = $this->request->post('pid', '');
+        $title = $this->request->post('title', '');
+        $uri = $this->request->post('uri', '');
+        $params = $this->request->post('params', '');
+        $icon = $this->request->post('icon', '');
+        $sort = $this->request->post('sort', 0);
+
+        $data = [
+            'pid' => $pid,
+            'title' => $title,
+            'uri' => $uri,
+            'params' => $params,
+        ];
+
+        $method = __FUNCTION__;
+        $validate = new MenuValidate();
+        if (!$validate->scene($method)->check($data)) {
+            throw new InvalidArgumentsException($validate->getError());
+        }
+
+        $logic = new MenuLogic();
+
+        $res = $logic->add($pid, $title, $uri, $params, $icon, $sort);
+
+        if (false === $res) {
+            throw new ResultException('添加失败！');
+        }
+
+        return $this->response->success([], '添加成功！');
+
     }
 
     /**

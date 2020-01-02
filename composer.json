@@ -49,8 +49,7 @@
     "hyperf/validation": "^1.1",
     "hyperf/elasticsearch": "^1.1",
     "hyperf/db": "^1.1",
-    "ext-json": "*",
-    "ext-http": "*"
+    "ext-json": "*"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",
