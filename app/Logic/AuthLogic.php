@@ -12,15 +12,37 @@ class AuthLogic
 
     /**
      * 列表操作
+     * @param array $query
      * @return array
      */
-    public function list(): array
+    public function list(array $query): array
     {
         $where = [];
         $fields = '*';
-        $list = di(AuthService::class)->select($where, $fields);
 
-        return $list->toArray();
+        $page = $query['page'] ?: 1;
+        $limit = $query['limit'] ?: 20;
+
+        $service = di(AuthService::class);
+
+        $count = $service->count($where, '*');
+        $list = [];
+
+        if ($count) {
+            $list = $service->select($where, $fields, $page, $limit)->toArray();
+
+            foreach ($list as &$item) {
+                $item['LAY_DISABLED'] = 1 === $item['id'];
+            }
+
+            unset($item);
+            var_dump($list);
+        }
+
+        return [
+            'list' => $list,
+            'count' => $count
+        ];
     }
 
     /**

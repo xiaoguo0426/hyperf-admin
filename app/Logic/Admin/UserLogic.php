@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Logic\Admin;
-
 
 use App\Exception\UserNotFoundException;
 use App\Model\SystemUserModel;
@@ -12,9 +10,10 @@ class UserLogic
 {
     /**
      *
+     * @param array $query
      * @return array
      */
-    public function getList(array $query)
+    public function getList(array $query): array
     {
         $where = [
             [
@@ -47,22 +46,26 @@ class UserLogic
         }
         $page = $query['page'] ?: 1;
         $limit = $query['limit'] ?: 20;
-        $count = 0;
 
         $di = di(UserService::class);
 
-        $count = $di->count($where,'*');
+        $count = $di->count($where, '*');
         $list = [];
 
-        if ($count){
+        if ($count) {
             $list = $di->select($where, [
                 'id', 'username', 'nickname', 'role_id', 'avatar', 'gender', 'mobile', 'email', 'remark', 'status', 'created_at'
             ], $page, $limit)->toArray();
+
+            //判断id是否为1 默认是超管角色
+            foreach ($list as &$item) {
+                $item['LAY_DISABLED'] = 1 === $item['id'];
+            }
+            unset($item);
+            var_dump($list);
         }
 
         return [
-            'page' => $page,
-            'limit' => $limit,
             'list' => $list,
             'count' => $count
         ];
@@ -73,7 +76,7 @@ class UserLogic
      * @param int $user_id
      * @return array
      */
-    public function getUser(int $user_id)
+    public function getUser(int $user_id): array
     {
 
         $di = di(UserService::class);
@@ -103,7 +106,7 @@ class UserLogic
      * @param string $remark
      * @return int
      */
-    public function save(int $user_id, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, string $remark)
+    public function save(int $user_id, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, string $remark): int
     {
 
         $di = di(UserService::class);

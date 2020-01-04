@@ -26,7 +26,7 @@ class UserController extends Controller
      */
     private $logic;
 
-    public function getList()
+    public function list()
     {
         if (!$this->isGet()) {
             throw new InvalidRequestMethodException();
@@ -35,7 +35,7 @@ class UserController extends Controller
 
         $users = $this->logic->getList($query);
 
-        return $this->response->success($users);
+        return $this->response->success($users['list'], $users['count']);
     }
 
     public function info()

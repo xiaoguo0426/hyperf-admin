@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -36,9 +37,11 @@ class AuthController extends Controller
             throw new InvalidAccessException();
         }
 
-        $list = $this->logic->list();
+        $query = $this->request->all();
 
-        return $this->response->success($list);
+        $data = $this->logic->list($query);
+
+        return $this->response->success($data['list'], $data['count']);
 
 
     }
