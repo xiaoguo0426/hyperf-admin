@@ -55,8 +55,7 @@ class Response
         return $this->response->json($res);
     }
 
-    public
-    function fail($code, $message = ''): PsrResponseInterface
+    public function fail($code, $message = ''): PsrResponseInterface
     {
         return $this->response->json([
             'code' => $code,
@@ -65,16 +64,14 @@ class Response
         ]);
     }
 
-    public
-    function redirect($url, $status = 302): \Hyperf\HttpMessage\Server\Response
+    public function redirect($url, $status = 302): \Hyperf\HttpMessage\Server\Response
     {
         return $this->response()
             ->withAddedHeader('Location', (string)$url)
             ->withStatus($status);
     }
 
-    public
-    function cookie(Cookie $cookie): Response
+    public function cookie(Cookie $cookie): Response
     {
         $response = $this->response()->withCookie($cookie);
         Context::set(PsrResponseInterface::class, $response);
@@ -84,8 +81,7 @@ class Response
     /**
      * @return \Hyperf\HttpMessage\Server\Response
      */
-    public
-    function response(): \Hyperf\HttpMessage\Server\Response
+    public function response(): \Hyperf\HttpMessage\Server\Response
     {
         return Context::get(PsrResponseInterface::class);
     }

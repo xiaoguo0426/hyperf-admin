@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidRequestMethodException;
 use App\Exception\LoginException;
 use App\Logic\Admin\LoginLogic;
@@ -28,67 +29,49 @@ class LoginController extends Controller
     public function index()
     {
 
-            if (!$this->isPost()) {
-                throw new InvalidRequestMethodException();
-            }
+        if (!$this->isPost()) {
+            throw new InvalidRequestMethodException();
+        }
 
-            $username = $this->request->post('username', '');//admin
-            $password = $this->request->post('password', '');//123123
+        $username = $this->request->post('username', '');//admin
+        $password = $this->request->post('password', '');//123123
 
-            $data = [
-                'username' => $username,
-                'password' => $password,
-            ];
+        $data = [
+            'username' => $username,
+            'password' => $password,
+        ];
 
-            $validate = new LoginValidate();
+        $validate = new LoginValidate();
 
-            if (!$validate->scene('login')->check($data)) {
-                throw new InvalidArgumentException($validate->getError());
-            }
+        if (!$validate->scene('login')->check($data)) {
+            throw new InvalidArgumentException($validate->getError());
+        }
 
-            $tokens = $this->logic->login($username, $password);
+        $tokens = $this->logic->login($username, $password);
 
-            return $this->response->success($tokens, '登录成功！');
-
-//        } catch (LoginException $exception) {
-//            return $this->response->fail($exception->getCode(), $exception->getMessage());
-//        } catch (\Exception $exception) {
-//            return $this->response->fail($exception->getCode(), $exception->getMessage());
-//        }
+        return $this->response->success($tokens, 0, '登录成功！');
 
     }
 
     public function refreshToken()
     {
 
-        try {
+        $refresh_token = $this->request->header('refresh-token', '');
 
-            $refresh_token = $this->request->header('refresh-token', '');
+        $data = [
+            'refresh_token' => $refresh_token,
+        ];
 
-            $data = [
-                'refresh_token' => $refresh_token,
-            ];
+        $validate = new LoginValidate();
 
-            $validate = new LoginValidate();
-
-            if (!$validate->scene('refreshToken')->check($data)) {
-                throw new \Exception($validate->getError());
-            }
-
-            $tokens = $this->logic->refreshToken($refresh_token);
-
-            return [
-                'code' => 0,//成功
-                'msg' => '刷新成功！',
-                'data' => $tokens
-            ];
-        } catch (\Exception $throwable) {
-            return [
-                'code' => -1,
-                'msg' => $throwable->getMessage(),
-                'data' => []
-            ];
+        if (!$validate->scene('refreshToken')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError());
         }
+
+        $tokens = $this->logic->refreshToken($refresh_token);
+
+        return $this->response->success($tokens, 0, '刷新成功！');
+
     }
 
     public function captcha()
