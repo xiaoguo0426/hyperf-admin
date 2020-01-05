@@ -17,6 +17,8 @@ return [
         ],
         'ignore_annotations' => [
             'mixin',
+            'menu',
+            'auth'
         ],
     ],
 ];

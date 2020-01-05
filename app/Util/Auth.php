@@ -34,7 +34,37 @@ class Auth
 
         $redis = Redis::getInstance();
 
-        return $redis->sIsMember($key, md5($node));
+        return $redis->sIsMember($key, self::hash($node));
 
+    }
+
+    /**
+     * 获取角色的所有节点
+     * @param int $role_id
+     * @return array
+     */
+    public static function getNodes(int $role_id): array
+    {
+
+        $key = Prefix::authNodes($role_id);
+
+        $redis = Redis::getInstance();
+
+        return $redis->sMembers($key);
+    }
+
+    public static function getAllNodes()
+    {
+        $nodes_path = config('nodes_path');
+        return file_exists($nodes_path) ? require $nodes_path : [];
+    }
+
+    /**
+     * @param $node
+     * @return string
+     */
+    public static function hash($node): string
+    {
+        return md5($node);
     }
 }

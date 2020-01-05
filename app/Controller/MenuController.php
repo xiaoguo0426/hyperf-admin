@@ -14,7 +14,7 @@ use Hyperf\Utils\Context;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * 菜单管理器
+ * @menu 菜单管理
  * @AutoController()
  * Class MenuController
  * @package App\Controller
@@ -22,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class MenuController extends Controller
 {
     /**
-     *列表
+     * @auth 列表
      */
     public function list()
     {
@@ -43,7 +43,7 @@ class MenuController extends Controller
     }
 
     /**
-     * 添加菜单
+     * @auth 添加
      */
     public function add()
     {
@@ -84,7 +84,7 @@ class MenuController extends Controller
     }
 
     /**
-     * 编辑菜单
+     * @auth 编辑
      */
     public function edit()
     {
@@ -133,7 +133,7 @@ class MenuController extends Controller
     }
 
     /**
-     * 删除菜单
+     * @auth 删除
      */
     public function del()
     {
@@ -171,7 +171,7 @@ class MenuController extends Controller
     }
 
     /**
-     * 禁用菜单
+     * @auth 禁用菜单
      */
     public function forbid()
     {
@@ -209,7 +209,7 @@ class MenuController extends Controller
     }
 
     /**
-     * 启用菜单
+     * @auth 启用
      */
     public function resume()
     {

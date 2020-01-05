@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Exception\EmptyException;
 use App\Exception\InvalidAccessException;
 use App\Exception\ResultException;
 use App\Logic\AuthLogic;
 use App\Service\AuthService;
+use App\Util\Auth;
+use App\Util\Prefix;
+use App\Util\Redis;
 use App\Validate\AuthValidate;
 use Hyperf\Di\Annotation\Inject;
 use App\Exception\InvalidArgumentsException;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
- * 权限管理
+ * @menu 权限管理
  * @AutoController()
  * Class AuthController
  * @package App\Controller
@@ -29,7 +33,7 @@ class AuthController extends Controller
     private $logic;
 
     /**
-     * 列表
+     * @auth 列表
      */
     public function list()
     {
@@ -47,7 +51,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 添加角色
+     * @auth 添加
      */
     public function add()
     {
@@ -82,7 +86,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 角色详情
+     * @auth 详情
      */
     public function info()
     {
@@ -90,28 +94,65 @@ class AuthController extends Controller
             throw new InvalidAccessException();
         }
 
-        $id = $this->request->query('id', '');
+        $id = $this->request->query('id', 0);
 
-        $data = [
-            'id' => $id,
-        ];
+        $res = [];
 
-        $method = __FUNCTION__;
-        $validate = new AuthValidate();
-        if (!$validate->scene('base')->check($data)) {
-            throw new InvalidArgumentsException($validate->getError(), 200);
+        if ($id) {
+            $logic = new AuthLogic();
+
+            $res = $logic->info((int)$id);
+
+            if (!$res) {
+                throw new EmptyException('角色不存在！');
+            }
+
+            $res = $res->toArray();
+
         }
 
-        $logic = new AuthLogic();
+        $all_nodes = Auth::getAllNodes();
 
-        $res = $logic->$method($id);
+        $auths = Auth::getNodes((int)$id);
+
+        foreach ($all_nodes as &$first) {
+            if (isset($first['sub'])) {
+
+                $sub_first = $first['sub'];
+
+                foreach ($sub_first as &$second) {
+                    if (isset($second['sub'])) {
+                        $sub_second = $second['sub'];
+
+                        foreach ($sub_second as &$third) {
+                            //暂支持3层控制器
+                            $hash = Auth::hash($third['node']);
+
+                            $third['is_check'] = in_array($hash, $auths, true);
+
+                        }
+                        unset($third);
+                        $second['sub'] = $sub_second;
+                    } else {
+                        $hash = Auth::hash($second['node']);
+                        $second['is_check'] = in_array($hash, $auths, true);
+                    }
+                }
+                unset($second);
+                $first['sub'] = $sub_first;
+
+            }
+        }
+        unset($first);
+
+        $res['auths'] = $all_nodes;
 
         return $this->response->success($res);
 
     }
 
     /**
-     * 删除角色
+     * @auth 删除
      */
     public function del()
     {
@@ -146,7 +187,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 编辑角色
+     * @auth 编辑
      */
     public function edit()
     {
@@ -183,7 +224,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 禁用角色
+     * @auth 禁用
      */
     public function forbid()
     {
@@ -217,7 +258,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 激活角色
+     * @auth 启用
      */
     public function resume()
     {
@@ -280,7 +321,7 @@ class AuthController extends Controller
     }
 
     /**
-     * 保存节点数据
+     * @auth 保存节点数据
      */
     public function saveAuthNodes()
     {

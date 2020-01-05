@@ -6,7 +6,7 @@ namespace App\Controller\Order;
 use App\Controller\Controller;
 
 /**
- * 退款管理
+ * @menu 退款管理
  * Class RefundController
  * @package App\Controller\Order
  */

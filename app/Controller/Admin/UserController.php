@@ -14,6 +14,7 @@ use App\Controller\Controller;
 use App\Util\Token;
 
 /**
+ * @menu 用户管理
  * @AutoController()
  * Class UserController
  * @package App\Controller\Admin
@@ -26,6 +27,10 @@ class UserController extends Controller
      */
     private $logic;
 
+    /**
+     * @auth 列表
+     * @return mixed
+     */
     public function list()
     {
         if (!$this->isGet()) {
@@ -38,6 +43,10 @@ class UserController extends Controller
         return $this->response->success($users['list'], $users['count']);
     }
 
+    /**
+     * @auth 查看
+     * @return mixed
+     */
     public function info()
     {
         $user_id = Token::instance()->getUserId();
@@ -49,7 +58,7 @@ class UserController extends Controller
     }
 
     /**
-     * 保存用户
+     * @auth 编辑
      */
     public function edit()
     {
@@ -88,7 +97,7 @@ class UserController extends Controller
     }
 
     /**
-     * 添加会员
+     * @auth 添加
      * 【只有admin才有权利添加后台用户】
      */
     public function add()

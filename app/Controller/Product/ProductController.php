@@ -7,7 +7,7 @@ use App\Controller\Controller;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
- * 商品管理
+ * @menu 商品管理
  * @AutoController()
  * Class ProductController
  * @package App\Controller\Product

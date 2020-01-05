@@ -42,7 +42,7 @@ class CreateCommand extends HyperfCommand
 
         $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
 
-        file_put_contents(RUNTIME_PATH . 'nodes.php', "<?php \n return " . var_export($multi_tree, true) . ";");
+        file_put_contents(config('nodes_path'), "<?php \n return " . var_export($multi_tree, true) . ";");
 
         $this->comment('Nodes Data has successfully created!');
     }

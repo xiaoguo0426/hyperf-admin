@@ -22,7 +22,7 @@ class NodeLogic
         foreach ($merge as $key_node => $node_name) {
             $lower = strtolower($key_node);
             $list[$lower] = [
-                'pnode' => substr($lower, 0, strrpos($lower, '/')),
+                'pnode' => substr($lower, 0, strrpos($lower, '/') ?: 0),
                 'node' => $lower,
                 'title' => $node_name
             ];

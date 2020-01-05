@@ -36,7 +36,6 @@ class AuthLogic
             }
 
             unset($item);
-            var_dump($list);
         }
 
         return [
@@ -61,9 +60,9 @@ class AuthLogic
 
     /**
      * @param int $id
-     * @return array
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
-    public function info(int $id): array
+    public function info(int $id)
     {
         $service = new AuthService();
 

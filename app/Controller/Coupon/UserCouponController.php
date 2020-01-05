@@ -6,7 +6,7 @@ namespace App\Controller\Coupon;
 use App\Controller\Controller;
 
 /**
- * 用户领取优惠券详情控制器
+ * @menu 领券管理
  * Class UserCouponController
  * @package App\Controller\Coupon
  */

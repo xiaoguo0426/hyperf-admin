@@ -29,6 +29,7 @@ return [
         ],
     ],
     'app_key' => env('APP_KEY', '1234567890'),
-    'controller_path' => BASE_PATH . DS . 'app' . DS . 'Controller' . DS,
+    'controller_path' => BASE_PATH . DS . 'app' . DS . 'Controller' . DS,//控制器路径
+    'nodes_path' => RUNTIME_PATH . 'nodes.php',//nodes.php文件路径
     'app_namespace' => 'App',
 ];

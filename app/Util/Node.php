@@ -9,7 +9,7 @@ use App\Exception\FileException;
 class Node
 {
     /**
-     * 忽略控制名的前缀
+     * 忽略控制器
      * @var array
      */
     private static $ignoreController = [
@@ -17,11 +17,11 @@ class Node
     ];
 
     /**
-     * 忽略控制的方法名
+     * 忽略方法名
      * @var array
      */
     private static $ignoreAction = [
-        '__construct', 'isPost', 'isGet', 'getAdmin', 'getAdminID', 'getAdminName', 'getAdminRole'
+        '__construct', 'isPost', 'isGet', 'isAjax'
     ];
 
     /**
@@ -36,10 +36,11 @@ class Node
         }
         $nodes = [];
         self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
-            list($node, $comment) = [str_replace('Controller', '', trim($prenode, '/')), $reflection->getDocComment()];
-            $nodes[$node] = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $comment));
-            if (stripos($nodes[$node], '@') !== false) {
-                $nodes[$node] = '';
+            [$node, $comment] = [str_replace('Controller', '', trim($prenode, '/')), $reflection->getDocComment()];
+            $menu = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $comment));
+            if (stripos($menu, '@menu') !== false) {
+
+                $nodes[$node] = str_replace('@menu', '', $menu);
             }
         });
         return $nodes;
@@ -79,12 +80,22 @@ class Node
     {
         $nodes = [];
         self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
+            $parentClassMethods = $reflection->getParentClass()->getMethods();
             foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
                 $action = $method->getName();
+                foreach ($parentClassMethods as $parentClassMethod) {
+                    if ($parentClassMethod->name === $action) {
+                        continue 2;
+                    }
+                }
                 foreach (self::$ignoreAction as $ignore) if (stripos($action, $ignore) === 0) continue 2;
                 $node = str_replace('Controller', '', $prenode) . '/' . $action;
-                $nodes[$node] = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $method->getDocComment()));
-                if (stripos($nodes[$node], '@') !== false) $nodes[$node] = '';
+                $auth = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $method->getDocComment()));
+                if (stripos($auth, '@auth') === false) {
+                    continue;
+                }
+                $nodes[$node] = str_replace('@auth', '', $auth);
+
             }
         });
         return $nodes;

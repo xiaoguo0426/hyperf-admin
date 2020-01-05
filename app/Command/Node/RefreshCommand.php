@@ -33,7 +33,7 @@ class RefreshCommand extends HyperfCommand
 
     public function handle()
     {
-        $nodes_path = RUNTIME_PATH . 'nodes.php';
+        $nodes_path = config('nodes_path');
         file_exists($nodes_path) && unlink($nodes_path);
 
         $this->call('node:create');
