@@ -75,8 +75,11 @@ class AuthLogic
      * @param string $desc
      * @return bool
      */
-    public function edit(int $id, string $title, string $desc): bool
+    public function edit(int $id, string $title, array $nodes, string $desc): bool
     {
+        Auth::save($id, $nodes);
+
+        return true;
         $service = new AuthService();
 
         $info = $service->info($id);
@@ -154,6 +157,11 @@ class AuthLogic
         $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
 
         return $multi_tree;
+
+    }
+
+    public function save(int $id, string $title, array $nodes, string $desc)
+    {
 
     }
 

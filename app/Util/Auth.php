@@ -67,4 +67,22 @@ class Auth
     {
         return md5($node);
     }
+
+    /**
+     * @param int $role_id
+     * @param array $nodes
+     * @return bool|int
+     */
+    public static function save(int $role_id, array $nodes)
+    {
+        $key = Prefix::authNodes($role_id);
+
+        $redis = Redis::getInstance();
+
+        $nodes = array_map(static function ($item) {
+            return self::hash($item);
+        }, $nodes);
+
+        return $redis->sAddArray($key, $nodes);
+    }
 }

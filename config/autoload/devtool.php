@@ -28,6 +28,7 @@ return [
         ],
         'controller' => [
             'namespace' => 'App\\Controller',
+            'stub' => BASE_PATH.'/config/stubs/controller.stub'
         ],
         'job' => [
             'namespace' => 'App\\Job',
