@@ -79,7 +79,6 @@ class AuthLogic
     {
         Auth::save($id, $nodes);
 
-        return true;
         $service = new AuthService();
 
         $info = $service->info($id);
