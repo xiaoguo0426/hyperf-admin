@@ -24,7 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('mobile', 11)->default('')->comment('手机号');
             $table->string('email', 50)->default('')->comment('邮箱');
             $table->string('remark', 255)->default('')->comment('备注');
-            $table->timestamp();
+            $table->timestamp('created_at');
             $table->tinyInteger('status');
 
             // 指定表存储引擎

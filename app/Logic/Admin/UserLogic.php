@@ -17,7 +17,7 @@ class UserLogic
     {
         $where = [
             [
-                'username', '!=', 'admin'
+                'username', '!=', 'admin'//不允许查询超管
             ]
         ];
 
@@ -62,7 +62,6 @@ class UserLogic
                 $item['LAY_DISABLED'] = 1 === $item['id'];
             }
             unset($item);
-            var_dump($list);
         }
 
         return [

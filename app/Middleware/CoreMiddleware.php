@@ -18,12 +18,12 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     protected function handleNotFound(ServerRequestInterface $request)
     {
         $std = di(StdoutLoggerInterface::class);
-        $std->warning('request not found!');
-        $std->warning('Method: ' . $request->getMethod());
-        $std->warning('x-real-ip: ' . var_export($request->getHeader('x-real-ip'), true));
-        $std->warning('referer: ' . var_export($request->getHeader('referer'), true) );
-        $std->warning('Path: ' . $request->getUri()->getPath());
-        $std->warning('Query: ' . $request->getUri()->getQuery());
+        $std->error('REQUEST NOT FOUND!');
+        $std->error('Method: ' . $request->getMethod());
+        $std->error('x-real-ip: ' . $request->getHeaderLine('x-real-ip'));
+        $std->error('referer: ' . $request->getHeaderLine('referer'));
+        $std->error('Path: ' . $request->getUri()->getPath());
+        $std->error('Query: ' . $request->getUri()->getQuery());
         // 重写路由找不到的处理逻辑
         return $this->response()->withStatus(404);
     }

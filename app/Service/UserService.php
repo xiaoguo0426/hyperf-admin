@@ -18,7 +18,9 @@ class UserService extends BaseService
     {
         $offset = ($page - 1) * $limit;
 
-        return SystemUserModel::query()->where($where)->orderByDesc('id')->offset($offset)->limit($limit)->get($fields);
+        return SystemUserModel::query()->with(['role' => function ($query) {
+            $query->select(['id', 'title']);
+        }])->where($where)->orderByDesc('id')->offset($offset)->limit($limit)->get($fields);
     }
 
     /**
