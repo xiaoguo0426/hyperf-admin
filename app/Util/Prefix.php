@@ -13,7 +13,7 @@ class Prefix
 
     public static function authNodes($unique): string
     {
-        return 'system-user-auth::' . $unique;
+        return 'system-user-auth-nodes::' . $unique;
     }
 
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Logic;
 
 use App\Exception\EmptyException;
+use App\Exception\ResultException;
 use App\Service\AuthService;
 use App\Util\Auth;
 
@@ -47,15 +48,22 @@ class AuthLogic
     /**
      * 添加操作
      * @param string $title
+     * @param array $nodes
      * @param string $desc
      * @return bool
      */
-    public function add(string $title, string $desc): bool
+    public function add(string $title, array $nodes, string $desc): bool
     {
-        $service = new AuthService();
 
-        return $service->add($title, $desc);
+        $service = di(AuthService::class);
 
+        $add = $service->add($title, $desc);
+
+        if (!$add) {
+            throw new ResultException('新增角色失败！');
+        }
+
+        return (bool)Auth::save($add, $nodes);
     }
 
     /**
@@ -64,7 +72,7 @@ class AuthLogic
      */
     public function info(int $id)
     {
-        $service = new AuthService();
+        $service = di(AuthService::class);
 
         return $service->info($id);
     }
@@ -72,6 +80,7 @@ class AuthLogic
     /**
      * @param int $id
      * @param string $title
+     * @param array $nodes
      * @param string $desc
      * @return bool
      */
@@ -79,7 +88,7 @@ class AuthLogic
     {
         Auth::save($id, $nodes);
 
-        $service = new AuthService();
+        $service = di(AuthService::class);
 
         $info = $service->info($id);
 
@@ -96,7 +105,7 @@ class AuthLogic
      */
     public function del(int $id)
     {
-        $service = new AuthService();
+        $service = di(AuthService::class);
 
         $info = $service->info($id);
 
@@ -113,7 +122,7 @@ class AuthLogic
      */
     public function forbid(int $id)
     {
-        $service = new AuthService();
+        $service = di(AuthService::class);
 
         $info = $service->info($id);
 
@@ -126,7 +135,7 @@ class AuthLogic
 
     public function resume(int $id): bool
     {
-        $service = new AuthService();
+        $service = di(AuthService::class);
 
         $info = $service->info($id);
 
@@ -136,33 +145,4 @@ class AuthLogic
 
         return $service->resume($id);
     }
-
-
-    public function getAuthNodes(int $id): array
-    {
-
-        $nodeService = new NodeService();
-
-        $list = $nodeService->getList();
-
-        foreach ($list as &$item) {
-            $item['is_check'] = Auth::checkNode($id, $item['node']);
-        }
-
-        unset($item);
-
-        $tree = $nodeService->toTree($list);
-
-        $multi_tree = arr2tree($tree, 'node', 'pnode', 'sub');
-
-        return $multi_tree;
-
-    }
-
-    public function save(int $id, string $title, array $nodes, string $desc)
-    {
-
-    }
-
-
 }

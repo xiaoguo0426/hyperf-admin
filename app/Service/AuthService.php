@@ -38,9 +38,9 @@ class AuthService extends BaseService
      * 添加操作
      * @param string $title
      * @param string $desc
-     * @return bool
+     * @return bool|\Carbon\CarbonInterface|float|\Hyperf\Utils\Collection|\Hyperf\Utils\HigherOrderTapProxy|int|mixed|string
      */
-    public function add(string $title, string $desc): bool
+    public function add(string $title, string $desc)
     {
         $model = new SystemAuthModel();
 
@@ -48,8 +48,8 @@ class AuthService extends BaseService
         $model->desc = $desc;
         $model->sort = 0;
         $model->status = 1;
-
-        return $model->save();
+        $model->save();
+        return $model->getKey();
     }
 
     public function info(int $id)

@@ -62,6 +62,7 @@ class AuthController extends Controller
 
         $title = $this->request->post('title', '');
         $desc = $this->request->post('desc', '');
+        $nodes = $this->request->post('nodes', []);
 
         $data = [
             'title' => $title,
@@ -73,9 +74,7 @@ class AuthController extends Controller
             throw new InvalidArgumentsException($validate->getError());
         }
 
-//        $logic = new AuthLogic();
-
-        $res = $this->logic->add($title, $desc);
+        $res = $this->logic->add($title, $nodes, $desc);
 
         if (false === $res) {
             throw new ResultException('新增失败！');
@@ -99,8 +98,6 @@ class AuthController extends Controller
         $res = [];
 
         if ($id) {
-//            $logic = new AuthLogic();
-
             $res = $this->logic->info((int)$id);
 
             if (!$res) {
@@ -109,6 +106,10 @@ class AuthController extends Controller
 
             $res = $res->toArray();
 
+        } else {
+            $res['title'] = '';
+            $res['desc'] = '';
+            $res['id'] = '';
         }
 
         $all_nodes = Auth::getAllNodes();
@@ -133,6 +134,7 @@ class AuthController extends Controller
                         }
                         unset($third);
                         $second['sub'] = $sub_second;
+                        $second['checked'] = in_array(Auth::hash($second['node']), $auths, true);;
                     } else {
                         $hash = Auth::hash($second['node']);
                         $second['checked'] = in_array($hash, $auths, true);
@@ -140,8 +142,9 @@ class AuthController extends Controller
                 }
                 unset($second);
                 $first['sub'] = $sub_first;
-
             }
+            $first['checked'] = in_array(Auth::hash($first['node']), $auths, true);
+
         }
         unset($first);
 
@@ -174,15 +177,15 @@ class AuthController extends Controller
 
         //TODO 该角色下是否存在用户
 
-//        $logic = new AuthLogic();
-
-        $res = $this->logic->$method($id);
+        $res = $this->logic->$method((int)$id);
 
         if (false === $res) {
             throw new ResultException('删除失败！');
         }
 
-        return $this->response->success($res, '删除成功！');
+        return $this->response->success([
+            'id' => $id
+        ], 0, '删除成功！');
 
     }
 
@@ -211,8 +214,6 @@ class AuthController extends Controller
         if (!$validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
-
-//        $logic = new AuthLogic();
 
         $res = $this->logic->$method((int)$id, $title, $nodes, $desc);
 
@@ -248,7 +249,7 @@ class AuthController extends Controller
 
 //        $logic = new AuthLogic();
 
-        $res = $this->logic->$method($id);
+        $res = $this->logic->$method((int)$id);
 
         if (false === $res) {
             throw new ResultException('禁用失败！');
@@ -281,44 +282,13 @@ class AuthController extends Controller
 
 //        $logic = new AuthLogic();
 
-        $res = $this->logic->$method($id);
+        $res = $this->logic->$method((int)$id);
 
         if (false === $res) {
-            throw new ResultException('激活失败！');
+            throw new ResultException('启用失败！');
         }
 
-        return $this->response->success([], 0, '激活成功！');
+        return $this->response->success([], 0, '启用成功！');
 
     }
-
-    /**
-     * 获取节点数据
-     */
-    public function getAuthNodes()
-    {
-        if (!$this->isGet()) {
-            throw new InvalidAccessException();
-        }
-
-        $id = $this->request->query('id', '');
-
-        $data = [
-            'id' => $id,
-        ];
-
-        $method = __FUNCTION__;
-        $validate = new AuthValidate();
-        if (!$validate->scene('base')->check($data)) {
-            throw new InvalidArgumentsException($validate->getError());
-        }
-
-//        $logic = new AuthLogic();
-
-        $list = $this->logic->$method($id);
-
-        return $this->response->success($list);
-
-
-    }
-
 }

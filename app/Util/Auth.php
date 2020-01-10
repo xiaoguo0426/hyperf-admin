@@ -20,6 +20,16 @@ class Auth
     }
 
     /**
+     *
+     * @param int $role_id
+     * @return string
+     */
+    private static function authKey(int $role_id): string
+    {
+        return Prefix::authNodes($role_id);
+    }
+
+    /**
      * 检查节点权限
      * @param int $role_id
      * @param string $node
@@ -30,7 +40,7 @@ class Auth
         //todo 如果当前登录会员是admin账号，则开放所有权限
         //todo 基于redis的bitmap实现的额权限校验  sad..没有实现这个功能，用集合方式实现
 
-        $key = Prefix::authNodes($role_id);
+        $key = self::authKey($role_id);
 
         $redis = Redis::getInstance();
 
@@ -46,13 +56,17 @@ class Auth
     public static function getNodes(int $role_id): array
     {
 
-        $key = Prefix::authNodes($role_id);
+        $key = self::authKey($role_id);
 
         $redis = Redis::getInstance();
 
         return $redis->sMembers($key);
     }
 
+    /**
+     * 系统所有节点
+     * @return array|mixed
+     */
     public static function getAllNodes()
     {
         $nodes_path = config('nodes_path');
@@ -75,13 +89,15 @@ class Auth
      */
     public static function save(int $role_id, array $nodes)
     {
-        $key = Prefix::authNodes($role_id);
-
-        $redis = Redis::getInstance();
-
         $nodes = array_map(static function ($item) {
             return self::hash($item);
         }, $nodes);
+
+        $key = self::authKey($role_id);
+
+        $redis = Redis::getInstance();
+
+        $redis->del($key);//先移除，再新增
 
         return $redis->sAddArray($key, $nodes);
     }
