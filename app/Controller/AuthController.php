@@ -280,8 +280,6 @@ class AuthController extends Controller
             throw new InvalidArgumentsException($validate->getError());
         }
 
-//        $logic = new AuthLogic();
-
         $res = $this->logic->$method((int)$id);
 
         if (false === $res) {
