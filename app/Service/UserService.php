@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Constants\Constants;
 use App\Model\SystemUserModel;
 
 class UserService extends BaseService
@@ -75,12 +76,38 @@ class UserService extends BaseService
     }
 
     /**
-     * $data
-     * @param $data
+     * @param array $data
      * @return bool
      */
-    public function add($data)
+    public function add(array $data)
     {
-        return SystemUserModel::query()->insert($data);
+        $model = new SystemUserModel();
+        foreach ($data as $key => $item) {
+            $model->setAttribute($key, $item);
+        }
+//        $model->save();
+        return $model->save();
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function forbid(int $id): bool
+    {
+        return (bool)SystemUserModel::query()->where('id', $id)->update([
+            'status' => Constants::STATUS_FORBID
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function resume(int $id): bool
+    {
+        return (bool)SystemUserModel::query()->where('id', $id)->update([
+            'status' => Constants::STATUS_ACTIVE
+        ]);
     }
 }

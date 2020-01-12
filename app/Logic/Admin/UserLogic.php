@@ -2,6 +2,7 @@
 
 namespace App\Logic\Admin;
 
+use App\Exception\EmptyException;
 use App\Exception\UserNotFoundException;
 use App\Model\SystemUserModel;
 use App\Service\UserService;
@@ -129,7 +130,7 @@ class UserLogic
     }
 
 
-    public function add(string $username, string $password, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, string $remark)
+    public function add(string $username, string $password, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, int $status, string $remark)
     {
         $data = [
             'username' => $username,
@@ -140,10 +141,41 @@ class UserLogic
             'avatar' => $avatar,
             'mobile' => $mobile,
             'email' => $email,
+            'status' => $status,
             'remark' => $remark,
         ];
 
         return di(UserService::class)->add($data);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function forbid(int $id)
+    {
+        $service = di(UserService::class);
+
+        $info = $service->getUser($id);
+
+        if (empty($info)) {
+            throw new EmptyException();
+        }
+
+        return $service->forbid($id);
+    }
+
+    public function resume(int $id): bool
+    {
+        $service = di(UserService::class);
+
+        $info = $service->getUser($id);
+
+        if (empty($info)) {
+            throw new EmptyException();
+        }
+
+        return $service->resume($id);
     }
 
 }

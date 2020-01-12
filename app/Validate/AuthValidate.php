@@ -10,8 +10,8 @@ class AuthValidate extends Validate
 
     protected $rule = [
         'id' => 'require',
-        'title' => 'require|min:5|max:30',
-        'desc' => 'require|min:5|max:255',
+        'title' => 'require|min:|max:30',
+        'desc' => 'require|min:|max:255',
         'nodes' => 'require'
     ];
 

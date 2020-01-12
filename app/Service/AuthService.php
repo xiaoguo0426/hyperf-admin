@@ -11,25 +11,26 @@ class AuthService extends BaseService
 {
     /**
      * 列表操作
-     * @param $where
-     * @param $fields
+     * @param array $where
+     * @param array $fields
      * @param int $page
      * @param int $limit
      * @return \Hyperf\Database\Model\Builder[]|\Hyperf\Database\Model\Collection
      */
-    public function select($where, $fields, $page = 1, $limit = 20)
+    public function select(array $where, array $fields, int $page = 1, int $limit = 20)
     {
         $offset = ($page - 1) * $limit;
 
-        return SystemAuthModel::query()->where($where)->orderByDesc('sort')->offset($offset)->limit($limit)->get($fields);
+        return SystemAuthModel::query()->where($where)->orderBy('id')->offset($offset)->limit($limit)->get($fields);
     }
 
     /**
-     * @param $where
+     *
+     * @param array $where
      * @param string $field
      * @return int
      */
-    public function count($where, $field = '*'): int
+    public function count(array $where, $field = '*'): int
     {
         return SystemAuthModel::query()->where($where)->count($field);
     }

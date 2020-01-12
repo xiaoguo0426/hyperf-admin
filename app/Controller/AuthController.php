@@ -240,7 +240,7 @@ class AuthController extends Controller
             'id' => $id,
         ];
         $method = __FUNCTION__;
-        $validate = new AuthValidate();
+        $validate = di(AuthValidate::class);
         if (!$validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
@@ -275,7 +275,7 @@ class AuthController extends Controller
         ];
 
         $method = __FUNCTION__;
-        $validate = new AuthValidate();
+        $validate = di(AuthValidate::class);
         if (!$validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }

@@ -19,10 +19,10 @@ class AuthLogic
     public function list(array $query): array
     {
         $where = [];
-        $fields = '*';
+        $fields = ['*'];
 
-        $page = $query['page'] ?: 1;
-        $limit = $query['limit'] ?: 20;
+        $page = (int)$query['page'] ?: 1;
+        $limit = (int)$query['limit'] ?: 20;
 
         $service = di(AuthService::class);
 
