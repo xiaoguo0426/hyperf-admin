@@ -47,7 +47,7 @@ class UserController extends Controller
     }
 
     /**
-     * 个人查看【基本资料】
+     * @ignore 个人查看【基本资料】
      * @return mixed
      */
     public function get()
@@ -94,7 +94,7 @@ class UserController extends Controller
     }
 
     /**
-     * 保存【个人保存资料】
+     * @ignore 保存【个人保存资料】
      */
     public function save()
     {

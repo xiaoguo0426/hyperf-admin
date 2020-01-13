@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace %NAMESPACE%;
+
+
+class %CLASS% extends BaseService
+{
+
+    private $logic;
+
+     /**
+      * @auth 列表
+      */
+    public function list()
+    {
+        if (!$this->isGet()) {
+            throw new InvalidAccessException();
+        }
+        //TODO list logic
+
+        return $this->response->success([]);
+    }
+
+
+}

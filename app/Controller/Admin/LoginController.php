@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidRequestMethodException;
-use App\Exception\LoginException;
 use App\Logic\Admin\LoginLogic;
-use http\Exception\InvalidArgumentException;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
@@ -26,6 +25,10 @@ class LoginController extends Controller
      */
     private $logic;
 
+    /**
+     * @ignore 登录
+     * @return mixed
+     */
     public function index()
     {
 
@@ -44,7 +47,7 @@ class LoginController extends Controller
         $validate = new LoginValidate();
 
         if (!$validate->scene('login')->check($data)) {
-            throw new InvalidArgumentException($validate->getError());
+            throw new InvalidAccessException($validate->getError());
         }
 
         $tokens = $this->logic->login($username, $password);
@@ -53,6 +56,11 @@ class LoginController extends Controller
 
     }
 
+    /**
+     * @ignore 刷新token
+     * @return mixed
+     * @throws \Exception
+     */
     public function refreshToken()
     {
 
@@ -74,9 +82,9 @@ class LoginController extends Controller
 
     }
 
-    public function captcha()
-    {
-
-    }
+//    public function captcha()
+//    {
+//
+//    }
 
 }

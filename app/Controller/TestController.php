@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace %NAMESPACE%;
+namespace App\Controller;
 
 use App\Exception\EmptyException;
 use App\Exception\InvalidAccessException;
@@ -17,7 +17,7 @@ use App\Controller\Controller;
  * Class AuthController
  * @package App\Controller
  */
-class %CLASS% extends Controller
+class TestController extends Controller
 {
 
     private $logic;

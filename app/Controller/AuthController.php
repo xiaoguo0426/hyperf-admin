@@ -8,10 +8,7 @@ use App\Exception\EmptyException;
 use App\Exception\InvalidAccessException;
 use App\Exception\ResultException;
 use App\Logic\AuthLogic;
-use App\Service\AuthService;
 use App\Util\Auth;
-use App\Util\Prefix;
-use App\Util\Redis;
 use App\Validate\AuthValidate;
 use Hyperf\Di\Annotation\Inject;
 use App\Exception\InvalidArgumentsException;
@@ -112,7 +109,7 @@ class AuthController extends Controller
             $res['id'] = '';
         }
 
-        $all_nodes = Auth::getAllNodes();
+        $all_nodes = Auth::getAllTreeNodes();
 
         $auths = Auth::getNodes((int)$id);
 
@@ -182,7 +179,7 @@ class AuthController extends Controller
         if (false === $res) {
             throw new ResultException('删除失败！');
         }
-
+        //清除redis数据
         return $this->response->success([
             'id' => $id
         ], 0, '删除成功！');

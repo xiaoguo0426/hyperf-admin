@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command\Node;
 
 use App\Logic\NodeLogic;
+use App\Util\Auth;
 use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerInterface;
 use Hyperf\Command\Annotation\Command;
@@ -37,6 +38,8 @@ class CreateCommand extends HyperfCommand
         $logic = new NodeLogic();
 
         $list = $logic->getList();
+
+        Auth::saveIgnoreNodes($logic->getIgnoreMethodNodes());
 
         $tree = $logic->toTree($list);
 

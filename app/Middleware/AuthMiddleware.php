@@ -48,8 +48,7 @@ class AuthMiddleware implements MiddlewareInterface
     {
         //检查节点
         //检查TOKEN
-        $cur_node = $this->request->getUri()->getPath();
-
+        $cur_node = substr($this->request->getUri()->getPath(), 1);
         foreach (Auth::ignores() as $ignore) {
             if ($ignore === $cur_node) {
                 return $handler->handle($request);//交给下个一个中间件处理
@@ -65,11 +64,11 @@ class AuthMiddleware implements MiddlewareInterface
             $admin = (array)($jwt->data);
 
             //todo 检查用户与节点权限
-            if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node)) {
+            if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node) && !Auth::checkIgnoreNode($cur_node)) {
                 return $this->response->json(
                     [
                         'code' => '1',
-                        'msg' => '您没有访问改节点的权限！',
+                        'msg' => '您没有访问该节点的权限！',
                         'data' => []
                     ]
                 );
@@ -83,9 +82,6 @@ class AuthMiddleware implements MiddlewareInterface
                 ]
             );
         }
-
-//        $request = $request->withAttribute('admin', $admin);
-//        Context::set(ServerRequestInterface::class, $request);
 
         return $handler->handle($request);//交给下个一个中间件处理
     }

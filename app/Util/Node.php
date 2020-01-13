@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace App\Util;
 
-
-use App\Exception\FileException;
+use App\Exception\FileNotFoundException;
 
 class Node
 {
@@ -13,7 +12,7 @@ class Node
      * @var array
      */
     private static $ignoreController = [
-        'Controller', 'Admin/LoginController', 'IndexController'
+        'Controller', 'IndexController'
     ];
 
     /**
@@ -32,10 +31,10 @@ class Node
     public static function getClassNodes($dir): array
     {
         if (!is_dir($dir)) {
-            throw new FileException('目录不存在！');
+            throw new FileNotFoundException('目录不存在！');
         }
         $nodes = [];
-        self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
+        self::eachController($dir, static function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
             [$node, $comment] = [str_replace('Controller', '', trim($prenode, '/')), $reflection->getDocComment()];
             $menu = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $comment));
             if (stripos($menu, '@menu') !== false) {
@@ -72,14 +71,14 @@ class Node
 
     /**
      * 获取方法节点列表
-     * @param string $dir 控制器根路径
+     * @param $dir
      * @return array
      * @throws \ReflectionException
      */
-    public static function getMethodNodes($dir): array
+    public static function getAuthMethodNodes($dir): array
     {
         $nodes = [];
-        self::eachController($dir, function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
+        self::eachController($dir, static function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
             $parentClassMethods = $reflection->getParentClass()->getMethods();
             foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
                 $action = $method->getName();
@@ -88,16 +87,51 @@ class Node
                         continue 2;
                     }
                 }
-                foreach (self::$ignoreAction as $ignore) if (stripos($action, $ignore) === 0) continue 2;
+                foreach (self::$ignoreAction as $ignore) {
+                    if (stripos($action, $ignore) === 0) {
+                        continue 2;
+                    }
+                }
                 $node = str_replace('Controller', '', $prenode) . '/' . $action;
                 $auth = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $method->getDocComment()));
-                if (stripos($auth, '@auth') === false) {
+                $flag = '@auth';
+                if (stripos($auth, $flag) === false) {
                     continue;
                 }
-                $nodes[$node] = str_replace('@auth', '', $auth);
+                $nodes[$node] = str_replace($flag, '', $auth);
 
             }
         });
+        return $nodes;
+    }
+
+    public static function getIgnoreMethodNodes($dir): array
+    {
+        $nodes = [];
+        self::eachController($dir, static function (\ReflectionClass $reflection, $prenode) use (&$nodes) {
+            $parentClassMethods = $reflection->getParentClass()->getMethods();
+            foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                $action = $method->getName();
+                foreach ($parentClassMethods as $parentClassMethod) {
+                    if ($parentClassMethod->name === $action) {
+                        continue 2;
+                    }
+                }
+                foreach (self::$ignoreAction as $ignore) {
+                    if (stripos($action, $ignore) === 0) {
+                        continue 2;
+                    }
+                }
+                $node = str_replace('Controller', '', $prenode) . '/' . $action;
+                $auth = preg_replace('/^\/\*\*\*(.*?)\*.*?$/', '$1', preg_replace("/\s/", '', $method->getDocComment()));
+                $flag = '@ignore';
+                if (stripos($auth, $flag) === false) {
+                    continue;
+                }
+                $nodes[] = strtolower($node);
+            }
+        });
+
         return $nodes;
     }
 

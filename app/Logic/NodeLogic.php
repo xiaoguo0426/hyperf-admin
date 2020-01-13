@@ -11,9 +11,14 @@ class NodeLogic
     public function getList(): array
     {
         $controller_path = config('controller_path', '');
-        $nodes = Node::getClassNodes($controller_path);
+        try {
 
-        $methods = Node::getMethodNodes($controller_path);
+            $nodes = Node::getClassNodes($controller_path);
+
+            $methods = Node::getAuthMethodNodes($controller_path);
+
+        } catch (\ReflectionException $e) {
+        }
 
         $list = [];
 
@@ -29,6 +34,13 @@ class NodeLogic
         }
 
         return $list;
+    }
+
+    public function getIgnoreMethodNodes(): array
+    {
+        $controller_path = config('controller_path', '');
+
+        return Node::getIgnoreMethodNodes($controller_path);
     }
 
     public function toTree(array $list): array

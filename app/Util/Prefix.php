@@ -16,4 +16,9 @@ class Prefix
         return 'system-user-auth-nodes::' . $unique;
     }
 
+    public static function ignoreNodes(): string
+    {
+        return 'system-ignore-nodes';
+    }
+
 }

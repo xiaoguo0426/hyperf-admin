@@ -28,7 +28,7 @@ return [
         ],
         'controller' => [
             'namespace' => 'App\\Controller',
-            'stub' => BASE_PATH.'/config/stubs/controller.stub'
+            'stub' => BASE_PATH . '/config/stubs/controller.stub'
         ],
         'job' => [
             'namespace' => 'App\\Job',
@@ -41,6 +41,13 @@ return [
         ],
         'Process' => [
             'namespace' => 'App\\Processes',
-        ],
+        ]
+
     ],
+    'auto' => [
+        'service' => [
+            'namespace' => 'App\\Service',
+            'stub' => BASE_PATH . '/config/stubs/service.stub'
+        ]
+    ]
 ];
