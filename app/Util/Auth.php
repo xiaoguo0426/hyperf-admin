@@ -38,10 +38,7 @@ class Auth
         $key = self::ignoreNodesKey();
 
         $redis = Redis::getInstance();
-        var_dump($key);
-        var_dump($node);
-        var_dump(self::hash($node));
-        var_dump($redis->sIsMember($key, self::hash($node)));
+
         return $redis->sIsMember($key, self::hash($node));
 
     }
@@ -117,11 +114,9 @@ class Auth
 
     public static function saveIgnoreNodes(array $nodes)
     {
-        var_dump($nodes);
         $nodes = array_map(static function ($item) {
             return self::hash($item);
         }, $nodes);
-        var_dump($nodes);
         $key = self::ignoreNodesKey();
 
         return self::saveNodes($key, $nodes);

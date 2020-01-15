@@ -7,12 +7,14 @@ namespace App\Constants;
 class Constants
 {
 
-    const SCOPE_ROLE = 'role_access';
+    public const SCOPE_ROLE = 'role_access';
 
-    const SCOPE_REFRESH = 'refresh_access';
+    public const SCOPE_REFRESH = 'refresh_access';
 
-    const STATUS_ACTIVE = 1;
+    public const STATUS_ACTIVE = 1;
 
-    const STATUS_FORBID = 0;
+    public const STATUS_FORBID = 0;
+
+    public const OSS_UPLOAD_TEST = 'mall/upload/';
 
 }

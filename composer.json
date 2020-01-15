@@ -49,7 +49,8 @@
     "hyperf/validation": "^1.1",
     "hyperf/elasticsearch": "^1.1",
     "hyperf/db": "^1.1",
-    "ext-json": "*"
+    "ext-json": "*",
+    "qingningba/aliyun-oss": "dev-master"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",
