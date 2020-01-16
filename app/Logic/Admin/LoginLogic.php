@@ -30,13 +30,14 @@ class LoginLogic
     public function login(string $username, string $password)
     {
 
-//        $user = SystemUserModel::query()->where('username', $username)->first();
+        $userLogic = di(UserLogic::class);
+
         $user = di(UserService::class)->getUserByName($username);
 
         if (empty($user)) {
             throw new UserNotFoundException('账号不存在！', 1);
         }
-        if (0 === intval($user->status)) {
+        if (0 === (int)$user->status) {
             throw new StatusException('账号已被禁用，请联系管理员！', 1);
         }
 
@@ -55,7 +56,7 @@ class LoginLogic
             throw new LoginException('尝试次数达到上限，锁定一小时内禁止登录！', 1);
         }
         //判断连续输错次数  可重试5次
-        if (!password_verify($password, $user->password)) {
+        if (!$userLogic->verifyPassword($password, $user->password)) {
             //错误次数+1
             $redis->incr($key);
             $login_err_count++;

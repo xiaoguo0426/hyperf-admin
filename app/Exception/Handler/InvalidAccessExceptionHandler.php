@@ -26,7 +26,7 @@ class InvalidAccessExceptionHandler extends ExceptionHandler
             // 格式化输出
             $data = json_encode([
                 'code' => $throwable->getCode(),
-                'message' => $throwable->getMessage(),
+                'msg' => $throwable->getMessage(),
             ], JSON_UNESCAPED_UNICODE);
 
             // 阻止异常冒泡

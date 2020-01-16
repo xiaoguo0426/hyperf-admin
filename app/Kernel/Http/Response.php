@@ -59,7 +59,7 @@ class Response
     {
         return $this->response->json([
             'code' => $code,
-            'message' => $message,
+            'msg' => $message,
             'data' => []
         ]);
     }

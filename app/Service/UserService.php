@@ -38,7 +38,7 @@ class UserService extends BaseService
      * @param string $field
      * @return int
      */
-    public function count($where, $field = '*')
+    public function count($where, $field = '*'): int
     {
         return SystemUserModel::query()->where($where)->count($field);
     }
@@ -70,7 +70,7 @@ class UserService extends BaseService
      * @param $data
      * @return int
      */
-    public function save($user_id, $data)
+    public function save($user_id, $data): int
     {
         return SystemUserModel::query()->where('id', $user_id)->update($data);
     }
@@ -79,7 +79,7 @@ class UserService extends BaseService
      * @param array $data
      * @return bool
      */
-    public function add(array $data)
+    public function add(array $data): bool
     {
         $model = new SystemUserModel();
         foreach ($data as $key => $item) {

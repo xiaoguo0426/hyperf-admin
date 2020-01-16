@@ -10,6 +10,7 @@ use App\Exception\ResultException;
 use App\Exception\UserNotFoundException;
 use App\Logic\Admin\UserLogic;
 use App\Service\AuthService;
+use App\Service\UserService;
 use App\Validate\UserValidate;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
@@ -175,7 +176,7 @@ class UserController extends Controller
     public function add()
     {
 
-        $username = $this->request->post('username', '');//todo 用户名只能是数字+字母
+        $username = $this->request->post('username', '');
         $password = $this->request->post('password', '');
         $role_id = $this->request->post('role_id', '');
         $nickname = $this->request->post('nickname', '');
@@ -284,6 +285,37 @@ class UserController extends Controller
     public function password()
     {
         //个人修改密码
+
+        if (!$this->isPost()) {
+            throw new InvalidAccessException();
+        }
+
+        $user_id = Token::instance()->getUserId();
+
+        $oldPassword = $this->request->post('oldPassword', '');
+        $password = $this->request->post('password', '');
+        $rePassword = $this->request->post('rePassword', '');
+
+        $data = [
+            'oldPassword' => $oldPassword,
+            'password' => $password,
+            'rePassword' => $rePassword,
+        ];
+
+        $validate = di(UserValidate::class);
+
+        if (!$validate->scene('password')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError());
+        }
+
+        $res = $this->logic->password($user_id, $oldPassword, $password);
+
+        if (false === $res) {
+            throw new ResultException('修改失败！');
+        }
+
+        return $this->response->success([], 0, '修改成功！');
+
     }
 
     /**
@@ -292,6 +324,31 @@ class UserController extends Controller
     public function setPassword()
     {
         //管理员修改其他人密码
+        if (!$this->isPost()) {
+            throw new InvalidAccessException();
+        }
+
+        $user_id = $this->request->post('user_id', '');
+        $password = $this->request->post('password', '');
+
+        $data = [
+            'user_id' => $user_id,
+            'password' => $password,
+        ];
+
+        $validate = di(UserValidate::class);
+
+        if (!$validate->scene('setPassword')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError());
+        }
+
+        $res = $this->logic->setPassword($user_id, $password);
+
+        if (false === $res) {
+            throw new ResultException('修改失败！');
+        }
+
+        return $this->response->success([], 0, '修改成功！');
     }
 
 }
