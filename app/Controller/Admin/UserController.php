@@ -47,8 +47,8 @@ class UserController extends Controller
     }
 
     /**
-     * @ignore 个人查看【基本资料】
      * @return mixed
+     * @ignore 个人查看【基本资料】
      */
     public function get()
     {
@@ -171,15 +171,9 @@ class UserController extends Controller
 
     /**
      * @auth 添加
-     * 【只有admin才有权利添加后台用户】
      */
     public function add()
     {
-        //判断是否为admin
-//        $admin = Token::instance()->getUser();
-//        if ($admin['username'] !== 'admin') {
-//            throw new InvalidAccessException('只允许超级管理员添加用户！');
-//        }
 
         $username = $this->request->post('username', '');//todo 用户名只能是数字+字母
         $password = $this->request->post('password', '');
@@ -208,11 +202,11 @@ class UserController extends Controller
         $validate = di(UserValidate::class);
 
         if (!$validate->scene('add')->check($data)) {
-            throw new \Exception($validate->getError());
+            throw new InvalidArgumentsException($validate->getError());
         }
 
         $add = $this->logic->add($username, $password, $role_id, $nickname, $gender, $avatar, $mobile, $email, $status, $remark);
-        if (!$add){
+        if (!$add) {
             throw new ResultException('添加失败！');
         }
         return $this->response->success([], 0, '添加成功！');
@@ -282,6 +276,22 @@ class UserController extends Controller
 
         return $this->response->success([], 0, '启用成功！');
 
+    }
+
+    /**
+     * @ignore 修改密码
+     */
+    public function password()
+    {
+        //个人修改密码
+    }
+
+    /**
+     * @auth 修改密码
+     */
+    public function setPassword()
+    {
+        //管理员修改其他人密码
     }
 
 }

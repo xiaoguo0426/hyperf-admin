@@ -17,7 +17,7 @@ class Signature
 
     private $accessKeyId;
     private $accessKeySecret;
-    private $endpoint;
+    private $host;
     private $bucket;
     private $isCname;
     private $hostname;
@@ -44,8 +44,8 @@ class Signature
 
         $this->accessKeyId = trim($this->config['accessKeyId']) ?? '';
         $this->accessKeySecret = trim($this->config['accessKeySecret']) ?? '';
-        $this->endpoint = trim(trim($this->config['endpoint']) ?? '', '/');
-        $this->bucket = trim($this->config['bucket']) ?? '';
+        $this->host = trim(trim($this->config['host']) ?? '', '/');
+//        $this->bucket = trim($this->config['bucket']) ?? '';
         $this->isCname = trim($this->config['isCname']) ?? '';
 
         if (empty($this->accessKeyId)) {
@@ -54,11 +54,11 @@ class Signature
         if (empty($this->accessKeySecret)) {
             throw new OssException('access key secret is empty');
         }
-        if (empty($this->endpoint)) {
+        if (empty($this->host)) {
             throw new OssException('endpoint is empty');
         }
 
-        $this->hostname = $this->checkEndpoint($this->endpoint, $this->isCname);
+        $this->hostname = $this->checkEndpoint($this->host, $this->isCname);
         $this->timeout = $this->config['timeout'] ?? 120;
 
         $this->maxSizeRaw = isset($this->config['maxSize']) ? (int)$this->config['maxSize'] : 2048;
@@ -66,6 +66,7 @@ class Signature
         $this->maxSize = $this->maxSizeRaw * 1024;
 
         $this->callbackUrl = $this->config['callbackUrl'] ?? '';
+
     }
 
     public function getOssClient()
@@ -139,7 +140,7 @@ class Signature
 
         return [
             'accessKeyId' => $this->accessKeyId,
-            'endpoint' => $this->endpoint,
+            'host' => $this->host,
             'policy' => $base64_policy,
             'signature' => $signature,
             'expire' => $end,

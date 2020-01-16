@@ -40,9 +40,9 @@ class UserLogic
             ];
         }
 
-        if (!empty($query['role_id'])) {
+        if (!empty($query['role'])) {
             $where[] = [
-                'role_id', '=', $query['role_id']
+                'role_id', '=', $query['role']
             ];
         }
         $page = $query['page'] ?: 1;

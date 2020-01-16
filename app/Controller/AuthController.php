@@ -44,7 +44,6 @@ class AuthController extends Controller
 
         return $this->response->success($data['list'], $data['count']);
 
-
     }
 
     /**
