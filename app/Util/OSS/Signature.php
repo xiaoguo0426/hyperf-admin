@@ -1,9 +1,9 @@
 <?php
-
+declare(strict_types=1);
 
 namespace App\Util\OSS;
 
-
+use App\Exception\InvalidConfigException;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
@@ -18,7 +18,6 @@ class Signature
     private $accessKeyId;
     private $accessKeySecret;
     private $host;
-    private $bucket;
     private $isCname;
     private $hostname;
     private $schema;
@@ -42,21 +41,23 @@ class Signature
     {
         $this->config = $config->get('aliyun-oss.default', ConfigInterface::class);
 
-        $this->accessKeyId = trim($this->config['accessKeyId']) ?? '';
-        $this->accessKeySecret = trim($this->config['accessKeySecret']) ?? '';
-        $this->host = trim(trim($this->config['host']) ?? '', '/');
-//        $this->bucket = trim($this->config['bucket']) ?? '';
-        $this->isCname = trim($this->config['isCname']) ?? '';
+        $this->accessKeyId = $this->config['accessKeyId'] ?? '';
+        $this->accessKeySecret = $this->config['accessKeySecret'] ?? '';
+        $this->host = $this->config['host'] ?? '';
+
+        $this->isCname = (bool)$this->config['isCname'];
 
         if (empty($this->accessKeyId)) {
-            throw new OssException('access key id is empty');
+            throw new InvalidConfigException('access key id is empty');
         }
         if (empty($this->accessKeySecret)) {
-            throw new OssException('access key secret is empty');
+            throw new InvalidConfigException('access key secret is empty');
         }
         if (empty($this->host)) {
-            throw new OssException('endpoint is empty');
+            throw new InvalidConfigException('endpoint is empty');
         }
+        $this->host = trim($this->host ?? '', '/');
+
 
         $this->hostname = $this->checkEndpoint($this->host, $this->isCname);
         $this->timeout = $this->config['timeout'] ?? 120;
