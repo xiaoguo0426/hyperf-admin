@@ -11,20 +11,29 @@ declare(strict_types=1);
  */
 
 namespace App\Controller;
+use App\Logic\SettingLogic;
+use Hyperf\HttpServer\Annotation\AutoController;
+
 /**
  * 默认控制器
+ * @AutoController()
  * Class IndexController
  * @package App\Controller
  */
 class IndexController extends Controller
 {
+    /**
+     * @ignore 默认
+     * @return array
+     */
     public function index()
     {
-        $method = $this->request->getMethod();
 
-        return [
-            'method' => $method,
-            'message' => "这是一个默认的请求",
-        ];
+        $di = di(SettingLogic::class);
+
+        $setting = $di->getWeb();
+
+        return $this->response->success($setting);
+
     }
 }

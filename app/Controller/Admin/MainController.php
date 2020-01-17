@@ -14,5 +14,4 @@ use App\Controller\Controller;
 class MainController extends Controller
 {
 
-
 }

@@ -21,4 +21,14 @@ class Prefix
         return 'system-ignore-nodes';
     }
 
+    public static function webSetting(): string
+    {
+        return 'system-web-setting';
+    }
+
+    public static function smtpSetting(): string
+    {
+        return 'system-smtp-setting';
+    }
+
 }
