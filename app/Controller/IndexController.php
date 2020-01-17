@@ -11,8 +11,10 @@ declare(strict_types=1);
  */
 
 namespace App\Controller;
+
 use App\Logic\SettingLogic;
 use Hyperf\HttpServer\Annotation\AutoController;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * 默认控制器
@@ -23,15 +25,21 @@ use Hyperf\HttpServer\Annotation\AutoController;
 class IndexController extends Controller
 {
     /**
-     * @ignore 默认
+     * @param ServerRequestInterface $request
      * @return array
+     * @ignore 默认
      */
-    public function index()
+    public function index(ServerRequestInterface $request)
     {
 
         $di = di(SettingLogic::class);
 
         $setting = $di->getWeb();
+
+        var_dump($request->getHeaderLine('Host'));
+        var_dump($request->getHeaderLine('X-Real-IP'));
+        var_dump($request->getHeaderLine('X-Real-PORT'));
+        var_dump($request->getHeaderLine('X-Forwarded-For'));
 
         return $this->response->success($setting);
 

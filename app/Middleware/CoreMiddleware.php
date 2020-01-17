@@ -19,9 +19,12 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     {
         $std = di(StdoutLoggerInterface::class);
         $std->error('REQUEST NOT FOUND!');
-        $std->error('Method: ' . $request->getMethod());
+        $std->error('Host: ' . $request->getHeaderLine('Host'));
+        $std->error('X-Real-PORT: ' . $request->getHeaderLine('X-Real-PORT'));
+        $std->error('X-Forwarded-For: ' . $request->getHeaderLine('X-Forwarded-For'));
         $std->error('x-real-ip: ' . $request->getHeaderLine('x-real-ip'));
         $std->error('referer: ' . $request->getHeaderLine('referer'));
+        $std->error('Method: ' . $request->getMethod());
         $std->error('Path: ' . $request->getUri()->getPath());
         $std->error('Query: ' . $request->getUri()->getQuery());
         // 重写路由找不到的处理逻辑

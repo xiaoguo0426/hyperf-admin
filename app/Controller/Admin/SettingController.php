@@ -41,6 +41,7 @@ class SettingController extends Controller
         }
 
         $site = $this->request->post('site', '');
+        $author = $this->request->post('author', '');
         $domain = $this->request->post('domain', '');
         $keywords = $this->request->post('keywords', '');
         $desc = $this->request->post('desc', '');
@@ -48,6 +49,7 @@ class SettingController extends Controller
 
         $data = [
             'site' => $site,
+            'author' => $author,
             'domain' => $domain,
             'keywords' => $keywords,
             'desc' => $desc,
