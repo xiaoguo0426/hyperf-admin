@@ -48,8 +48,8 @@ class UserController extends Controller
     }
 
     /**
-     * @return mixed
      * @ignore 个人查看【基本资料】
+     * @return mixed
      */
     public function get()
     {

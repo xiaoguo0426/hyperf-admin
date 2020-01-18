@@ -131,7 +131,6 @@ class Node
                 $nodes[] = strtolower($node);
             }
         });
-
         return $nodes;
     }
 

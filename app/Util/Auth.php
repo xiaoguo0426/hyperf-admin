@@ -93,7 +93,7 @@ class Auth
      */
     public static function hash($node): string
     {
-        return md5($node);
+        return md5(strtolower($node));
     }
 
     /**

@@ -171,7 +171,7 @@ class MenuController extends Controller
     }
 
     /**
-     * @auth 禁用菜单
+     * @auth 禁用
      */
     public function forbid()
     {
