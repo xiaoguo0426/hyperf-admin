@@ -19,9 +19,14 @@ class AuthService extends BaseService
      */
     public function select(array $where, array $fields, int $page = 1, int $limit = 20)
     {
-        $offset = ($page - 1) * $limit;
+        $model = SystemAuthModel::query();
 
-        return SystemAuthModel::query()->where($where)->orderBy('id')->offset($offset)->limit($limit)->get($fields);
+        $model->where($where)->orderBy('id');
+
+        if ($limit > 0){
+            $model->forPage($page, $limit);
+        }
+        return $model->get($fields);
     }
 
     /**

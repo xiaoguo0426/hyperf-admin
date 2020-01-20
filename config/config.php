@@ -32,10 +32,4 @@ return [
     'controller_path' => BASE_PATH . DS . 'app' . DS . 'Controller' . DS,//控制器路径
     'nodes_path' => RUNTIME_PATH . 'nodes.php',//nodes.php文件路径
     'app_namespace' => 'App',
-
-    'OSS_ACCESS_KEY_ID' => env('OSS_ACCESS_KEY_ID'),
-    'OSS_ACCESS_KEY_SECRET' => env('OSS_ACCESS_KEY_SECRET'),
-    'OSS_ENDPOINT' => env('OSS_ENDPOINT'),
-    'OSS_BUCKET' => env('OSS_BUCKET'),
-    'OSS_IS_CNAME' => env('OSS_IS_CNAME'),
 ];

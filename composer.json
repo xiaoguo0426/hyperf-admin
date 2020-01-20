@@ -50,7 +50,8 @@
     "hyperf/elasticsearch": "^1.1",
     "hyperf/db": "^1.1",
     "ext-json": "*",
-    "qingningba/aliyun-oss": "dev-master"
+    "qingningba/aliyun-oss": "dev-master",
+    "hyperf/super-globals": "^1.1"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",

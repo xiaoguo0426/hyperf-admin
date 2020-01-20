@@ -14,6 +14,7 @@ namespace App\Controller;
 
 use App\Logic\SettingLogic;
 use Hyperf\HttpServer\Annotation\AutoController;
+use Hyperf\SuperGlobals\Proxy\Get;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -35,11 +36,6 @@ class IndexController extends Controller
         $di = di(SettingLogic::class);
 
         $setting = $di->getWeb();
-
-        var_dump($request->getHeaderLine('Host'));
-        var_dump($request->getHeaderLine('X-Real-IP'));
-        var_dump($request->getHeaderLine('X-Real-PORT'));
-        var_dump($request->getHeaderLine('X-Forwarded-For'));
 
         return $this->response->success($setting);
 

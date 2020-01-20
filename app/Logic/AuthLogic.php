@@ -22,7 +22,7 @@ class AuthLogic
         $fields = ['*'];
 
         $page = (int)$query['page'] ?: 1;
-        $limit = (int)$query['limit'] ?: 20;
+        $limit = isset($query['limit']) ? (int)$query['limit'] : 20;
 
         $service = di(AuthService::class);
 
