@@ -51,7 +51,7 @@ abstract class Controller
         return $this->request->isMethod('get');
     }
 
-    public function isAjax()
+    public function isAjax(): bool
     {
         return $this->request->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
     }

@@ -7,6 +7,7 @@ use App\Controller\Controller;
 use App\Exception\InvalidAccessException;
 use App\Exception\ResultException;
 use App\Logic\SettingLogic;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
@@ -19,13 +20,18 @@ class SettingController extends Controller
 {
 
     /**
+     * @Inject()
+     * @var SettingLogic
+     */
+    private $logic;
+
+    /**
      * @auth 网站设置
      */
     public function getWeb()
     {
-        $di = di(SettingLogic::class);
 
-        $setting = $di->getWeb();
+        $setting = $this->logic->getWeb();
 
         return $this->response->success($setting);
     }
@@ -56,9 +62,7 @@ class SettingController extends Controller
             'copyright' => $copyright
         ];
 
-        $di = di(SettingLogic::class);
-
-        $setting = $di->saveWeb($data);
+        $setting = $this->logic->saveWeb($data);
 
         if (!$setting) {
             throw new ResultException('保存失败！');
@@ -72,9 +76,8 @@ class SettingController extends Controller
      */
     public function getSMTP()
     {
-        $di = di(SettingLogic::class);
 
-        $setting = $di->getSMTP();
+        $setting = $this->logic->getSMTP();
 
         return $this->response->success($setting);
     }
@@ -103,9 +106,7 @@ class SettingController extends Controller
             'password' => $password
         ];
 
-        $di = di(SettingLogic::class);
-
-        $setting = $di->saveSMTP($data);
+        $setting = $this->logic->saveSMTP($data);
 
         if (!$setting) {
             throw new ResultException('保存失败！');
