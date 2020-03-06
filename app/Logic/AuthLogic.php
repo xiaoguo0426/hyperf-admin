@@ -103,7 +103,7 @@ class AuthLogic
      * @param int $id
      * @return bool
      */
-    public function del(int $id)
+    public function del(int $id): bool
     {
         $service = di(AuthService::class);
 
@@ -120,7 +120,7 @@ class AuthLogic
      * @param int $id
      * @return bool
      */
-    public function forbid(int $id)
+    public function forbid(int $id): bool
     {
         $service = di(AuthService::class);
 
@@ -133,6 +133,10 @@ class AuthLogic
         return $service->forbid($id);
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function resume(int $id): bool
     {
         $service = di(AuthService::class);

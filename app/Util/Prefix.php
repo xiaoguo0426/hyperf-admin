@@ -31,4 +31,9 @@ class Prefix
         return 'system-smtp-setting';
     }
 
+    public static function productCategory(): string
+    {
+        return 'product-category';
+    }
+
 }

@@ -24,7 +24,7 @@ class NodeController extends Controller
     /**
      * 获取节点数据
      */
-    public function list()
+    public function list(): ?\Psr\Http\Message\ResponseInterface
     {
         //读取runtime/nodes.php文件数据即可
         try {

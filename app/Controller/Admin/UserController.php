@@ -135,7 +135,7 @@ class UserController extends Controller
     /**
      * @auth 编辑
      */
-    public function edit()
+    public function edit(): \Psr\Http\Message\ResponseInterface
     {
 
         $user_id = $this->request->post('id', '');
@@ -173,7 +173,7 @@ class UserController extends Controller
     /**
      * @auth 添加
      */
-    public function add()
+    public function add(): \Psr\Http\Message\ResponseInterface
     {
 
         $username = $this->request->post('username', '');
@@ -217,7 +217,7 @@ class UserController extends Controller
     /**
      * @auth 禁用
      */
-    public function forbid()
+    public function forbid(): \Psr\Http\Message\ResponseInterface
     {
         if (!$this->isPost()) {
             throw new InvalidAccessException();
@@ -251,7 +251,7 @@ class UserController extends Controller
     /**
      * @auth 启用
      */
-    public function resume()
+    public function resume(): \Psr\Http\Message\ResponseInterface
     {
         if (!$this->isPost()) {
             throw new InvalidAccessException();
@@ -282,7 +282,7 @@ class UserController extends Controller
     /**
      * @ignore 修改密码
      */
-    public function password()
+    public function password(): \Psr\Http\Message\ResponseInterface
     {
         //个人修改密码
 
@@ -321,7 +321,7 @@ class UserController extends Controller
     /**
      * @auth 修改密码
      */
-    public function setPassword()
+    public function setPassword(): \Psr\Http\Message\ResponseInterface
     {
         //管理员修改其他人密码
         if (!$this->isPost()) {

@@ -6,9 +6,9 @@ namespace App\Service;
 
 use App\Constants\Constants;
 use App\Model\Product\CategoryModel;
-use App\Model\SystemAuthModel;
+use App\Model\Product\ProductModel;
 
-class CategoryService extends BaseService
+class ProductService extends BaseService
 {
     /**
      * 列表操作
@@ -20,7 +20,7 @@ class CategoryService extends BaseService
      */
     public function select(array $where, array $fields, int $page = 1, int $limit = 20)
     {
-        $model = CategoryModel::query();
+        $model = ProductModel::query();
 
         $model->where($where)->orderBy('id');
 
@@ -38,7 +38,7 @@ class CategoryService extends BaseService
      */
     public function count(array $where, $field = '*'): int
     {
-        return CategoryModel::query()->where($where)->count($field);
+        return ProductModel::query()->where($where)->count($field);
     }
 
     /**
@@ -64,7 +64,7 @@ class CategoryService extends BaseService
 
     public function info(int $id)
     {
-        return CategoryModel::query()->where('id', $id)->first();
+        return ProductModel::query()->where('id', $id)->first();
     }
 
     /**

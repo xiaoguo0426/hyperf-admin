@@ -21,7 +21,7 @@ class UploadController extends Controller
     /**
      * @ignore oss信息
      */
-    public function getOss()
+    public function getOss(): \Psr\Http\Message\ResponseInterface
     {
         $di = di(Signature::class);
 

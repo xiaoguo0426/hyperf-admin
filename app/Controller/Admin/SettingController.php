@@ -28,7 +28,7 @@ class SettingController extends Controller
     /**
      * @auth 网站设置
      */
-    public function getWeb()
+    public function getWeb(): \Psr\Http\Message\ResponseInterface
     {
 
         $setting = $this->logic->getWeb();
@@ -39,7 +39,7 @@ class SettingController extends Controller
     /**
      * @auth 保存网站设置
      */
-    public function saveWeb()
+    public function saveWeb(): \Psr\Http\Message\ResponseInterface
     {
 
         if (!$this->isPost()) {
@@ -74,7 +74,7 @@ class SettingController extends Controller
     /**
      * @auth 邮件服务
      */
-    public function getSMTP()
+    public function getSMTP(): \Psr\Http\Message\ResponseInterface
     {
 
         $setting = $this->logic->getSMTP();
@@ -85,7 +85,7 @@ class SettingController extends Controller
     /**
      * @ignore 保存邮件服务
      */
-    public function saveSMTP()
+    public function saveSMTP(): \Psr\Http\Message\ResponseInterface
     {
 
         if (!$this->isPost()) {

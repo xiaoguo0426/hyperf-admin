@@ -27,10 +27,10 @@ class IndexController extends Controller
 {
     /**
      * @param ServerRequestInterface $request
-     * @return array
+     * @return \Psr\Http\Message\ResponseInterface
      * @ignore 默认
      */
-    public function index(ServerRequestInterface $request)
+    public function index(ServerRequestInterface $request): \Psr\Http\Message\ResponseInterface
     {
 
         $di = di(SettingLogic::class);

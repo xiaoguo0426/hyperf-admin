@@ -14,5 +14,5 @@ declare(strict_types=1);
 use Hyperf\SuperGlobals\Listener\SuperGlobalsInitializeListener;
 
 return [
-
+    \Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler::class
 ];

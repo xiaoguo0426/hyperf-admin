@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
+use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
 use App\Logic\MenuLogic;
 use App\Service\MenuService;
@@ -24,7 +25,7 @@ class MenuController extends Controller
     /**
      * @auth 列表
      */
-    public function list()
+    public function list(): \Psr\Http\Message\ResponseInterface
     {
 
         if (!$this->isGet()) {
@@ -86,11 +87,11 @@ class MenuController extends Controller
     /**
      * @auth 编辑
      */
-    public function edit()
+    public function edit(): ?\Psr\Http\Message\ResponseInterface
     {
         try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
+                throw new InvalidRequestMethodException('invalid access', 200);
             }
 
             $id = $this->request->post('id', '');
@@ -120,7 +121,7 @@ class MenuController extends Controller
             $res = $logic->edit($id, $pid, $title, $uri, $params, $icon, $sort);
 
             if (false === $res) {
-                throw new \Exception('编辑失败！', 200);
+                throw new ResultException('编辑失败！', 200);
             }
 
             return $this->response->success([], '编辑成功！');
@@ -135,11 +136,11 @@ class MenuController extends Controller
     /**
      * @auth 删除
      */
-    public function del()
+    public function del(): ?\Psr\Http\Message\ResponseInterface
     {
         try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
+                throw new InvalidRequestMethodException('invalid access', 200);
             }
 
             $id = $this->request->post('id', '');
@@ -159,7 +160,7 @@ class MenuController extends Controller
             $res = $logic->$method($id);
 
             if (false === $res) {
-                throw new \Exception('删除失败！', 200);
+                throw new ResultException('删除失败！', 200);
             }
 
             return $this->response->success($res, '删除成功！');
@@ -173,11 +174,11 @@ class MenuController extends Controller
     /**
      * @auth 禁用
      */
-    public function forbid()
+    public function forbid(): ?\Psr\Http\Message\ResponseInterface
     {
         try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
+                throw new InvalidRequestMethodException('invalid access', 200);
             }
 
             $id = $this->request->post('id', '');
@@ -197,7 +198,7 @@ class MenuController extends Controller
             $res = $logic->$method($id);
 
             if (false === $res) {
-                throw new \Exception('禁用失败！', 200);
+                throw new ResultException('禁用失败！', 200);
             }
 
             return $this->response->success($res, '禁用成功！');
@@ -215,7 +216,7 @@ class MenuController extends Controller
     {
         try {
             if (!$this->isPost()) {
-                throw new \Exception('invalid access', 200);
+                throw new InvalidRequestMethodException('invalid access', 200);
             }
 
             $id = $this->request->post('id', '');
@@ -235,7 +236,7 @@ class MenuController extends Controller
             $res = $logic->$method($id);
 
             if (false === $res) {
-                throw new \Exception('启用失败！', 200);
+                throw new ResultException('启用失败！', 200);
             }
 
             return $this->response->success($res, '启用成功！');

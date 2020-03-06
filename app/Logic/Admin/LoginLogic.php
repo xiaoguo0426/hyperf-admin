@@ -123,6 +123,7 @@ class LoginLogic
     }
 
     /**
+     *
      * @param $refresh
      * @return array
      * @throws \Exception

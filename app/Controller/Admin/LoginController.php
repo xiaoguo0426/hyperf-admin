@@ -58,7 +58,7 @@ class LoginController extends Controller
 
     /**
      * @ignore 刷新token
-     * @return mixed
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws \Exception
      */
     public function refreshToken()
