@@ -23,7 +23,7 @@ class AuthService extends BaseService
 
         $model->where($where)->orderBy('id');
 
-        if ($limit > 0){
+        if ($page > 0){
             $model->forPage($page, $limit);
         }
         return $model->get($fields);

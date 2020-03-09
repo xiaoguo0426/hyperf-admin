@@ -62,6 +62,10 @@ class CategoryService extends BaseService
         return $model->getKey();
     }
 
+    /**
+     * @param int $id
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
+     */
     public function info(int $id)
     {
         return CategoryModel::query()->where('id', $id)->first();

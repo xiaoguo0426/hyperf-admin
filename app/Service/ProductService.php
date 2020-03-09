@@ -62,6 +62,10 @@ class ProductService extends BaseService
         return $model->getKey();
     }
 
+    /**
+     * @param int $id
+     * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
+     */
     public function info(int $id)
     {
         return ProductModel::query()->where('id', $id)->first();

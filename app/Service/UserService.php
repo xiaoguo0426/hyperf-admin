@@ -26,11 +26,12 @@ class UserService extends BaseService
 
     /**
      * @param $where
+     * @param $fields
      * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
-    public function get($where)
+    public function get($where, $fields = ['*'])
     {
-        return SystemUserModel::query()->where($where)->first();
+        return SystemUserModel::query()->where($where)->first($fields);
     }
 
     /**
@@ -45,24 +46,26 @@ class UserService extends BaseService
 
     /**
      * @param int $user_id
+     * @param array $fields
      * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
-    public function getUser(int $user_id)
+    public function getUser(int $user_id, array $fields = ['*'])
     {
         return $this->get([
             'id' => $user_id
-        ]);
+        ], $fields);
     }
 
     /**
      * @param string $username
+     * @param array $fields
      * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
-    public function getUserByName(string $username)
+    public function getUserByName(string $username, array $fields = ['*'])
     {
         return $this->get([
             'username' => $username
-        ]);
+        ], $fields);
     }
 
     /**

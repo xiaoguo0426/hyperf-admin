@@ -153,7 +153,7 @@ class UserLogic
      * @param int $id
      * @return bool
      */
-    public function forbid(int $id)
+    public function forbid(int $id): bool
     {
         $service = di(UserService::class);
 
@@ -186,7 +186,7 @@ class UserLogic
      * @param $password
      * @return int
      */
-    public function password(int $user_id, string $oldPassword, $password)
+    public function password(int $user_id, string $oldPassword, $password): int
     {
         $di = di(UserService::class);
         //验证password

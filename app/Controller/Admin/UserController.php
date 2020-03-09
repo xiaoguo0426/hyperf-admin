@@ -9,6 +9,7 @@ use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
 use App\Exception\UserNotFoundException;
 use App\Logic\Admin\UserLogic;
+use App\Logic\AuthLogic;
 use App\Service\AuthService;
 use App\Service\UserService;
 use App\Validate\UserValidate;
@@ -48,8 +49,8 @@ class UserController extends Controller
     }
 
     /**
-     * @ignore 个人查看【基本资料】
      * @return mixed
+     * @ignore 个人查看【基本资料】
      */
     public function get()
     {
@@ -61,10 +62,7 @@ class UserController extends Controller
             throw new UserNotFoundException();
         }
 
-        $authService = di(AuthService::class);
-
-        $roles = $authService->select(['status' => 1], ['id', 'title'], 1, 999)->toArray();
-        $user['roles'] = $roles;
+        unset($user['password']);
 
         //TODO 去掉password
         return $this->response->success($user);
@@ -86,9 +84,9 @@ class UserController extends Controller
 
             unset($info['password']);
         }
-        $authService = di(AuthService::class);
 
-        $roles = $authService->select(['status' => 1], ['id', 'title'], 1, 999)->toArray();
+        $roles = di(AuthLogic::class)->listWithNoPage(['status' => 1], ['id', 'title']);
+
         $info['roles'] = $roles;
         //TODO 去掉password
         return $this->response->success($info);

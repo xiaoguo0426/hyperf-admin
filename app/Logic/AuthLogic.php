@@ -46,6 +46,25 @@ class AuthLogic
     }
 
     /**
+     *
+     * @param array $query
+     * @param array $fields
+     * @return array
+     */
+    public function listWithNoPage(array $query = [], array $fields = []): array
+    {
+        $where = [];
+
+        $service = di(AuthService::class);
+
+        $list = $service->select($where, $fields, 0)->toArray();
+
+        unset($item);
+
+        return $list;
+    }
+
+    /**
      * 添加操作
      * @param string $title
      * @param array $nodes

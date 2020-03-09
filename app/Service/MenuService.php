@@ -60,14 +60,17 @@ class MenuService extends BaseService
         return SystemMenuModel::query()->where('id', $id)->first();
     }
 
+    /**
+     * @param int $id
+     * @return int|mixed
+     */
     public function del(int $id)
     {
-        $del = SystemMenuModel::query()->where('id', $id)->delete();
-        return $del;
+        return SystemMenuModel::query()->where('id', $id)->delete();
 
     }
 
-    public function forbid(int $id)
+    public function forbid(int $id): int
     {
         $info = $this->info($id);
 
@@ -80,7 +83,7 @@ class MenuService extends BaseService
         ]);
     }
 
-    public function resume(int $id)
+    public function resume(int $id): int
     {
         $info = $this->info($id);
 
