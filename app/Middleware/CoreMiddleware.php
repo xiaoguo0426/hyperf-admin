@@ -7,12 +7,44 @@ use Closure;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Utils\Context;
 use Hyperf\Utils\Contracts\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Swoole\Timer;
 
 class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
 {
+
+    public function dispatch(ServerRequestInterface $request): ServerRequestInterface
+    {
+        $path = $request->getUri()->getPath();
+        //实现 类似/product-category/get-list 风格路由
+        if (false !== strpos($path, '-')) {
+            $lstPoint = strrpos($path, '/');
+
+            $method = substr($path, $lstPoint);
+
+            $sub = explode('-', $method);
+            array_walk($sub, function (&$s) {
+                $s = ucfirst($s);
+            });
+
+            $method = lcfirst(implode($sub));
+
+            $controller = substr($path, 0, $lstPoint);
+
+            $path = str_replace('-', '_', $controller) . $method;
+
+        }
+
+        $routes = $this->dispatcher->dispatch($request->getMethod(), $path);
+
+        $dispatched = new Dispatched($routes);
+
+        return Context::set(ServerRequestInterface::class, $request->withAttribute(Dispatched::class, $dispatched));
+    }
+
     /**
      * Handle the response when cannot found any routes.
      *
@@ -38,6 +70,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     protected function handleFound(Dispatched $dispatched, ServerRequestInterface $request)
     {
         $t1 = microtime(true);
+
         if ($dispatched->handler->callback instanceof Closure) {
             $response = call($dispatched->handler->callback);
         } else {

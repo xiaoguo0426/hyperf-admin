@@ -46,8 +46,8 @@ class UserLogic
                 'role_id', '=', $query['role']
             ];
         }
-        $page = $query['page'] ?: 1;
-        $limit = $query['limit'] ?: 20;
+        $page = isset($query['page']) ? (int)$query['page'] : 1;
+        $limit = isset($query['limit']) ? (int)$query['limit'] : 20;
 
         $di = di(UserService::class);
 

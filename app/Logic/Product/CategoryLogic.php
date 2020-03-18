@@ -29,7 +29,7 @@ class CategoryLogic
         $where = [];
         $fields = ['*'];
 
-        $page = (int)$query['page'] ?: 1;
+        $page = isset($query['page']) ? (int)$query['page'] : 1;
         $limit = isset($query['limit']) ? (int)$query['limit'] : 20;
 
         $count = $this->service->count($where, '*');
