@@ -7,10 +7,12 @@ use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidRequestMethodException;
 use App\Logic\Admin\LoginLogic;
+use Exception;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
 use App\Controller\Controller;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @AutoController()
@@ -26,8 +28,8 @@ class LoginController extends Controller
     private $logic;
 
     /**
-     * @ignore 登录
      * @return mixed
+     * @ignore 登录
      */
     public function index()
     {
@@ -44,7 +46,7 @@ class LoginController extends Controller
             'password' => $password,
         ];
 
-        $validate = new LoginValidate();
+        $validate = di(LoginValidate::class);
 
         if (!$validate->scene('login')->check($data)) {
             throw new InvalidAccessException($validate->getError());
@@ -57,11 +59,11 @@ class LoginController extends Controller
     }
 
     /**
+     * @return ResponseInterface
+     * @throws Exception
      * @ignore 刷新token
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \Exception
      */
-    public function refreshToken()
+    public function refreshToken(): ResponseInterface
     {
 
         $refresh_token = $this->request->header('refresh-token', '');
@@ -70,7 +72,7 @@ class LoginController extends Controller
             'refresh_token' => $refresh_token,
         ];
 
-        $validate = new LoginValidate();
+        $validate = di(LoginValidate::class);
 
         if (!$validate->scene('refreshToken')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());

@@ -11,4 +11,5 @@ declare(strict_types=1);
  */
 
 return [
+//    \App\Aspect\LoginAspect::class //登录成功切面   可以考虑把消息投递到队列后进行消费
 ];

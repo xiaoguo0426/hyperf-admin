@@ -4,6 +4,7 @@
 namespace App\Logic\Admin;
 
 
+use App\Annotation\LoginAnnotation;
 use App\Constants\Constants;
 use App\Exception\EmptyException;
 use App\Exception\InvalidConfigException;
@@ -20,6 +21,7 @@ use App\Util\Token;
 class LoginLogic
 {
     /**
+     * @LoginAnnotation()
      * @param string $username
      * @param string $password
      * @return array
@@ -27,7 +29,7 @@ class LoginLogic
      * @throws InvalidConfigException
      * @throws UserNotFoundException
      */
-    public function login(string $username, string $password)
+    public function login(string $username, string $password): array
     {
 
         $userLogic = di(UserLogic::class);
@@ -52,6 +54,7 @@ class LoginLogic
             $login_err_count = 0;
             $redis->set($key, $login_err_count, 3600);
         }
+
         if ($login_err_count >= $max_count) {
             throw new LoginException('尝试次数达到上限，锁定一小时内禁止登录！', 1);
         }
@@ -63,23 +66,25 @@ class LoginLogic
             $diff = $max_count - $login_err_count;
 
             if ($diff) {
-                throw new LoginException("账号或密码错误，还有{$diff}次尝试机会！", 1);
+                $error = "账号或密码错误，还有{$diff}次尝试机会！";
             } else {
-                throw new LoginException('尝试次数达到上限，锁定一小时内禁止登录！', 1);
+                $error = '尝试次数达到上限，锁定一小时内禁止登录！';
             }
+
+            throw new LoginException($error, 1);
+
         }
         //清除错误次数
         $redis->del($key);
 
         //查询角色名称
-//        $authService = new AuthService();
         $authService = di(AuthService::class);
 
         $auth = $authService->info($user->role_id);
         if (!$auth) {
             throw new EmptyException('当前用户角色不存在，请联系管理员！');
         }
-        if (1 != $auth->status) {
+        if (Constants::STATUS_ACTIVE !== (int)$auth->status) {
             throw new StatusException('当前用户角色被禁用，请联系管理员！');
         }
 

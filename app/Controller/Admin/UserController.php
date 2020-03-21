@@ -64,7 +64,6 @@ class UserController extends Controller
 
         unset($user['password']);
 
-        //TODO 去掉password
         return $this->response->success($user);
     }
 
@@ -88,7 +87,7 @@ class UserController extends Controller
         $roles = di(AuthLogic::class)->listWithNoPage(['status' => 1], ['id', 'title']);
 
         $info['roles'] = $roles;
-        //TODO 去掉password
+
         return $this->response->success($info);
     }
 

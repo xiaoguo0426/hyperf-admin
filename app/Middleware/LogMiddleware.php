@@ -17,21 +17,12 @@ use Hyperf\Logger\LoggerFactory;
  */
 class LogMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
     protected $logger;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        $logger = di()->get(LoggerFactory::class)->make('request','request');//请求日志logger
+        $logger = di(LoggerFactory::class)->make('request','request');//请求日志logger
 
         $uri = $request->getUri();
 

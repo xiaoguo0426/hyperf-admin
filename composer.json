@@ -51,7 +51,8 @@
     "hyperf/db": "^1.1",
     "ext-json": "*",
     "qingningba/aliyun-oss": "dev-master",
-    "hyperf/super-globals": "^1.1"
+    "hyperf/super-globals": "^1.1",
+    "ext-spltype": "*"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",
