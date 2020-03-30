@@ -27,7 +27,7 @@ class LoginAspect extends AbstractAspect
      */
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-
+//        var_dump($proceedingJoinPoint->getArguments());
         $result = $proceedingJoinPoint->process();
         // 在调用后进行某些处理
         return $result;

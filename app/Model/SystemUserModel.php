@@ -9,8 +9,9 @@ class SystemUserModel extends Model
 
     protected $table = 'system_users';
 
-    public function role()
+    public function role(): \Hyperf\Database\Model\Relations\HasOne
     {
         return $this->hasOne(SystemAuthModel::class, 'id', 'role_id');
     }
+
 }
