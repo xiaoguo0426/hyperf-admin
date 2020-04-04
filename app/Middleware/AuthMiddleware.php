@@ -3,11 +3,9 @@ declare(strict_types=1);
 
 namespace App\Middleware;
 
-use App\Exception\LoginException;
 use App\Util\Token;
 use App\Util\Auth;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
