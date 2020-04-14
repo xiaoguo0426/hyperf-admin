@@ -11,7 +11,7 @@ use Hyperf\Utils\Context;
 use Hyperf\Utils\Contracts\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Swoole\Timer;
+
 
 class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
 {
@@ -63,6 +63,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         $std->error('Method: ' . $request->getMethod());
         $std->error('Path: ' . $request->getUri()->getPath());
         $std->error('Query: ' . $request->getUri()->getQuery());
+
         // 重写路由找不到的处理逻辑
         return $this->response()->withStatus(404);
     }

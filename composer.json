@@ -52,7 +52,8 @@
     "ext-json": "*",
     "qingningba/aliyun-oss": "dev-master",
     "hyperf/super-globals": "^1.1",
-    "hyperf/task": "^1.1"
+    "hyperf/task": "^1.1",
+    "sentry/sdk": "2.1.0"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",

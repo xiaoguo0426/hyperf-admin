@@ -9,6 +9,7 @@ use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
+use Sentry;
 
 class InvalidConfigExceptionHandler extends ExceptionHandler
 {
@@ -23,7 +24,6 @@ class InvalidConfigExceptionHandler extends ExceptionHandler
     {
         // TODO: Implement handle() method.
         if ($throwable instanceof InvalidConfigException) {
-
             // 格式化输出
             $data = json_encode([
                 'code' => $throwable->getCode(),

@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 
 use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
+use App\Exception\InvalidConfigException;
 use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
 use App\Exception\UserNotFoundException;
@@ -74,6 +75,7 @@ class UserController extends Controller
     public function info()
     {
 //        $user_id = Token::instance()->getUserId();
+        throw new UserNotFoundException();
 
         $user_id = $this->request->query('id', '');
 

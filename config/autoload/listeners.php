@@ -15,4 +15,5 @@ use Hyperf\SuperGlobals\Listener\SuperGlobalsInitializeListener;
 
 return [
     \Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler::class,
+    \App\Listener\BootApplicationListener::class
 ];
