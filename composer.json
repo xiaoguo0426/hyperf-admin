@@ -52,6 +52,7 @@
     "ext-json": "*",
     "qingningba/aliyun-oss": "dev-master",
     "hyperf/super-globals": "^1.1",
+    "hyperf/async-queue": "^1.1"
     "hyperf/task": "^1.1",
     "sentry/sdk": "2.1.0"
   },
