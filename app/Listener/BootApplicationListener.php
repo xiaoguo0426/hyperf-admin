@@ -27,8 +27,6 @@ class BootApplicationListener implements ListenerInterface
      */
     public function process(object $event)
     {
-        var_dump(123123123123);
-
         // TODO: Implement process() method.
         if ($event instanceof BootApplication) {
             Sentry\init(['dsn' => 'http://6ad3bdc5904a4f909b81e379c73ff92f@sentry-web:9000/2']);

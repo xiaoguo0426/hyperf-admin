@@ -52,9 +52,11 @@
     "ext-json": "*",
     "qingningba/aliyun-oss": "dev-master",
     "hyperf/super-globals": "^1.1",
-    "hyperf/async-queue": "^1.1"
+    "hyperf/async-queue": "^1.1",
     "hyperf/task": "^1.1",
-    "sentry/sdk": "2.1.0"
+    "sentry/sdk": "2.1.0",
+    "hyperf/session": "^1.1",
+    "ext-bcmath": "*"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",
