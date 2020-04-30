@@ -41,10 +41,10 @@ class IndexController extends Controller
             $cid = \Swoole\Coroutine::getCid();
             echo 'Cid:' . $cid . PHP_EOL;
 
-            RedisLock::lock($key);
+//            RedisLock::lock($key);
             $redis = Redis::getInstance();
             $res = $redis->incr($a);
-            RedisLock::release($key);
+//            RedisLock::release($key);
             echo 'Cid:' . $cid . ' done';
 
         } catch (\Exception $e) {

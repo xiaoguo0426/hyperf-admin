@@ -23,7 +23,7 @@ function uuid($length)
  */
 function arr2tree($list, $id = 'id', $pid = 'pid', $son = 'sub')
 {
-    list($tree, $map) = [[], []];
+    [$tree, $map] = [[], []];
     foreach ($list as $item) {
         $map[$item[$id]] = $item;
     }
