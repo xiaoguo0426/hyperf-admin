@@ -57,7 +57,8 @@
     "sentry/sdk": "2.1.0",
     "hyperf/session": "^1.1",
     "ext-bcmath": "*",
-    "symfony/var-dumper": "^5.0"
+    "symfony/var-dumper": "^5.0",
+    "hyperf/websocket-server": "^1.1"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",

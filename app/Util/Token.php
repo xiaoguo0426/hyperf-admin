@@ -62,7 +62,7 @@ class Token
      * @param Payload $payload
      * @return string
      */
-    public function createToken(Payload $payload)
+    public function createToken(Payload $payload): string
     {
         return $this->encode($payload->toArray());
     }

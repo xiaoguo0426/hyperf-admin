@@ -42,7 +42,7 @@ class UserController extends Controller
         if (!$this->isGet()) {
             throw new InvalidRequestMethodException();
         }
-        $query = $this->request->all();
+        $query = $this->request->query();
 
         $users = $this->logic->getList($query);
 
@@ -74,9 +74,6 @@ class UserController extends Controller
      */
     public function info()
     {
-//        $user_id = Token::instance()->getUserId();
-        throw new UserNotFoundException();
-
         $user_id = $this->request->query('id', '');
 
         $info = [];
