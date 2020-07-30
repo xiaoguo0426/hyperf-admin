@@ -38,7 +38,7 @@ class AuthController extends Controller
             throw new InvalidAccessException();
         }
 
-        $query = $this->request->all();
+        $query = $this->request->query();
 
         $data = $this->logic->list($query);
 

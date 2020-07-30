@@ -14,6 +14,7 @@ declare(strict_types=1);
 use Hyperf\SuperGlobals\Listener\SuperGlobalsInitializeListener;
 
 return [
-    \Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler::class,
-    \App\Listener\BootApplicationListener::class
+    Hyperf\ExceptionHandler\Listener\ErrorExceptionHandler::class,
+    App\Listener\BootApplicationListener::class,
+    App\Util\MyCrontab\CrontabRegisterListener::class,
 ];

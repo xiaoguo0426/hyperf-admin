@@ -15,6 +15,8 @@ namespace App\Controller;
 use App\Logic\SettingLogic;
 use App\Util\Redis;
 use App\Util\RedisLock;
+use Hyperf\Crontab\CrontabManager;
+use Hyperf\Crontab\Scheduler;
 use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\SuperGlobals\Proxy\Get;
 use Psr\Http\Message\ServerRequestInterface;
@@ -35,21 +37,22 @@ class IndexController extends Controller
     public function index(ServerRequestInterface $request): \Psr\Http\Message\ResponseInterface
     {
 
-        $key = '2020';
-        $a = 'bbb';
-        try {
-            $cid = \Swoole\Coroutine::getCid();
-            echo 'Cid:' . $cid . PHP_EOL;
+//        $key = '2020';
+//        $a = 'bbb';
+//        try {
+//            $cid = \Swoole\Coroutine::getCid();
+//            echo 'Cid:' . $cid . PHP_EOL;
+//
+////            RedisLock::lock($key);
+//            $redis = Redis::getInstance();
+//            $res = $redis->incr($a);
+////            RedisLock::release($key);
+//            echo 'Cid:' . $cid . ' done';
+//
+//        } catch (\Exception $e) {
+//            var_dump($e->getMessage());
+//        }
 
-//            RedisLock::lock($key);
-            $redis = Redis::getInstance();
-            $res = $redis->incr($a);
-//            RedisLock::release($key);
-            echo 'Cid:' . $cid . ' done';
-
-        } catch (\Exception $e) {
-            var_dump($e->getMessage());
-        }
 
         $di = di(SettingLogic::class);
 

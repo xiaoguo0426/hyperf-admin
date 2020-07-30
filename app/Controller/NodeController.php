@@ -27,20 +27,13 @@ class NodeController extends Controller
     public function list(): ?\Psr\Http\Message\ResponseInterface
     {
         //读取runtime/nodes.php文件数据即可
-        try {
-            $nodes_file = RUNTIME_PATH . 'nodes.php';
-            if (!file_exists($nodes_file)) {
-                throw new FileNotFoundException('节点数据不存在！', 200);
-            }
-
-            $nodes = include $nodes_file;
-
-            return $this->response->success($nodes);
-
-        } catch (FileNotFoundException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        $nodes_file = RUNTIME_PATH . 'nodes.php';
+        if (! file_exists($nodes_file)) {
+            throw new FileNotFoundException('节点数据不存在！', 200);
         }
+
+        $nodes = include $nodes_file;
+
+        return $this->response->success($nodes);
     }
 }

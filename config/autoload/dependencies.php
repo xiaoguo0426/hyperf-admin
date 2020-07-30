@@ -12,4 +12,6 @@ declare(strict_types=1);
 
 return [
     Hyperf\HttpServer\CoreMiddleware::class => App\Middleware\CoreMiddleware::class,
+    Hyperf\Crontab\Listener\OnPipeMessageListener::class => App\Util\MyCrontab\OnPipeMessageListener::class,
+    Hyperf\Crontab\Crontab::class => App\Util\MyCrontab\MyCrontab::class,
 ];

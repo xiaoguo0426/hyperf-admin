@@ -37,7 +37,7 @@ class CategoryController extends Controller
         if (!$this->isGet()) {
             throw new InvalidRequestMethodException();
         }
-        $query = $this->request->all();
+        $query = $this->request->query();
 
         $tree = $this->logic->getListCache();
 

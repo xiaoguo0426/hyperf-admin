@@ -28,12 +28,11 @@ class MenuController extends Controller
     public function list(): \Psr\Http\Message\ResponseInterface
     {
 
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
 
-//            $service = new MenuService();
-        $logic = new MenuLogic();
+        $logic = di(MenuLogic::class);
 
         $list = $logic->list();
 
@@ -48,7 +47,7 @@ class MenuController extends Controller
      */
     public function add()
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -68,11 +67,11 @@ class MenuController extends Controller
 
         $method = __FUNCTION__;
         $validate = new MenuValidate();
-        if (!$validate->scene($method)->check($data)) {
+        if (! $validate->scene($method)->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $logic = new MenuLogic();
+        $logic = di(MenuLogic::class);
 
         $res = $logic->add($pid, $title, $uri, $params, $icon, $sort);
 
@@ -89,48 +88,41 @@ class MenuController extends Controller
      */
     public function edit(): ?\Psr\Http\Message\ResponseInterface
     {
-        try {
-            if (!$this->isPost()) {
-                throw new InvalidRequestMethodException('invalid access', 200);
-            }
-
-            $id = $this->request->post('id', '');
-            $pid = $this->request->post('pid', '');
-            $title = $this->request->post('title', '');
-            $uri = $this->request->post('uri', '');
-            $params = $this->request->post('params', '');
-            $icon = $this->request->post('icon', '');
-            $sort = $this->request->post('sort', 0);
-
-            $data = [
-                'id' => $id,
-                'pid' => $pid,
-                'title' => $title,
-                'uri' => $uri,
-                'params' => $params,
-            ];
-
-            $method = __FUNCTION__;
-            $validate = new MenuValidate();
-            if (!$validate->scene($method)->check($data)) {
-                throw new InvalidArgumentsException($validate->getError(), 200);
-            }
-
-            $logic = new MenuLogic();
-
-            $res = $logic->edit($id, $pid, $title, $uri, $params, $icon, $sort);
-
-            if (false === $res) {
-                throw new ResultException('编辑失败！', 200);
-            }
-
-            return $this->response->success([], '编辑成功！');
-        } catch (InvalidArgumentsException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        if (! $this->isPost()) {
+            throw new InvalidRequestMethodException('invalid access', 200);
         }
 
+        $id = $this->request->post('id', '');
+        $pid = $this->request->post('pid', '');
+        $title = $this->request->post('title', '');
+        $uri = $this->request->post('uri', '');
+        $params = $this->request->post('params', '');
+        $icon = $this->request->post('icon', '');
+        $sort = $this->request->post('sort', 0);
+
+        $data = [
+            'id' => $id,
+            'pid' => $pid,
+            'title' => $title,
+            'uri' => $uri,
+            'params' => $params,
+        ];
+
+        $method = __FUNCTION__;
+        $validate = new MenuValidate();
+        if (! $validate->scene($method)->check($data)) {
+            throw new InvalidArgumentsException($validate->getError(), 200);
+        }
+
+        $logic = di(MenuLogic::class);
+
+        $res = $logic->edit($id, $pid, $title, $uri, $params, $icon, $sort);
+
+        if (false === $res) {
+            throw new ResultException('编辑失败！', 200);
+        }
+
+        return $this->response->success([], '编辑成功！');
     }
 
     /**
@@ -138,37 +130,32 @@ class MenuController extends Controller
      */
     public function del(): ?\Psr\Http\Message\ResponseInterface
     {
-        try {
-            if (!$this->isPost()) {
-                throw new InvalidRequestMethodException('invalid access', 200);
-            }
-
-            $id = $this->request->post('id', '');
-
-            $data = [
-                'id' => $id,
-            ];
-
-            $method = __FUNCTION__;
-            $validate = new MenuValidate();
-            if (!$validate->scene('base')->check($data)) {
-                throw new InvalidArgumentsException($validate->getError(), 200);
-            }
-
-            $logic = new MenuLogic();
-
-            $res = $logic->$method($id);
-
-            if (false === $res) {
-                throw new ResultException('删除失败！', 200);
-            }
-
-            return $this->response->success($res, '删除成功！');
-        } catch (InvalidArgumentsException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        if (! $this->isPost()) {
+            throw new InvalidRequestMethodException('invalid access', 200);
         }
+
+        $id = $this->request->post('id', '');
+
+        $data = [
+            'id' => $id,
+        ];
+
+        $method = __FUNCTION__;
+        $validate = new MenuValidate();
+        if (! $validate->scene('base')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError(), 200);
+        }
+
+        $logic = di(MenuLogic::class);
+
+        $res = $logic->$method($id);
+
+        if (false === $res) {
+            throw new ResultException('删除失败！', 200);
+        }
+
+        return $this->response->success($res, '删除成功！');
+
     }
 
     /**
@@ -176,37 +163,32 @@ class MenuController extends Controller
      */
     public function forbid(): ?\Psr\Http\Message\ResponseInterface
     {
-        try {
-            if (!$this->isPost()) {
-                throw new InvalidRequestMethodException('invalid access', 200);
-            }
-
-            $id = $this->request->post('id', '');
-
-            $data = [
-                'id' => $id,
-            ];
-
-            $method = __FUNCTION__;
-            $validate = new MenuValidate();
-            if (!$validate->scene('base')->check($data)) {
-                throw new InvalidArgumentsException($validate->getError(), 200);
-            }
-
-            $logic = new MenuLogic();
-
-            $res = $logic->$method($id);
-
-            if (false === $res) {
-                throw new ResultException('禁用失败！', 200);
-            }
-
-            return $this->response->success($res, '禁用成功！');
-        } catch (InvalidArgumentsException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        if (! $this->isPost()) {
+            throw new InvalidRequestMethodException('invalid access', 200);
         }
+
+        $id = $this->request->post('id', '');
+
+        $data = [
+            'id' => $id,
+        ];
+
+        $method = __FUNCTION__;
+        $validate = new MenuValidate();
+        if (! $validate->scene('base')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError(), 200);
+        }
+
+        $logic = di(MenuLogic::class);
+
+        $res = $logic->$method($id);
+
+        if (false === $res) {
+            throw new ResultException('禁用失败！', 200);
+        }
+
+        return $this->response->success($res, '禁用成功！');
+
     }
 
     /**
@@ -214,36 +196,30 @@ class MenuController extends Controller
      */
     public function resume()
     {
-        try {
-            if (!$this->isPost()) {
-                throw new InvalidRequestMethodException('invalid access', 200);
-            }
-
-            $id = $this->request->post('id', '');
-
-            $data = [
-                'id' => $id,
-            ];
-
-            $method = __FUNCTION__;
-            $validate = new MenuValidate();
-            if (!$validate->scene('base')->check($data)) {
-                throw new InvalidArgumentsException($validate->getError(), 200);
-            }
-
-            $logic = new MenuLogic();
-
-            $res = $logic->$method($id);
-
-            if (false === $res) {
-                throw new ResultException('启用失败！', 200);
-            }
-
-            return $this->response->success($res, '启用成功！');
-        } catch (InvalidArgumentsException $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
-        } catch (\Exception $exception) {
-            return $this->response->fail($exception->getCode(), $exception->getMessage());
+        if (! $this->isPost()) {
+            throw new InvalidRequestMethodException('invalid access', 200);
         }
+
+        $id = $this->request->post('id', '');
+
+        $data = [
+            'id' => $id,
+        ];
+
+        $method = __FUNCTION__;
+        $validate = new MenuValidate();
+        if (! $validate->scene('base')->check($data)) {
+            throw new InvalidArgumentsException($validate->getError(), 200);
+        }
+
+        $logic = di(MenuLogic::class);
+
+        $res = $logic->$method($id);
+
+        if (false === $res) {
+            throw new ResultException('启用失败！', 200);
+        }
+
+        return $this->response->success($res, '启用成功！');
     }
 }

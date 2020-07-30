@@ -34,7 +34,7 @@ class ProductController extends Controller
         if (!$this->isGet()) {
             throw new InvalidRequestMethodException();
         }
-        $query = $this->request->all();
+        $query = $this->request->query();
 
         $res = $this->logic->list($query);
 

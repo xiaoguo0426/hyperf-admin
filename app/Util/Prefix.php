@@ -36,4 +36,9 @@ class Prefix
         return 'product-category';
     }
 
+    public static function crontabs()
+    {
+        return 'system-crontabs';
+    }
+
 }

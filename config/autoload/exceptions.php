@@ -20,11 +20,11 @@ return [
             App\Exception\Handler\InvalidArgumentsExceptionHandler::class,
             App\Exception\Handler\InvalidConfigExceptionHandler::class,
             App\Exception\Handler\EmptyExceptionHandler::class,
+            App\Exception\Handler\FileNotFoundExceptionHandler::class,
             App\Exception\Handler\UserExceptionHandler::class,
             App\Exception\Handler\StatusExceptionHandler::class,
             App\Exception\Handler\ResultExceptionHandler::class,
 //            App\Exception\Handler\InvalidRequestMethodExceptionHandler::class,
-
         ],
     ],
 ];

@@ -58,7 +58,8 @@
     "hyperf/session": "^1.1",
     "ext-bcmath": "*",
     "symfony/var-dumper": "^5.0",
-    "hyperf/websocket-server": "^1.1"
+    "hyperf/websocket-server": "^1.1",
+    "hyperf/crontab": "^1.1"
   },
   "require-dev": {
     "swoft/swoole-ide-helper": "^4.2",
@@ -93,7 +94,11 @@
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "extra": [],
+  "extra": {
+    "hyperf": {
+      "config": "Hyperf\\Crontab\\ConfigProvider"
+    }
+  },
   "scripts": {
     "post-root-package-install": [
       "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
