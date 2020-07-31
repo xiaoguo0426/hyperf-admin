@@ -17,58 +17,17 @@ class UserLogic
      */
     public function getList(array $query): array
     {
-        $where = [
-            [
-                'username', '!=', 'admin'//不允许查询超管
-            ]
-        ];
 
-        if (!empty($query['username'])) {
-            $where[] = [
-                'username', '=', $query['username']
-            ];
-        }
-
-        if (!empty($query['mobile'])) {
-            $where[] = [
-                'mobile', '=', $query['mobile']
-            ];
-        }
-
-        if (!empty($query['email'])) {
-            $where[] = [
-                'email', '=', $query['email']
-            ];
-        }
-
-        if (!empty($query['role'])) {
-            $where[] = [
-                'role_id', '=', $query['role']
-            ];
-        }
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
-        $limit = isset($query['limit']) ? (int)$query['limit'] : 20;
+        $page = isset($query['page']) ? (int) $query['page'] : 1;
+        $limit = isset($query['limit']) ? (int) $query['limit'] : 20;
 
         $di = di(UserService::class);
 
-        $count = $di->count($where, '*');
-        $list = [];
-
-        if ($count) {
-            $list = $di->select($where, [
-                'id', 'username', 'nickname', 'role_id', 'avatar', 'gender', 'mobile', 'email', 'remark', 'status', 'created_at'
-            ], $page, $limit)->toArray();
-
-            //判断id是否为1 默认是超管角色
-            foreach ($list as &$item) {
-                $item['LAY_DISABLED'] = 1 === $item['id'];
-            }
-            unset($item);
-        }
+        $paginator = $di->select($query, ['id', 'username', 'nickname', 'role_id', 'avatar', 'gender', 'mobile', 'email', 'remark', 'status', 'created_at'], $page, $limit);
 
         return [
-            'list' => $list,
-            'count' => $count
+            'list' => $paginator->items(),
+            'count' => $paginator->total()
         ];
     }
 
@@ -196,7 +155,7 @@ class UserLogic
             throw new UserNotFoundException('账号不存在！', 1);
         }
 
-        if (!$this->verifyPassword($oldPassword, $user->password)) {
+        if (! $this->verifyPassword($oldPassword, $user->password)) {
             throw new ResultException('当前密码不正确！');
         }
 
