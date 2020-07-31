@@ -12,7 +12,7 @@ use Hyperf\Utils\Filesystem\FileNotFoundException;
  * Class NodeController
  * @package App\Controller
  */
-class NodeController extends Controller
+class NodeController extends AbstractController
 {
 
     public function test()

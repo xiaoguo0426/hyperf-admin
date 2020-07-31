@@ -7,9 +7,8 @@ declare(strict_types=1);
  * @link     https://www.hyperf.io
  * @document https://doc.hyperf.io
  * @contact  group@hyperf.io
- * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 return [
-//    \App\Aspect\LoginAspect::class //登录成功切面   可以考虑把消息投递到队列后进行后续操作 【记录登录时间，送积分】
+    //    \App\Aspect\LoginAspect::class //登录成功切面   可以考虑把消息投递到队列后进行后续操作 【记录登录时间，送积分】
 ];

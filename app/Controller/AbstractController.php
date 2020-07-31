@@ -7,32 +7,34 @@ declare(strict_types=1);
  * @link     https://www.hyperf.io
  * @document https://doc.hyperf.io
  * @contact  group@hyperf.io
- * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
+ * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-
 namespace App\Controller;
 
 use App\Kernel\Http\Response;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
-abstract class Controller
+abstract class AbstractController
 {
     /**
+     * @Inject
      * @var ContainerInterface
      */
-    public $container;
+    protected $container;
 
     /**
+     * @Inject
      * @var RequestInterface
      */
-    public $request;
+    protected $request;
 
     /**
      * @var ResponseInterface
      */
-    public $response;
+    protected $response;
 
     public function __construct(ContainerInterface $container)
     {
@@ -41,12 +43,12 @@ abstract class Controller
         $this->response = $container->get(Response::class);
     }
 
-    public function isPost()
+    public function isPost(): bool
     {
         return $this->request->isMethod('post');
     }
 
-    public function isGet()
+    public function isGet(): bool
     {
         return $this->request->isMethod('get');
     }
@@ -55,27 +57,4 @@ abstract class Controller
     {
         return $this->request->getHeaderLine('x-requested-with') === 'XMLHttpRequest';
     }
-
-//    public function getAdmin()
-//    {
-//        return $this->request->getAttribute('admin');
-//    }
-
-//    public function getAdminID()
-//    {
-//        $admin = $this->getAdmin();
-//        return $admin['user_id'];
-//    }
-//
-//    public function getAdminName()
-//    {
-//        $admin = $this->getAdmin();
-//        return $admin['user_name'];
-//    }
-//
-//    public function getAdminRole()
-//    {
-//        $admin = $this->getAdmin();
-//        return $admin['role'];
-//    }
 }

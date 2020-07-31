@@ -4,14 +4,14 @@
 namespace App\Controller\Admin;
 
 
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 
 /**
  * @menu 主页管理
  * Class MainController
  * @package App\Controller\Admin
  */
-class MainController extends Controller
+class MainController extends AbstractController
 {
 
 }

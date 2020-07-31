@@ -3,14 +3,14 @@
 
 namespace App\Controller\Coupon;
 
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 
 /**
  * @menu 优惠券
  * Class CouponController
  * @package App\Controller\Coupon
  */
-class CouponController  extends Controller
+class CouponController  extends AbstractController
 {
 
 }
