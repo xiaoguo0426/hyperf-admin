@@ -10,14 +10,14 @@ use App\Exception\ResultException;
 use App\Exception\InvalidArgumentsException;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 /**
  * @menu 菜单名
  * @AutoController()
  * Class AuthController
  * @package App\Controller
  */
-class %CLASS% extends Controller
+class %CLASS% extends AbstractController
 {
 
     private $logic;
