@@ -9,17 +9,37 @@ use App\Model\SystemUserModel;
 class UserService extends BaseService
 {
     /**
-     * @param $where
-     * @param $fields
+     * @param $query
+     * @param string[] $fields
      * @param int $page
      * @param int $limit
-     * @return \Hyperf\Database\Model\Builder[]|\Hyperf\Database\Model\Collection
+     * @return \Hyperf\Contract\LengthAwarePaginatorInterface
      */
-    public function select($where, $fields, $page = 1, $limit = 20)
+    public function select($query, $fields = ['*'], $page = 1, $limit = 20)
     {
-        return SystemUserModel::query()->with(['role' => function ($query) {
+
+        $username = empty($query['username']) ? '' : $query['username'];
+        $mobile = empty($query['mobile']) ? '' : $query['mobile'];
+        $email = empty($query['email']) ? '' : $query['email'];
+        $role = empty($query['role']) ? '' : $query['role'];
+
+        $model = SystemUserModel::query();
+
+        $paginator = $model->where(
+            'username', '!=', 'admin'//不允许查询超管
+        )->with(['role' => function ($query) {
             $query->select(['id', 'title']);
-        }])->where($where)->orderByDesc('id')->forPage($page, $limit)->get($fields);
+        }])->when($username, function ($query, $username) {
+            return $query->where('username', $username);
+        })->when($mobile, function ($query, $mobile) {
+            return $query->where('mobile', $mobile);
+        })->when($email, function ($query, $email) {
+            return $query->where('email', $email);
+        })->when($role, function ($query, $role) {
+            return $query->where('role_id', $role);
+        })->paginate($limit, $fields, 'page', $page);
+
+        return $paginator;
     }
 
     /**
@@ -96,7 +116,7 @@ class UserService extends BaseService
      */
     public function forbid(int $id): bool
     {
-        return (bool)SystemUserModel::query()->where('id', $id)->update([
+        return (bool) SystemUserModel::query()->where('id', $id)->update([
             'status' => Constants::STATUS_FORBID
         ]);
     }
@@ -107,7 +127,7 @@ class UserService extends BaseService
      */
     public function resume(int $id): bool
     {
-        return (bool)SystemUserModel::query()->where('id', $id)->update([
+        return (bool) SystemUserModel::query()->where('id', $id)->update([
             'status' => Constants::STATUS_ACTIVE
         ]);
     }

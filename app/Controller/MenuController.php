@@ -7,12 +7,9 @@ use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
 use App\Logic\MenuLogic;
-use App\Service\MenuService;
 use App\Util\Data;
 use App\Validate\MenuValidate;
 use Hyperf\HttpServer\Annotation\AutoController;
-use Hyperf\Utils\Context;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * @menu 菜单管理
@@ -20,7 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class MenuController
  * @package App\Controller
  */
-class MenuController extends Controller
+class MenuController extends AbstractController
 {
     /**
      * @auth 列表

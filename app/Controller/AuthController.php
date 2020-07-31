@@ -20,7 +20,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
  * Class AuthController
  * @package App\Controller
  */
-class AuthController extends Controller
+class AuthController extends AbstractController
 {
 
     /**

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Product;
 
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 use App\Exception\EmptyException;
 use App\Exception\InvalidAccessException;
 use App\Exception\InvalidRequestMethodException;
@@ -17,7 +17,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
  * Class ProductController
  * @package App\Controller\Product
  */
-class ProductController extends Controller
+class ProductController extends AbstractController
 {
 
     /**

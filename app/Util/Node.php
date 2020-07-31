@@ -12,7 +12,7 @@ class Node
      * @var array
      */
     private static $ignoreController = [
-        'Controller', 'IndexController'
+        'AbstractController', 'IndexController'
     ];
 
     /**

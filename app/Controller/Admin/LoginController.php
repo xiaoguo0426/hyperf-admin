@@ -11,7 +11,7 @@ use Exception;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 use App\Validate\LoginValidate;
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -19,7 +19,7 @@ use Psr\Http\Message\ResponseInterface;
  * Class LoginController
  * @package App\Controller
  */
-class LoginController extends Controller
+class LoginController extends AbstractController
 {
     /**
      * @Inject()

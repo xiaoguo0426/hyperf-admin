@@ -3,7 +3,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 use App\Exception\InvalidAccessException;
 use App\Exception\ResultException;
 use App\Logic\SettingLogic;
@@ -16,7 +16,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
  * Class MainController
  * @package App\Controller\Admin
  */
-class SettingController extends Controller
+class SettingController extends AbstractController
 {
 
     /**
