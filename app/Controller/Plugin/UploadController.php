@@ -3,10 +3,8 @@
 namespace App\Controller\Plugin;
 
 use App\Constants\Constants;
-use App\Controller\Controller;
-
+use App\Controller\AbstractController;
 use App\Util\OSS\Signature;
-use App\Util\Redis;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 
@@ -16,7 +14,7 @@ use Hyperf\HttpServer\Annotation\AutoController;
  * Class UploadController
  * @package App\Controller
  */
-class UploadController extends Controller
+class UploadController extends AbstractController
 {
     /**
      * @ignore oss信息

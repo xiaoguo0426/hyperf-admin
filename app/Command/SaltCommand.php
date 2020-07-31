@@ -34,12 +34,12 @@ class SaltCommand extends HyperfCommand
     public function handle()
     {
         $env_file = BASE_PATH . '/.env';
-        if (!file_exists($env_file)) {
+        if (! file_exists($env_file)) {
             $this->error('.env file not exists!');
             return;
         }
 
-        $env = Dotenv::create([BASE_PATH])->load();
+        $env = Dotenv::createImmutable(BASE_PATH)->load();
 
         $length = 16;
 
@@ -55,10 +55,8 @@ class SaltCommand extends HyperfCommand
                 foreach ($val as $k => $v) {
                     $item = $name . '_' . strtoupper($k);
                     fwrite($handle, "$item=$v" . PHP_EOL);
-//                    putenv("$item=$v");
                 }
             } else {
-//                putenv("$name=$val");
                 fwrite($handle, "$name=$val" . PHP_EOL);
             }
         }

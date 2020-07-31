@@ -10,15 +10,12 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 return [
-    'scan' => [
-        'paths' => [
-            BASE_PATH . '/app',
-        ],
-        'ignore_annotations' => [
-            'mixin',
-            'menu',
-            'auth',
-            'ignore'
-        ],
+    'default' => [
+        'driver' => Hyperf\AsyncQueue\Driver\RedisDriver::class,
+        'channel' => 'queue',
+        'timeout' => 2,
+        'retry_seconds' => 5,
+        'handle_timeout' => 10,
+        'processes' => 1,
     ],
 ];

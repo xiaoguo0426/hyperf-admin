@@ -5,18 +5,15 @@ namespace App\Controller\Admin;
 
 use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
-use App\Exception\InvalidConfigException;
 use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
 use App\Exception\UserNotFoundException;
 use App\Logic\Admin\UserLogic;
 use App\Logic\AuthLogic;
-use App\Service\AuthService;
-use App\Service\UserService;
 use App\Validate\UserValidate;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
-use App\Controller\Controller;
+use App\Controller\AbstractController;
 use App\Util\Token;
 
 /**
@@ -25,7 +22,7 @@ use App\Util\Token;
  * Class UserController
  * @package App\Controller\Admin
  */
-class UserController extends Controller
+class UserController extends AbstractController
 {
     /**
      * @Inject()
@@ -59,9 +56,9 @@ class UserController extends Controller
 
         $user = $this->logic->getUser($user_id);
 
-        if (empty($user)) {
-            throw new UserNotFoundException();
-        }
+        $roles = di(AuthLogic::class)->listWithNoPage(['status' => 1], ['id', 'title']);
+
+        $user['roles'] = $roles;
 
         unset($user['password']);
 

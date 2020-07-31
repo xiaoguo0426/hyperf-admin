@@ -9,18 +9,14 @@ declare(strict_types=1);
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
-namespace App\Constants;
+namespace App\Process;
 
-use Hyperf\Constants\AbstractConstants;
-use Hyperf\Constants\Annotation\Constants;
+use Hyperf\AsyncQueue\Process\ConsumerProcess;
+use Hyperf\Process\Annotation\Process;
 
 /**
- * @Constants
+ * @Process
  */
-class ErrorCode extends AbstractConstants
+class AsyncQueueConsumer extends ConsumerProcess
 {
-    /**
-     * @Message("Server Error！")
-     */
-    const SERVER_ERROR = 500;
 }
