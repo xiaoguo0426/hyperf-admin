@@ -11,11 +11,11 @@ use App\Exception\InvalidConfigException;
 use App\Exception\LoginException;
 use App\Exception\StatusException;
 use App\Exception\UserNotFoundException;
+use App\Facade\Redis;
 use App\Service\AuthService;
 use App\Service\UserService;
 use App\Util\Payload;
 use App\Util\Prefix;
-use App\Util\Redis;
 use App\Util\Token;
 
 class LoginLogic
@@ -24,10 +24,10 @@ class LoginLogic
      * @LoginAnnotation()
      * @param string $username
      * @param string $password
-     * @return array
      * @throws EmptyException
      * @throws InvalidConfigException
      * @throws UserNotFoundException
+     * @return array
      */
     public function login(string $username, string $password): array
     {
@@ -39,15 +39,18 @@ class LoginLogic
         if (empty($user)) {
             throw new UserNotFoundException('账号不存在！', 1);
         }
-        if (0 === (int)$user->status) {
+        if (0 === (int) $user->status) {
             throw new StatusException('账号已被禁用，请联系管理员！', 1);
         }
 
         $max_count = 5;//可重试次数
 
-        $redis = Redis::getInstance();
+//        $redis = Redis::getInstance();
+        $redis = Redis::instance();
 
         $key = Prefix::getLoginErrCount($username);
+
+//        var_dump(\App\Facade\Redis::get($key)); //直接使用静态方法调用也是可以的。
 
         $login_err_count = $redis->get($key);
         if (false === $login_err_count) {
@@ -59,7 +62,7 @@ class LoginLogic
             throw new LoginException('尝试次数达到上限，锁定一小时内禁止登录！', 1);
         }
         //判断连续输错次数  可重试5次
-        if (!$userLogic->verifyPassword($password, $user->password)) {
+        if (! $userLogic->verifyPassword($password, $user->password)) {
             //错误次数+1
             $redis->incr($key);
             $login_err_count++;
@@ -81,10 +84,10 @@ class LoginLogic
         $authService = di(AuthService::class);
 
         $auth = $authService->info($user->role_id);
-        if (!$auth) {
+        if (! $auth) {
             throw new EmptyException('当前用户角色不存在，请联系管理员！');
         }
-        if (Constants::STATUS_ACTIVE !== (int)$auth->status) {
+        if (Constants::STATUS_ACTIVE !== (int) $auth->status) {
             throw new StatusException('当前用户角色被禁用，请联系管理员！');
         }
 
@@ -130,8 +133,8 @@ class LoginLogic
     /**
      *
      * @param $refresh
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function refreshToken($refresh): array
     {
@@ -139,7 +142,7 @@ class LoginLogic
 
         $jwt = $accessToken->checkRefreshToken($refresh);
 
-        $data = (array)($jwt['data']);
+        $data = (array) ($jwt['data']);
 
         $app_name = config('app_name', '');
 
