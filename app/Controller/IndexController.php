@@ -27,7 +27,7 @@ class IndexController extends AbstractController
     {
 //redis锁
         //注意key的规则
-//        $lock = make(RedisLock2::class);
+//        $lock = di(RedisLock2::class);
 //
 //        try {
 //            $key = 'test';

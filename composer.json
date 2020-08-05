@@ -28,14 +28,14 @@
     "hyperf/redis": "~2.0.0",
     "hyperf/constants": "~2.0.0",
     "hyperf/async-queue": "~2.0.0",
-    "hyperf/amqp": "~2.0.0",
     "hyperf/model-cache": "~2.0.0",
     "hyperf/elasticsearch": "~2.0.0",
     "hyperf/tracer": "~2.0.0",
     "firebase/php-jwt": "^5.0",
     "doctrine/dbal": "^2.9",
     "topthink/think-validate": "^2.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "overtrue/wechat": "^5.0"
   },
   "require-dev": {
     "swoole/ide-helper": "^4.5",
