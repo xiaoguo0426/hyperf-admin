@@ -27,10 +27,10 @@ class CategoryLogic
     public function list(array $query): array
     {
         $where = [];
-        $fields = ['*'];
+        $fields = ['id', 'parent_id', 'title', 'status', 'desc', 'sort'];
 
-        $page = isset($query['page']) ? (int)$query['page'] : 1;
-        $limit = isset($query['limit']) ? (int)$query['limit'] : 20;
+        $page = isset($query['page']) ? (int) $query['page'] : 1;
+        $limit = isset($query['limit']) ? (int) $query['limit'] : 20;
 
         $count = $this->service->count($where, '*');
         $list = [];
@@ -50,6 +50,7 @@ class CategoryLogic
     public function listWithNoPage(array $query): array
     {
         $query['page'] = 0;
+        $query['limit'] = 0;
         return $this->list($query);
     }
 
@@ -75,11 +76,13 @@ class CategoryLogic
 
         $add = $this->service->add($parent_id, $title, $sort, $desc);
 
-        if (!$add) {
-            throw new ResultException('新增角色失败！');
+        if (! $add) {
+            throw new ResultException('新增商品分类失败！');
         }
 
-        return (int)$add;
+        $this->refreshListCache();
+
+        return (int) $add;
     }
 
 
@@ -100,7 +103,11 @@ class CategoryLogic
             throw new EmptyException();
         }
 
-        return $this->service->edit($id, $parent_id, $title, $desc, $sort);
+        $edit = $this->service->edit($id, $parent_id, $title, $desc, $sort);
+
+        $this->refreshListCache();
+
+        return $edit;
     }
 
     /**
@@ -115,8 +122,11 @@ class CategoryLogic
         if (empty($info)) {
             throw new EmptyException();
         }
+        $del = $this->service->del($id);
 
-        return $this->service->del($id);
+        $this->refreshListCache();
+
+        return $del;
     }
 
     /**
@@ -132,7 +142,11 @@ class CategoryLogic
             throw new EmptyException();
         }
 
-        return $this->service->forbid($id);
+        $forbid = $this->service->forbid($id);
+
+        $this->refreshListCache();
+
+        return $forbid;
     }
 
     /**
@@ -148,7 +162,11 @@ class CategoryLogic
             throw new EmptyException();
         }
 
-        return $this->service->resume($id);
+        $resume = $this->service->resume($id);
+
+        $this->refreshListCache();
+
+        return $resume;
     }
 
     public function toTree($list)
@@ -173,6 +191,14 @@ class CategoryLogic
 
         return JSON_ERROR_NONE === json_last_error() ? $arr : [];
 
+    }
+
+    public function refreshListCache(): void
+    {
+        $list = $this->listWithNoPage([
+        ]);
+
+        $this->setListCache($list['list']);
     }
 
     public function setListCache(array $list): bool

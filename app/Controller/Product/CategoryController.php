@@ -34,6 +34,7 @@ class CategoryController extends AbstractController
      */
     public function list(): \Psr\Http\Message\ResponseInterface
     {
+        //一次性返回所有的分类，前端处理太慢了。
         if (!$this->isGet()) {
             throw new InvalidRequestMethodException();
         }
@@ -127,7 +128,7 @@ class CategoryController extends AbstractController
             throw new ResultException('编辑失败！');
         }
 
-        $this->logic->clearListCache();
+        $this->logic->refreshListCache();
 
         return $this->response->success([], 0, '编辑成功！');
 
