@@ -10,7 +10,7 @@ class Redis extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        //TestRedisFactory::class 则不需要在instance()中调用get
+        //TestRedis::class 则不需要在instance()中调用get
         return RedisFactory::class;
     }
 
