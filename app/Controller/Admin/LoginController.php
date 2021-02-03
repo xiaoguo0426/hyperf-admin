@@ -49,7 +49,7 @@ class LoginController extends AbstractController
         $validate = di(LoginValidate::class);
 
         if (!$validate->scene('login')->check($data)) {
-            throw new InvalidAccessException($validate->getError());
+            throw new InvalidArgumentsException($validate->getError());
         }
 
         $tokens = $this->logic->login($username, $password);

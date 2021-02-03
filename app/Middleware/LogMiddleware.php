@@ -22,17 +22,24 @@ class LogMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        $logger = di(LoggerFactory::class)->make('request','request');//请求日志logger
+        $logger = di(LoggerFactory::class)->make('request', 'request');//请求日志logger
 
         $uri = $request->getUri();
 
+//        $log = [
+//            'attributes' => $request->getAttributes(),
+//            'headers' => $request->getHeaders(),
+//            'method' => $request->getMethod(),
+//            'queryParams' => $request->getQueryParams(),
+//            'schema' => $uri->getScheme(),
+//            'host' => $uri->getHost(),
+//            'path' => $uri->getPath(),
+//            'body' => $request->getParsedBody()
+//        ];
+
         $log = [
-            'attributes' => $request->getAttributes(),
-            'headers' => $request->getHeaders(),
             'method' => $request->getMethod(),
             'queryParams' => $request->getQueryParams(),
-            'schema' => $uri->getScheme(),
-            'host' => $uri->getHost(),
             'path' => $uri->getPath(),
             'body' => $request->getParsedBody()
         ];

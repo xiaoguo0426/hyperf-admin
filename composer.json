@@ -13,7 +13,7 @@
   "license": "Apache-2.0",
   "require": {
     "php": ">=7.4",
-    "ext-swoole": ">=4.5",
+    "ext-swoole": ">=4.6",
     "hyperf/cache": "~2.0.0",
     "hyperf/command": "~2.0.0",
     "hyperf/config": "~2.0.0",
