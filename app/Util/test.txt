@@ -1,0 +1,21 @@
+*************************************
+
+
+admin@hacd.cloud
+
+fadacai123
+
+主机名称
+
+www.hacd.club
+
+ssh root@188.166.217.55
+
+Fadacai123@.
+
+$ sudo su - hacd
+
+
+
+team@hacd.club
+fadacai123

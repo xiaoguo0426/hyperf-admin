@@ -1,0 +1,174 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * Hyperf热重启简易脚本.
+ *
+ * 使用方法：
+ * 1. 安装fswatch工具，wiki: https://github.com/emcrisostomo/fswatch
+ * Mac: brew install fswatch
+ * Ubuntu: apt install -y fswatch
+ * CentOS: yum -y install fswatch
+ *
+ * 2. 启动watch
+ * php bin/watch.php
+ *
+ * 如果需要其他配置，请自行修改源码 bin/watch.php
+ */
+
+use Swoole\Process as SwooleProcess;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
+use Symfony\Component\Process\Process;
+
+require_once dirname(__DIR__) . '/vendor/autoload.php';
+
+$rootPath = dirname(__DIR__);
+
+// 判断watcher是否已启动，如果已启动，则禁止重复启动
+$watcherPidFile = $rootPath . '/runtime/watch.pid';
+if (is_running($watcherPidFile)) {
+    console_error('Error: Watch is running at ' . file_get_contents($watcherPidFile));
+    exit(1);
+}
+@cli_set_process_title('hyperf watcher');
+file_put_contents($watcherPidFile, getmypid());
+register_shutdown_function(function () use ($watcherPidFile) {
+    if (is_file($watcherPidFile)) {
+        unlink($watcherPidFile);
+    }
+});
+
+// hyperf server pid文件路径
+$sererPidFile = $rootPath . '/runtime/hyperf.pid';
+
+// 判断hyperf server是否已启动，如果已启动，则禁止重复启动
+if (is_running($sererPidFile)) {
+    console_error('Error: Hyperf server is running at ' . file_get_contents($sererPidFile));
+    exit(1);
+}
+
+// hyperf启动命令
+$cmd = $argv;
+array_shift($cmd);
+if (empty($cmd)) {
+    $cmd = ['php', './bin/hyperf.php', 'start'];
+}
+
+// 启动watch
+$watchCmd = [
+    'fswatch',
+    '-rtx',
+    '--utc-time',//可以考虑改成UTC+8
+    '-e',
+    '/vendor/',
+    '-e',
+    '\\.git',
+    '-e',
+    '\\.idea',
+    '-e',
+    '/runtime/',
+    '-i',
+    $rootPath . '\\.env$',
+    '-r',
+    $rootPath . '/app/',
+    '-r',
+    $rootPath . '/config/',
+    '-m',
+    'poll_monitor'
+];
+$watchProcess = new SwooleProcess(function () use ($watchCmd, $rootPath, $sererPidFile) {
+    console_info('watcher startted at ' . getmypid());
+
+    $symfonyProcess = new Process($watchCmd, $rootPath);
+    $wathcLock = false;
+    $symfonyProcess->setTimeout(0)->run(function ($type, $buffer) use (&$wathcLock, $sererPidFile) {
+        // 只监听以下四种事件
+        $logs = fswatch_event_parser($buffer, ['Created', 'Updated', 'Removed', 'Renamed']);
+        if (!$wathcLock && $logs) {
+            $wathcLock = true;
+
+            // 输出日志
+            foreach ($logs as $log) {
+                console_warning($log);//进程重启，警告日志
+            }
+
+            // kill掉server，另外一个进程会拉起
+            if (is_running($sererPidFile)) {
+                SwooleProcess::kill(file_get_contents($sererPidFile), SIGTERM);
+            }
+            $wathcLock = false;
+        }
+    });
+}, false, false);
+
+@$watchProcess->name('hyperf watcher for files');
+
+$watchProcess->start();
+
+// 管理server的进程
+$process = new Process($cmd, $rootPath);
+$process->setTimeout(0);
+while (true) {
+    try {
+        console_info('Hyperf process is ready to start');
+        $process->run(function ($type, $buffer) use ($process) {
+            echo $buffer;
+        });
+    } catch (ProcessSignaledException $e) {
+        continue;
+    }
+}
+
+/**
+ * 进程是否在运行中.
+ *
+ * @param string $pidFile
+ * @return bool
+ */
+function is_running($pidFile)
+{
+    if (!is_file($pidFile)) {
+        return false;
+    }
+    $pid = file_get_contents($pidFile);
+    try {
+        return SwooleProcess::kill($pid, 0);
+    } catch (\Throwable $e) {
+        return false;
+    }
+}
+
+function console_warning($message)
+{
+    echo sprintf("\033[33m%s\033[39m\n", $message);
+}
+
+function console_error($message)
+{
+    echo sprintf("\033[31m%s\033[0m\n", $message);
+}
+
+function console_info($message)
+{
+    echo sprintf("\033[32m%s\033[0m\n", $message);
+}
+
+/**
+ * fswatch event parser.
+ *
+ * @param string $event
+ * @param array $eventTypes
+ * @return array
+ */
+function fswatch_event_parser($event, $eventTypes)
+{
+    $logs = [];
+    foreach ($eventTypes as $eventType) {
+        if (strpos($event, $eventType) != false) {
+            $logs[] = $event;
+            break;
+        }
+    }
+
+    return $logs;
+}
