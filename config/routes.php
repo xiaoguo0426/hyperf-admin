@@ -10,5 +10,5 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 use Hyperf\HttpServer\Router\Router;
+Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
 
-Router::addRoute(['GET'], '/', 'App\Controller\IndexController@index');

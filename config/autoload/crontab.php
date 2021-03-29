@@ -1,5 +1,7 @@
 <?php
 
+use App\Util\MyCrontab\MyCrontab;
+
 return [
     // 是否开启定时任务
     'enable' => false,
