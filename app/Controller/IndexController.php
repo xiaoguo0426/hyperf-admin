@@ -17,6 +17,8 @@ use App\Factory\DefaultRedis;
 use App\Factory\TestRedis;
 use App\Logic\SettingLogic;
 use App\Queue\Pusher;
+use App\Util\RedisHash\StudentRedisHash;
+use App\Util\RedisHash\TeacherRedisHash;
 use App\Util\RedisLock2;
 use Hyperf\HttpServer\Annotation\AutoController;
 use Hyperf\Redis\RedisFactory;
@@ -92,9 +94,35 @@ class IndexController extends AbstractController
     public function test()
     {
 
-        $pusher = di(Pusher::class);
+        $student = [
+            'id' => '123',
+            'name' => 'test',
+            'age' => '28'
+        ];
+        $studentHash = new StudentRedisHash();
 
-        $push = $pusher->push([], 20);
-        var_dump($push);
+        $studentHash->init($student);
+        echo $studentHash->id . PHP_EOL;
+        echo $studentHash->name . PHP_EOL;
+        echo $studentHash->age . PHP_EOL;
+
+        unset($studentHash->id);
+
+
+        $student = [
+            'id' => '123123',
+            'name' => 'xiaoguo',
+            'age' => '28'
+        ];
+        $studentHash = new TeacherRedisHash();
+
+        $studentHash->init($student);
+        echo $studentHash->id . PHP_EOL;
+        echo $studentHash->name . PHP_EOL;
+        echo $studentHash->age . PHP_EOL;
+
+        unset($studentHash->id);
+
+//        var_dump($studentHash . '');
     }
 }

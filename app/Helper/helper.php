@@ -63,3 +63,9 @@ function arr2table(array $list, $id = 'id', $pid = 'pid', $path = 'path', $ppath
     }
     return $tree;
 }
+
+function is_json($data, $assoc = true)
+{
+    json_decode($data, $assoc);
+    return json_last_error() === JSON_ERROR_NONE;
+}

@@ -81,7 +81,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
                 // Route found, but the handler does not exist.
                 return $this->response()->withStatus(500)->withBody(new SwooleStream('Method of class does not exist.'));
             }
-            $parameters = $this->parseParameters($controller, $action, $dispatched->params);
+            $parameters = $this->parseMethodParameters($controller, $action, $dispatched->params);
             $response = $controllerInstance->{$action}(...$parameters);
         }
 

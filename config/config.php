@@ -32,4 +32,5 @@ return [
     'controller_path' => BASE_PATH . DS . 'app' . DS . 'Controller' . DS,//控制器路径
     'nodes_path' => RUNTIME_PATH . 'nodes.php',//nodes.php文件路径
     'app_namespace' => 'App',
+    'redis_array_prefix' => 'redis_array_prefix::'
 ];
