@@ -3,31 +3,49 @@
 
 namespace App\Logic;
 
-
-use App\Util\Prefix;
-use App\Util\Redis;
+use App\Util\RedisHash\SmtpSettingRedisHash;
+use App\Util\RedisHash\WebSettingRedisHash;
 
 class SettingLogic
 {
 
     public function getWeb(): array
     {
-        return Redis::getInstance()->hGetAll(Prefix::webSetting());
+        $hash = new WebSettingRedisHash();
+
+        return $hash->toArray();
     }
 
-    public function saveWeb($setting): bool
+    public function saveWeb($site, $author, $domain, $keywords, $desc, $copyright): bool
     {
-        return Redis::getInstance()->hMSet(Prefix::webSetting(), $setting);
+
+        $hash = new WebSettingRedisHash();
+        $hash->site = $site;
+        $hash->author = $author;
+        $hash->domain = $domain;
+        $hash->keywords = $keywords;
+        $hash->desc = $desc;
+        $hash->copyright = $copyright;
+
+        return true;
     }
 
     public function getSMTP(): array
     {
-        return Redis::getInstance()->hGetAll(Prefix::smtpSetting());
+        $hash = new SmtpSettingRedisHash();
+        return $hash->toArray();
     }
 
-    public function saveSMTP($setting): bool
+    public function saveSMTP($server, $port, $email, $nickname, $password): bool
     {
-        return Redis::getInstance()->hMSet(Prefix::smtpSetting(), $setting);
+        $hash = new SmtpSettingRedisHash();
+        $hash->server = $server;
+        $hash->port = $port;
+        $hash->email = $email;
+        $hash->nickname = $nickname;
+        $hash->password = $password;
+
+        return true;
     }
 
 }

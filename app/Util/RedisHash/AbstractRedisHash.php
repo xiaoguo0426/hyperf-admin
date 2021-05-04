@@ -11,7 +11,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 
     private $redis;
 
-    private $key;
+    protected $key;
 
     protected $name = '';
 

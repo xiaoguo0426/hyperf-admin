@@ -53,16 +53,7 @@ class SettingController extends AbstractController
         $desc = $this->request->post('desc', '');
         $copyright = $this->request->post('copyright', '');
 
-        $data = [
-            'site' => $site,
-            'author' => $author,
-            'domain' => $domain,
-            'keywords' => $keywords,
-            'desc' => $desc,
-            'copyright' => $copyright
-        ];
-
-        $setting = $this->logic->saveWeb($data);
+        $setting = $this->logic->saveWeb($site, $author, $domain, $keywords, $desc, $copyright);
 
         if (!$setting) {
             throw new ResultException('保存失败！');
@@ -98,15 +89,7 @@ class SettingController extends AbstractController
         $nickname = $this->request->post('nickname', '');
         $password = $this->request->post('password', '');
 
-        $data = [
-            'server' => $server,
-            'port' => $port,
-            'email' => $email,
-            'nickname' => $nickname,
-            'password' => $password
-        ];
-
-        $setting = $this->logic->saveSMTP($data);
+        $setting = $this->logic->saveSMTP($server, $port, $email, $nickname, $password);
 
         if (!$setting) {
             throw new ResultException('保存失败！');
