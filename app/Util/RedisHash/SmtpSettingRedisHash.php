@@ -17,10 +17,10 @@ use App\Util\Prefix;
 class SmtpSettingRedisHash extends AbstractRedisHash
 {
 
-    public function __construct($connect = 'default')
+    public function __construct()
     {
         $this->name = Prefix::smtpSetting();
-        parent::__construct($connect);
+        parent::__construct('test');
     }
 
 }
