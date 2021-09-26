@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Logic;
 
@@ -8,7 +9,6 @@ use App\Util\RedisHash\WebSettingRedisHash;
 
 class SettingLogic
 {
-
     public function getWeb(): array
     {
         $hash = new WebSettingRedisHash();
@@ -18,7 +18,6 @@ class SettingLogic
 
     public function saveWeb($site, $author, $domain, $keywords, $desc, $copyright): bool
     {
-
         $hash = new WebSettingRedisHash();
         $hash->site = $site;
         $hash->author = $author;
@@ -47,5 +46,4 @@ class SettingLogic
 
         return true;
     }
-
 }

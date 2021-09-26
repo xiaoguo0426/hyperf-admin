@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Order;
 
 use App\Controller\AbstractController;
@@ -7,17 +9,15 @@ use App\Controller\AbstractController;
 /**
  * @menu 订单管理
  * Class OrderController
+ *
  * @package App\Controller\Order
  */
 class OrderController extends AbstractController
 {
-
     /**
      * 列表
      */
-    public function getList(){
-
+    public function getList(): void
+    {
     }
-
-
 }

@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Exception\Handler;
-
 
 use App\Exception\InvalidAccessException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
@@ -10,9 +10,8 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
-class FileNotFoundExceptionHandler  extends ExceptionHandler
+class FileNotFoundExceptionHandler extends ExceptionHandler
 {
-
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
         if ($throwable instanceof InvalidAccessException) {

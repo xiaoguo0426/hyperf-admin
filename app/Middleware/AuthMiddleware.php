@@ -1,21 +1,23 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Middleware;
 
-use App\Util\Token;
 use App\Util\Auth;
+use App\Util\Token;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 
 /**
  * 权限验证中间件
  * Class AuthMiddleware
+ *
  * @package App\Middleware
  */
 class AuthMiddleware implements MiddlewareInterface
@@ -59,15 +61,15 @@ class AuthMiddleware implements MiddlewareInterface
             //todo 检查token
             $jwt = Token::instance()->checkToken($token);
 
-            $admin = (array)($jwt->data);
+            $admin = (array) ($jwt->data);
 
             //todo 检查用户与节点权限
-            if ('admin' !== $admin['user_name'] && !Auth::checkNode($admin['role_id'], $cur_node) && !Auth::checkIgnoreNode($cur_node)) {
+            if ($admin['user_name'] !== 'admin' && ! Auth::checkNode($admin['role_id'], $cur_node) && ! Auth::checkIgnoreNode($cur_node)) {
                 return $this->response->json(
                     [
                         'code' => '1',
                         'msg' => '您没有访问该节点的权限！',
-                        'data' => []
+                        'data' => [],
                     ]
                 );
             }
@@ -76,7 +78,7 @@ class AuthMiddleware implements MiddlewareInterface
                 [
                     'code' => $throwable->getCode(),
                     'msg' => $throwable->getMessage(),
-                    'data' => []
+                    'data' => [],
                 ]
             );
         }

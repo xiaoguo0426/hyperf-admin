@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Validate;
@@ -7,7 +8,6 @@ use think\Validate;
 
 class MenuValidate extends Validate
 {
-
     protected $rule = [
         'id' => 'require',
         'pid' => 'require',
@@ -38,9 +38,7 @@ class MenuValidate extends Validate
 //        var_dump($fieldValue);
 //    }
 
-    protected function checkParams($fieldValue)
+    protected function checkParams($fieldValue): void
     {
-
     }
-
 }

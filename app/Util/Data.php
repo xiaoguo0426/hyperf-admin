@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Util;
-
 
 class Data
 {
@@ -11,7 +11,7 @@ class Data
         $tops = [];//顶级菜单
         $subs = [];//二级菜单
         foreach ($list as $item) {
-            if (0 == $item[$pid]) {
+            if ($item[$pid] === 0) {
                 $item[$sub] = [];
                 $tops[$item[$id]] = $item;
             } else {
@@ -21,7 +21,7 @@ class Data
 
         foreach ($tops as &$top) {
             foreach ($subs as $item) {
-                if ($item[$pid] == $top[$id]) {
+                if ($item[$pid] === $top[$id]) {
                     $top[$sub][] = $item;
                 }
             }

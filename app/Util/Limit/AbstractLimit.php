@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\Limit;
 
-
-Abstract class AbstractLimit
+abstract class AbstractLimit
 {
-    private $unique;
+
+    public const TTL = 3600;
 
     protected $redis;
 
@@ -14,9 +15,8 @@ Abstract class AbstractLimit
 
     protected $error = '';
 
-    const TTL = 3600;
-
     protected $maxTryCount = 5;
+    private $unique;
 
     public function __construct($unique)
     {
@@ -27,15 +27,14 @@ Abstract class AbstractLimit
         $this->redis = \App\Facade\Redis::instance();
     }
 
-    abstract public function genKey($unique);
+    abstract public function genKey($unique): void;
 
-    abstract public function can();
+    abstract public function can(): void;
 
-    abstract public function incr();
+    abstract public function incr(): void;
 
     public function getError()
     {
         return $this->error;
     }
-
 }

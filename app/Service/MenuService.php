@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
@@ -9,21 +10,17 @@ use App\Model\SystemMenuModel;
 
 class MenuService extends BaseService
 {
-
     public function list()
     {
-        $list = SystemMenuModel::all([
+        return SystemMenuModel::all([
             'id',
             'pid',
             'title',
             'uri',
             'sort',
             'icon',
-            'status'
+            'status',
         ])->sortByDesc('sort')->values()->toArray();
-
-        return $list;
-
     }
 
     public function add(int $pid, string $title, string $uri = '', string $params = '#', string $icon = '', $sort = 0)
@@ -39,9 +36,7 @@ class MenuService extends BaseService
         $model->sort = $sort;
 
         return $model->save();
-
     }
-
 
     public function edit(int $id, int $pid, string $title, string $uri = '', string $params = '#', string $icon = '', $sort = 0)
     {
@@ -51,7 +46,7 @@ class MenuService extends BaseService
             'uri' => $uri,
             'params' => $params,
             'icon' => $icon,
-            'sort' => $sort
+            'sort' => $sort,
         ]);
     }
 
@@ -61,25 +56,23 @@ class MenuService extends BaseService
     }
 
     /**
-     * @param int $id
      * @return int|mixed
      */
     public function del(int $id)
     {
         return SystemMenuModel::query()->where('id', $id)->delete();
-
     }
 
     public function forbid(int $id): int
     {
         $info = $this->info($id);
 
-        if (!$info) {
+        if (! $info) {
             throw new EmptyException();
         }
 
         return SystemMenuModel::query()->where('id', $id)->update([
-            'status' => Constants::STATUS_FORBID
+            'status' => Constants::STATUS_FORBID,
         ]);
     }
 
@@ -87,13 +80,12 @@ class MenuService extends BaseService
     {
         $info = $this->info($id);
 
-        if (!$info) {
+        if (! $info) {
             throw new EmptyException();
         }
 
         return SystemMenuModel::query()->where('id', $id)->update([
-            'status' => Constants::STATUS_ACTIVE
+            'status' => Constants::STATUS_ACTIVE,
         ]);
-
     }
 }

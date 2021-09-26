@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Util;
 
 class EmailLimit
 {
 
+    public const TTL = 3600;
     private $unique;
 
     private $redis;
@@ -12,8 +15,6 @@ class EmailLimit
     private $key;
 
     private $error = '';
-
-    const TTL = 3600;
 
     private $maxTryCount = 5;
 
@@ -24,19 +25,13 @@ class EmailLimit
         $this->key = $this->genKey($unique);
 
         $this->redis = \App\Facade\Redis::instance();
-
-    }
-
-    private function genKey($unique)
-    {
-        return Prefix::getSendEmailLimit($unique);
     }
 
     public function canSend()
     {
         $canSend = $this->redis->get($this->key);
 
-        if (false === $canSend) {
+        if ($canSend === false) {
             $canSend = 0;
             $this->redis->set($this->key, $canSend, self::TTL);
         }
@@ -56,4 +51,8 @@ class EmailLimit
         $this->redis->incr($this->key);
     }
 
+    private function genKey($unique)
+    {
+        return Prefix::getSendEmailLimit($unique);
+    }
 }

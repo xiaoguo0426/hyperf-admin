@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util;
-
 
 use App\Util\Limit\AbstractLimit;
 
@@ -19,7 +19,7 @@ class IpLimit extends AbstractLimit
     {
         $can = $this->redis->get($this->key);
 
-        if (false === $can) {
+        if ($can === false) {
             $can = 0;
             $this->redis->set($this->key, $can, self::TTL);
         }

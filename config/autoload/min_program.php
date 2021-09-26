@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -18,14 +19,14 @@ return [
             'app_id' => env('WECHAT_MINI_PROGRAM_APPID', ''),
             'secret' => env('WECHAT_MINI_PROGRAM_SECRET', ''),
             'token' => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
-            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', '')
+            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
         ],
         //小程序2
         'default2' => [
             'app_id' => env('WECHAT_MINI_PROGRAM_APPID_DEFAULT2', ''),
             'secret' => env('WECHAT_MINI_PROGRAM_SECRET_DEFAULT2', ''),
             'token' => env('WECHAT_MINI_PROGRAM_TOKEN_DEFAULT2', ''),
-            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY_DEFAULT2', '')
-        ]
-    ]
+            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY_DEFAULT2', ''),
+        ],
+    ],
 ];

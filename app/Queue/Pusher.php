@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Queue;
-
 
 use App\Job\ExampleJob;
 use App\Job\JobData\OrderItemJobData;
@@ -24,9 +24,9 @@ class Pusher
 
     /**
      * 生产消息.
+     *
      * @param $params array 数据
      * @param int $delay 延时时间 单位秒
-     * @return bool
      */
     public function push($params, int $delay = 20): bool
     {
@@ -38,17 +38,17 @@ class Pusher
             [
                 'product_id' => 1,
                 'sku_id' => 1,
-                'num' => 1
+                'num' => 1,
             ],
             [
                 'product_id' => 2,
                 'sku_id' => 2,
-                'num' => 2
+                'num' => 2,
             ],
             [
                 'product_id' => 3,
                 'sku_id' => 3,
-                'num' => 3
+                'num' => 3,
             ],
         ];
 
@@ -58,9 +58,8 @@ class Pusher
             $orderProducts[] = $itemJobData;
         }
 
-        $orderJobData = new OrderJobData($orderProducts,11,22);
+        $orderJobData = new OrderJobData($orderProducts, 11, 22);
 
         return $this->driver->push(new ExampleJob($orderJobData), $delay);
     }
-
 }

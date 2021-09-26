@@ -1,24 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\MyCrontab;
 
-
-use App\Util\MyCrontab\MyCrontab;
 use App\Util\Prefix;
+use App\Util\Redis;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use App\Util\MyCrontab\CrontabAnnotation;
 use Hyperf\Crontab\Crontab;
 use Hyperf\Crontab\CrontabManager;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Process\Event\BeforeProcessHandle;
-use App\Util\Redis;
 
 class CrontabRegisterListener implements ListenerInterface
 {
-
     /**
      * @var \Hyperf\Crontab\CrontabManager
      */
@@ -48,7 +45,7 @@ class CrontabRegisterListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         $crontabs = $this->parseCrontabs();
         foreach ($crontabs as $crontab) {
@@ -75,7 +72,6 @@ class CrontabRegisterListener implements ListenerInterface
             }
 
             if ($crontab instanceof MyCrontab) {
-
                 $crontabs[$crontab->getName()] = $crontab;
 
                 $reflection = new \ReflectionObject($crontab);

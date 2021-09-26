@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Job;
 
-use App\Job\JobData\OrderJobData;
 use Hyperf\AsyncQueue\Job;
 
 class ExampleJob extends Job
 {
-
     public $params;
 
     /**
@@ -27,7 +26,7 @@ class ExampleJob extends Job
     /**
      * @inheritDoc
      */
-    public function handle()
+    public function handle(): void
     {
         // 根据参数处理具体逻辑
         // 通过具体参数获取模型等

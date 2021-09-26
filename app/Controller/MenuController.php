@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Exception\InvalidAccessException;
@@ -13,8 +15,10 @@ use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * @menu 菜单管理
+ *
  * @AutoController()
  * Class MenuController
+ *
  * @package App\Controller
  */
 class MenuController extends AbstractController
@@ -24,7 +28,6 @@ class MenuController extends AbstractController
      */
     public function list(): \Psr\Http\Message\ResponseInterface
     {
-
         if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
@@ -36,7 +39,6 @@ class MenuController extends AbstractController
         $data = Data::toTree($list, 'id', 'pid');
 
         return $this->response->success($data);
-
     }
 
     /**
@@ -72,12 +74,11 @@ class MenuController extends AbstractController
 
         $res = $logic->add($pid, $title, $uri, $params, $icon, $sort);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('添加失败！');
         }
 
         return $this->response->success([], '添加成功！');
-
     }
 
     /**
@@ -115,7 +116,7 @@ class MenuController extends AbstractController
 
         $res = $logic->edit($id, $pid, $title, $uri, $params, $icon, $sort);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('编辑失败！', 200);
         }
 
@@ -147,12 +148,11 @@ class MenuController extends AbstractController
 
         $res = $logic->$method($id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('删除失败！', 200);
         }
 
         return $this->response->success($res, '删除成功！');
-
     }
 
     /**
@@ -180,12 +180,11 @@ class MenuController extends AbstractController
 
         $res = $logic->$method($id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('禁用失败！', 200);
         }
 
         return $this->response->success($res, '禁用成功！');
-
     }
 
     /**
@@ -213,7 +212,7 @@ class MenuController extends AbstractController
 
         $res = $logic->$method($id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('启用失败！', 200);
         }
 

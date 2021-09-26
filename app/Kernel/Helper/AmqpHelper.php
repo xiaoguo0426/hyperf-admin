@@ -1,12 +1,16 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
  * @link     https://www.hyperf.io
+ *
  * @document https://doc.hyperf.io
+ *
  * @contact  group@hyperf.io
+ *
  * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
  */
 
@@ -19,7 +23,7 @@ class AmqpHelper
 {
     public static function produce(ProducerMessageInterface $message, $retry = 2)
     {
-        return retry($retry, function () use ($message) {
+        return retry($retry, static function () use ($message) {
             return di()->get(Producer::class)->produce($message, true);
         });
     }

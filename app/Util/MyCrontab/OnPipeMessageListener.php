@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\MyCrontab;
-
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Crontab;
 use Hyperf\Crontab\PipeMessage;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\OnPipeMessage;
 use Psr\Container\ContainerInterface;
 
@@ -32,7 +31,7 @@ class OnPipeMessageListener
     }
 
     /**
-     * @return string[] returns the events that you want to listen
+     * @return array<string> returns the events that you want to listen
      */
     public function listen(): array
     {
@@ -45,7 +44,7 @@ class OnPipeMessageListener
      * Handle the Event when the event is triggered, all listeners will
      * complete before the event is returned to the EventDispatcher.
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         if ($event instanceof OnPipeMessage && $event->data instanceof PipeMessage) {
             /** @var PipeMessage $data */
@@ -73,10 +72,10 @@ class OnPipeMessageListener
         }
         $crontab = $data->data ?? null;
 
-        if (0 === $crontab->getStatus()){
+        if ($crontab->getStatus() === 0) {
             return;
         }
-        
+
         $crontab instanceof Crontab && $instance->{$method}($crontab);
     }
 }

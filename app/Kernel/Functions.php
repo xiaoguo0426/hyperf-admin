@@ -1,12 +1,16 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
  * @link     https://www.hyperf.io
+ *
  * @document https://doc.hyperf.io
+ *
  * @contact  group@hyperf.io
+ *
  * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
  */
 
@@ -16,7 +20,9 @@ use Hyperf\Utils\ApplicationContext;
 if (! function_exists('di')) {
     /**
      * Finds an entry of the container by its identifier and returns it.
-     * @param null|mixed $id
+     *
+     * @param mixed|null $id
+     *
      * @return mixed|\Psr\Container\ContainerInterface
      */
     function di($id = null)
@@ -33,8 +39,6 @@ if (! function_exists('di')) {
 if (! function_exists('format_throwable')) {
     /**
      * Format a throwable to string.
-     * @param Throwable $throwable
-     * @return string
      */
     function format_throwable(Throwable $throwable): string
     {

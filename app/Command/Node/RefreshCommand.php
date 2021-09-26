@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command\Node;
 
+use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerInterface;
-use Hyperf\Command\Annotation\Command;
-use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * @Command
@@ -26,12 +25,12 @@ class RefreshCommand extends HyperfCommand
         parent::__construct('node:refresh');
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->setDescription('Hyperf Nodes Refresh Command');
     }
 
-    public function handle()
+    public function handle(): void
     {
         $nodes_path = config('nodes_path');
         file_exists($nodes_path) && unlink($nodes_path);
@@ -40,6 +39,4 @@ class RefreshCommand extends HyperfCommand
 
         $this->comment('Nodes Data has successfully Refreshed!');
     }
-
 }
-

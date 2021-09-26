@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Logic\Admin;
 
 use App\Exception\EmptyException;
 use App\Exception\ResultException;
 use App\Exception\UserNotFoundException;
-use App\Model\SystemUserModel;
 use App\Service\UserService;
 
 class UserLogic
 {
     /**
-     *
      * @param array $query
+     *
      * @return array
      */
     public function getList(array $query): array
     {
-
         $page = isset($query['page']) ? (int) $query['page'] : 1;
         $limit = isset($query['limit']) ? (int) $query['limit'] : 20;
 
@@ -27,18 +27,15 @@ class UserLogic
 
         return [
             'list' => $paginator->items(),
-            'count' => $paginator->total()
+            'count' => $paginator->total(),
         ];
     }
 
     /**
-     *
-     * @param int $user_id
      * @return array
      */
     public function getUser(int $user_id): array
     {
-
         $di = di(UserService::class);
 
         $user = $di->getUser($user_id);
@@ -55,20 +52,8 @@ class UserLogic
         return di(UserService::class)->getUserByName($user_name);
     }
 
-    /**
-     * @param int $user_id
-     * @param int $role_id
-     * @param string $nickname
-     * @param int $gender
-     * @param string $avatar
-     * @param string $mobile
-     * @param string $email
-     * @param string $remark
-     * @return int
-     */
     public function save(int $user_id, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, string $remark): int
     {
-
         $di = di(UserService::class);
 
         $user = $di->getUser($user_id);
@@ -84,11 +69,9 @@ class UserLogic
             'avatar' => $avatar,
             'mobile' => $mobile,
             'email' => $email,
-            'remark' => $remark
+            'remark' => $remark,
         ]);
-
     }
-
 
     public function add(string $username, string $password, int $role_id, string $nickname, int $gender, string $avatar, string $mobile, string $email, int $status, string $remark)
     {
@@ -108,10 +91,6 @@ class UserLogic
         return di(UserService::class)->add($data);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function forbid(int $id): bool
     {
         $service = di(UserService::class);
@@ -140,10 +119,8 @@ class UserLogic
 
     /**
      * 修改密码
-     * @param int $user_id
-     * @param string $oldPassword
+     *
      * @param $password
-     * @return int
      */
     public function password(int $user_id, string $oldPassword, $password): int
     {
@@ -160,15 +137,14 @@ class UserLogic
         }
 
         return $di->save($user_id, [
-            'password' => $this->createPassword($password)
+            'password' => $this->createPassword($password),
         ]);
     }
 
     /**
      * 设置密码
-     * @param int $user_id
+     *
      * @param $password
-     * @return int
      */
     public function setPassword(int $user_id, $password): int
     {
@@ -181,15 +157,12 @@ class UserLogic
         }
 
         return $di->save($user_id, [
-            'password' => $this->createPassword($password)
+            'password' => $this->createPassword($password),
         ]);
     }
 
     /**
      * 验证password
-     * @param string $inputPassword
-     * @param string $passwordHash
-     * @return bool
      */
     public function verifyPassword(string $inputPassword, string $passwordHash): bool
     {
@@ -200,5 +173,4 @@ class UserLogic
     {
         return password_hash($str, PASSWORD_DEFAULT);
     }
-
 }

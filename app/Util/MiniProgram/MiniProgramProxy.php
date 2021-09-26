@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\MiniProgram;
 
@@ -29,5 +30,4 @@ class MiniProgramProxy extends Application
     {
         return parent::__call($method, $args);
     }
-
 }

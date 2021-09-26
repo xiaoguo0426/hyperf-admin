@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\MyCrontab;
-
 
 use Hyperf\Crontab\Crontab;
 
@@ -12,7 +12,6 @@ class MyCrontab extends Crontab
      * @var int
      */
     private $status = 1;
-
 
     public function setStatus($status): MyCrontab
     {
@@ -34,5 +33,4 @@ class MyCrontab extends Crontab
     {
         return $this->status;
     }
-
 }

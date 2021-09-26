@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util;
-
-
-use App\Exception\LoginException;
 
 class LoginErrLimit
 {
 
+    public const TTL = 3600;
     private $unique;
 
     private $redis;
@@ -16,8 +15,6 @@ class LoginErrLimit
     private $key;
 
     private $error = '';
-
-    const TTL = 3600;
 
     private $maxTryCount = 5;
 
@@ -28,7 +25,6 @@ class LoginErrLimit
         $this->key = $this->genKey($unique);
 
         $this->redis = \App\Facade\Redis::instance();
-
     }
 
     public function getMaxTryCount()
@@ -41,18 +37,13 @@ class LoginErrLimit
         return $this->error;
     }
 
-    private function genKey($unique)
-    {
-        return Prefix::getLoginErrCount($unique);
-    }
-
     public function canLogin()
     {
         $max_count = 5;//可重试次数
 
         $login_err_count = $this->getCount();
 
-        if (false === $login_err_count) {
+        if ($login_err_count === false) {
             $login_err_count = 0;
             $this->redis->set($this->key, $login_err_count, self::TTL);
         }
@@ -78,7 +69,7 @@ class LoginErrLimit
 
         $diff = $this->maxTryCount - $incr;
 
-        $this->error = $diff ? "Incorrect username or password！" : 'Attempts reached the limit！';
+        $this->error = $diff ? 'Incorrect username or password！' : 'Attempts reached the limit！';
     }
 
     /**
@@ -87,5 +78,10 @@ class LoginErrLimit
     public function clear()
     {
         return $this->redis->del($this->key);
+    }
+
+    private function genKey($unique)
+    {
+        return Prefix::getLoginErrCount($unique);
     }
 }

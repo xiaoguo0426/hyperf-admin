@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use Dotenv\Dotenv;
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -26,12 +26,12 @@ class SaltCommand extends HyperfCommand
         parent::__construct('salt:gen');
     }
 
-    public function configure()
+    public function configure(): void
     {
         $this->setDescription('Hyperf salt Command');
     }
 
-    public function handle()
+    public function handle(): void
     {
         $env_file = BASE_PATH . '/.env';
         if (! file_exists($env_file)) {
@@ -54,10 +54,10 @@ class SaltCommand extends HyperfCommand
             if (is_array($val)) {
                 foreach ($val as $k => $v) {
                     $item = $name . '_' . strtoupper($k);
-                    fwrite($handle, "$item=$v" . PHP_EOL);
+                    fwrite($handle, "${item}=${v}" . PHP_EOL);
                 }
             } else {
-                fwrite($handle, "$name=$val" . PHP_EOL);
+                fwrite($handle, "${name}=${val}" . PHP_EOL);
             }
         }
 
@@ -66,4 +66,3 @@ class SaltCommand extends HyperfCommand
         $this->line($app_key, 'info');
     }
 }
-

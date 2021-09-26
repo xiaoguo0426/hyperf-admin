@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util;
-
 
 use App\Exception\BusinessException;
 use PHPMailer\PHPMailer\PHPMailer;
@@ -13,7 +13,7 @@ class Email
 
     public function __construct()
     {
-        $this->mail = new PHPMailer; //PHPMailer对象
+        $this->mail = new PHPMailer(); //PHPMailer对象
         $this->mail->CharSet = 'UTF-8'; //设定邮件编码，默认ISO-8859-1，如果发中文此项必须设置，否则乱码
         $this->mail->IsSMTP(); // 设定使用SMTP服务
         $this->mail->SMTPDebug = 0; // 关闭SMTP调试功能
@@ -24,13 +24,15 @@ class Email
         $this->mail->Username = config('email_username'); // SMTP服务器用户名
         $this->mail->Password = config('email_password'); // SMTP服务器密码
         $this->mail->SetFrom(config('email_from'), config('email_nickname')); // 邮箱，昵称
-
     }
 
     /**
      * 设置收件人
+     *
      * @param $address
+     *
      * @return $this
+     *
      * @throws \PHPMailer\PHPMailer\Exception
      */
     public function setAddress($address)
@@ -41,6 +43,7 @@ class Email
 
     /**
      * @param $code
+     *
      * @return $this
      */
     public function setCodeTpl($code)
@@ -54,6 +57,7 @@ class Email
     /**
      * 设置欢迎模板 【just for test】
      * just for test
+     *
      * @return $this
      */
     public function setWelcomeTpl()
@@ -65,10 +69,10 @@ class Email
 
     /**
      * 设置修改fund-pass模板
+     *
      * @param $code
-     * @return Email
      */
-    public function setFundPassTpl($code)
+    public function setFundPassTpl($code): Email
     {
         $this->mail->Subject = 'Email Verify';
         $this->mail->Body = 'Dear user, this is an email from hacd. Your verification code is:' . $code;
@@ -77,10 +81,10 @@ class Email
 
     /**
      * 设置修改fund-pass模板
+     *
      * @param $code
-     * @return Email
      */
-    public function setWithdrawPassTpl($code)
+    public function setWithdrawPassTpl($code): Email
     {
         $this->mail->Subject = 'Email Verify';
         $this->mail->Body = 'Dear user, this is an email from hacd. Your verification code is:' . $code;
@@ -88,7 +92,7 @@ class Email
     }
 
     //TODO
-    public function setTpl($type)
+    public function setTpl($type): void
     {
     }
 
@@ -99,20 +103,19 @@ class Email
         return $this->mail->Send();
     }
 
-    private function _check()
-    {
-        if (!$this->mail->Subject) {
-            throw new BusinessException('email subject require');
-        }
-
-        if (!$this->mail->Body) {
-            throw new BusinessException('email body require');
-        }
-    }
-
     public function getError()
     {
         return $this->mail->ErrorInfo;
     }
 
+    private function _check(): void
+    {
+        if (! $this->mail->Subject) {
+            throw new BusinessException('email subject require');
+        }
+
+        if (! $this->mail->Body) {
+            throw new BusinessException('email body require');
+        }
+    }
 }

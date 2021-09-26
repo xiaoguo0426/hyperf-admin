@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Validate;
@@ -7,12 +8,11 @@ use think\Validate;
 
 class AuthValidate extends Validate
 {
-
     protected $rule = [
         'id' => 'require',
         'title' => 'require|min:|max:30',
         'desc' => 'require|min:|max:255',
-        'nodes' => 'require'
+        'nodes' => 'require',
     ];
 
     protected $message = [
@@ -30,12 +30,11 @@ class AuthValidate extends Validate
         'base' => ['id'],
         'add' => ['title', 'desc'],
         'edit' => ['id', 'title', 'desc'],
-        'saveAuthNodes' => ['id', 'nodes']
+        'saveAuthNodes' => ['id', 'nodes'],
     ];
 
 //    protected function checkAuthNodes($fieldValue)
 //    {
 //        var_dump($fieldValue);
 //    }
-
 }

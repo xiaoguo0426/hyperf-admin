@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Util\RedisHash;
 
 use App\Util\Prefix;
@@ -12,6 +14,7 @@ use App\Util\Prefix;
  * @property string desc
  * @property string copyright
  * Class WebSettingRedisHash
+ *
  * @package App\Util\RedisHash
  */
 class WebSettingRedisHash extends AbstractRedisHash

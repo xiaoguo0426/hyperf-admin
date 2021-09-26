@@ -1,12 +1,16 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
  * @link     https://www.hyperf.io
+ *
  * @document https://doc.hyperf.io
+ *
  * @contact  group@hyperf.io
+ *
  * @license  https://github.com/hyperf-cloud/hyperf/blob/master/LICENSE
  */
 
@@ -38,18 +42,14 @@ class Response
 
     /**
      * @param array $data
-     * @param int $count
-     * @param string $msg
-     * @return PsrResponseInterface
      */
     public function success(array $data, int $count = 0, string $msg = '获取成功！'): PsrResponseInterface
     {
-
         $res = [
             'code' => 0,
             'msg' => $msg,
             'data' => $data,
-            'count' => $count
+            'count' => $count,
         ];
 
         return $this->response->json($res);
@@ -60,14 +60,14 @@ class Response
         return $this->response->json([
             'code' => $code,
             'msg' => $message,
-            'data' => []
+            'data' => [],
         ]);
     }
 
     public function redirect($url, $status = 302): \Hyperf\HttpMessage\Server\Response
     {
         return $this->response()
-            ->withAddedHeader('Location', (string)$url)
+            ->withAddedHeader('Location', (string) $url)
             ->withStatus($status);
     }
 
@@ -78,9 +78,6 @@ class Response
         return $this;
     }
 
-    /**
-     * @return \Hyperf\HttpMessage\Server\Response
-     */
     public function response(): \Hyperf\HttpMessage\Server\Response
     {
         return Context::get(PsrResponseInterface::class);

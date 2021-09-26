@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller\Plugin;
 
 use App\Constants\Constants;
@@ -7,11 +9,12 @@ use App\Controller\AbstractController;
 use App\Util\OSS\Signature;
 use Hyperf\HttpServer\Annotation\AutoController;
 
-
 /**
  * @menu 资源管理
+ *
  * @AutoController()
  * Class UploadController
+ *
  * @package App\Controller
  */
 class UploadController extends AbstractController

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Logic\Product;
@@ -11,7 +12,6 @@ use App\Util\Redis;
 
 class CategoryLogic
 {
-
     private $service;
 
     public function __construct()
@@ -21,7 +21,9 @@ class CategoryLogic
 
     /**
      * 列表操作
+     *
      * @param array $query
+     *
      * @return array
      */
     public function list(array $query): array
@@ -43,7 +45,7 @@ class CategoryLogic
 
         return [
             'list' => $list,
-            'count' => $count
+            'count' => $count,
         ];
     }
 
@@ -55,7 +57,6 @@ class CategoryLogic
     }
 
     /**
-     * @param int $id
      * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
     public function info(int $id)
@@ -65,15 +66,9 @@ class CategoryLogic
 
     /**
      * 添加操作
-     * @param int $parent_id
-     * @param string $title
-     * @param int $sort
-     * @param string $desc
-     * @return int
      */
     public function add(int $parent_id, string $title, int $sort, string $desc): int
     {
-
         $add = $this->service->add($parent_id, $title, $sort, $desc);
 
         if (! $add) {
@@ -85,18 +80,8 @@ class CategoryLogic
         return (int) $add;
     }
 
-
-    /**
-     * @param int $id
-     * @param int $parent_id
-     * @param string $title
-     * @param int $sort
-     * @param string $desc
-     * @return bool
-     */
     public function edit(int $id, int $parent_id, string $title, int $sort, string $desc): bool
     {
-
         $info = $this->service->info($id);
 
         if (empty($info)) {
@@ -110,13 +95,8 @@ class CategoryLogic
         return $edit;
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function del(int $id): bool
     {
-
         $info = $this->service->info($id);
 
         if (empty($info)) {
@@ -129,13 +109,8 @@ class CategoryLogic
         return $del;
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function forbid(int $id): bool
     {
-
         $info = $this->service->info($id);
 
         if (empty($info)) {
@@ -149,13 +124,8 @@ class CategoryLogic
         return $forbid;
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function resume(int $id): bool
     {
-
         $info = $this->service->info($id);
 
         if (empty($info)) {
@@ -171,26 +141,23 @@ class CategoryLogic
 
     public function toTree($list)
     {
-        $list = arr2table($list, 'id', 'parent_id');
-
-        return $list;
+        return arr2table($list, 'id', 'parent_id');
+    
     }
 
     public function getListCache(): array
     {
-
         $redis = Redis::getInstance();
 
         $json = $redis->get(Prefix::productCategory());
 
-        if (false === $json) {
+        if ($json === false) {
             return [];
         }
 
         $arr = json_decode($json, true);
 
-        return JSON_ERROR_NONE === json_last_error() ? $arr : [];
-
+        return json_last_error() === JSON_ERROR_NONE ? $arr : [];
     }
 
     public function refreshListCache(): void

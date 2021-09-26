@@ -1,29 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Facade;
-
 
 use Hyperf\Server\Exception\RuntimeException;
 use Hyperf\Utils\ApplicationContext;
 
 abstract class Facade
 {
-    protected static function getFacadeAccessor()
-    {
-        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
-    }
 
-    // make 参数
-    protected static function getResolveAccessor(): array
+    // 静态访问
+    public static function __callStatic($method, $args)
     {
-        return [];
-    }
+        $instance = static::instance();
 
-    // 单例模式
-    protected static function singleton(): bool
-    {
-        return true;
+        if (! $instance) {
+            throw new RuntimeException('A facade root has not been set.');
+        }
+
+        return $instance->$method(...$args);
     }
 
     // 获取实例
@@ -39,17 +35,20 @@ abstract class Facade
     {
         return ApplicationContext::getContainer();
     }
-
-    // 静态访问
-    public static function __callStatic($method, $args)
+    protected static function getFacadeAccessor(): void
     {
-        $instance = static::instance();
-
-        if (! $instance) {
-            throw new RuntimeException('A facade root has not been set.');
-        }
-
-        return $instance->$method(...$args);
+        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }
 
+    // make 参数
+    protected static function getResolveAccessor(): array
+    {
+        return [];
+    }
+
+    // 单例模式
+    protected static function singleton(): bool
+    {
+        return true;
+    }
 }

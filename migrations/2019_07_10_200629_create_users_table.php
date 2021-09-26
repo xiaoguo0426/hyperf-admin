@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
-use Hyperf\Database\Schema\Schema;
-use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Migrations\Migration;
+use Hyperf\Database\Schema\Blueprint;
+use Hyperf\Database\Schema\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -12,8 +13,7 @@ class CreateUsersTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('system_users', function (Blueprint $table) {
-            //
+        Schema::create('system_users', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->string('username', 20);
             $table->string('password', 64);
@@ -41,8 +41,8 @@ class CreateUsersTable extends Migration
      */
     public function down(): void
     {
-        Schema::table('system_users', function (Blueprint $table) {
-            //
+        Schema::table('system_users', static function (Blueprint $table): void {
+            
         });
     }
 }

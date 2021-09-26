@@ -1,42 +1,46 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller\Admin;
 
+use App\Controller\AbstractController;
 use App\Exception\InvalidAccessException;
 use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidRequestMethodException;
 use App\Exception\ResultException;
-use App\Exception\UserNotFoundException;
 use App\Logic\Admin\UserLogic;
 use App\Logic\AuthLogic;
+use App\Util\Token;
 use App\Validate\UserValidate;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
-use App\Controller\AbstractController;
-use App\Util\Token;
 
 /**
  * @menu 用户管理
+ *
  * @AutoController()
  * Class UserController
+ *
  * @package App\Controller\Admin
  */
 class UserController extends AbstractController
 {
     /**
      * @Inject()
+     *
      * @var UserLogic
      */
     private $logic;
 
     /**
      * @auth 列表
+     *
      * @return mixed
      */
     public function list()
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidRequestMethodException();
         }
         $query = $this->request->query();
@@ -48,6 +52,7 @@ class UserController extends AbstractController
 
     /**
      * @return mixed
+     *
      * @ignore 个人查看【基本资料】
      */
     public function get()
@@ -67,6 +72,7 @@ class UserController extends AbstractController
 
     /**
      * @auth 查看
+     *
      * @return mixed
      */
     public function info()
@@ -92,7 +98,6 @@ class UserController extends AbstractController
      */
     public function save()
     {
-
         $user_id = Token::instance()->getUserId();
 
         $role_id = $this->request->post('role_id', '');
@@ -115,14 +120,13 @@ class UserController extends AbstractController
         ];
         $validate = di(UserValidate::class);
 
-        if (!$validate->scene('edit')->check($data)) {
+        if (! $validate->scene('edit')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $this->logic->save($user_id, $role_id, $nickname, $gender, $avatar, $mobile, $email, $remark);
 
         return $this->response->success([], 0, '保存成功！');
-
     }
 
     /**
@@ -130,7 +134,6 @@ class UserController extends AbstractController
      */
     public function edit(): \Psr\Http\Message\ResponseInterface
     {
-
         $user_id = $this->request->post('id', '');
 
         $role_id = $this->request->post('role_id', '');
@@ -153,14 +156,13 @@ class UserController extends AbstractController
         ];
         $validate = di(UserValidate::class);
 
-        if (!$validate->scene('edit')->check($data)) {
+        if (! $validate->scene('edit')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $this->logic->save($user_id, $role_id, $nickname, $gender, $avatar, $mobile, $email, $remark);
 
         return $this->response->success([], 0, '保存成功！');
-
     }
 
     /**
@@ -168,7 +170,6 @@ class UserController extends AbstractController
      */
     public function add(): \Psr\Http\Message\ResponseInterface
     {
-
         $username = $this->request->post('username', '');
         $password = $this->request->post('password', '');
         $role_id = $this->request->post('role_id', '');
@@ -195,16 +196,15 @@ class UserController extends AbstractController
 
         $validate = di(UserValidate::class);
 
-        if (!$validate->scene('add')->check($data)) {
+        if (! $validate->scene('add')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $add = $this->logic->add($username, $password, $role_id, $nickname, $gender, $avatar, $mobile, $email, $status, $remark);
-        if (!$add) {
+        if (! $add) {
             throw new ResultException('添加失败！');
         }
         return $this->response->success([], 0, '添加成功！');
-
     }
 
     /**
@@ -212,7 +212,7 @@ class UserController extends AbstractController
      */
     public function forbid(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -223,7 +223,7 @@ class UserController extends AbstractController
         ];
         $method = __FUNCTION__;
         $validate = di(UserValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
@@ -231,14 +231,13 @@ class UserController extends AbstractController
 
 //        $logic = new AuthLogic();
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('禁用失败！');
         }
 
         return $this->response->success([], 0, '禁用成功！');
-
     }
 
     /**
@@ -246,7 +245,7 @@ class UserController extends AbstractController
      */
     public function resume(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -258,18 +257,17 @@ class UserController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(UserValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('启用失败！');
         }
 
         return $this->response->success([], 0, '启用成功！');
-
     }
 
     /**
@@ -279,7 +277,7 @@ class UserController extends AbstractController
     {
         //个人修改密码
 
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -297,18 +295,17 @@ class UserController extends AbstractController
 
         $validate = di(UserValidate::class);
 
-        if (!$validate->scene('password')->check($data)) {
+        if (! $validate->scene('password')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $res = $this->logic->password($user_id, $oldPassword, $password);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('修改失败！');
         }
 
         return $this->response->success([], 0, '修改成功！');
-
     }
 
     /**
@@ -317,7 +314,7 @@ class UserController extends AbstractController
     public function setPassword(): \Psr\Http\Message\ResponseInterface
     {
         //管理员修改其他人密码
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -331,17 +328,16 @@ class UserController extends AbstractController
 
         $validate = di(UserValidate::class);
 
-        if (!$validate->scene('setPassword')->check($data)) {
+        if (! $validate->scene('setPassword')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $res = $this->logic->setPassword($user_id, $password);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('修改失败！');
         }
 
         return $this->response->success([], 0, '修改成功！');
     }
-
 }

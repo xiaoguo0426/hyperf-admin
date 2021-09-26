@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Product;
@@ -13,15 +14,17 @@ use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * @menu 商品管理
+ *
  * @AutoController()
  * Class ProductController
+ *
  * @package App\Controller\Product
  */
 class ProductController extends AbstractController
 {
-
     /**
      * @Inject()
+     *
      * @var ProductLogic
      */
     private $logic;
@@ -31,7 +34,7 @@ class ProductController extends AbstractController
      */
     public function list(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidRequestMethodException();
         }
         $query = $this->request->query();
@@ -39,12 +42,11 @@ class ProductController extends AbstractController
         $res = $this->logic->list($query);
 
         return $this->response->success($res['list'], $res['count']);
-
     }
 
     public function info(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
 
@@ -53,14 +55,13 @@ class ProductController extends AbstractController
         $res = [];
 
         if ($id) {
-            $res = $this->logic->info((int)$id);
+            $res = $this->logic->info((int) $id);
 
-            if (!$res) {
+            if (! $res) {
                 throw new EmptyException('商品不存在！');
             }
 
             $res = $res->toArray();
-
         } else {
             $res['cate_id'] = '';
             $res['title'] = '';
@@ -78,32 +79,28 @@ class ProductController extends AbstractController
     /**
      * @auth 新增
      */
-    public function add()
+    public function add(): void
     {
     }
 
     /**
      * @auth 编辑
      */
-    public function edit()
+    public function edit(): void
     {
-
     }
 
     /**
      * @auth 禁用
      */
-    public function forbid()
+    public function forbid(): void
     {
-
     }
 
     /**
      * @auth 启用
      */
-    public function resume()
+    public function resume(): void
     {
-
     }
-
 }

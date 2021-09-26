@@ -1,14 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
  * @link     https://www.hyperf.io
+ *
  * @document https://doc.hyperf.io
+ *
  * @contact  group@hyperf.io
+ *
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
+
 namespace App\Listener;
 
 use Hyperf\AsyncQueue\Event\AfterHandle;
@@ -52,7 +57,7 @@ class QueueHandleListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         if ($event instanceof Event && $event->message->job()) {
             $job = $event->message->job();

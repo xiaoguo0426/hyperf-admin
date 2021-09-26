@@ -1,36 +1,19 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Util;
 
 class Auth
 {
-
     /**
      * 忽略节点
+     *
      * @return array
      */
     public static function ignores(): array
     {
         return ['', '/', 'index/index', 'index/test', 'admin/login/index', 'admin/login/refreshToken'];
-    }
-
-    /**
-     *
-     * @param int $role_id
-     * @return string
-     */
-    private static function authKey(int $role_id): string
-    {
-        return Prefix::authNodes($role_id);
-    }
-
-    /**
-     * @return string
-     */
-    private static function ignoreNodesKey(): string
-    {
-        return Prefix::ignoreNodes();
     }
 
     public static function checkIgnoreNode(string $node): bool
@@ -40,15 +23,10 @@ class Auth
         $redis = Redis::getInstance();
 
         return $redis->sIsMember($key, self::hash($node));
-
     }
-
 
     /**
      * 检查节点权限
-     * @param int $role_id
-     * @param string $node
-     * @return bool
      */
     public static function checkNode(int $role_id, string $node): bool
     {
@@ -59,17 +37,15 @@ class Auth
         $redis = Redis::getInstance();
 
         return $redis->sIsMember($key, self::hash($node));
-
     }
 
     /**
      * 获取角色的所有节点
-     * @param int $role_id
+     *
      * @return array
      */
     public static function getNodes(int $role_id): array
     {
-
         $key = self::authKey($role_id);
 
         $redis = Redis::getInstance();
@@ -79,6 +55,7 @@ class Auth
 
     /**
      * 系统所有节点
+     *
      * @return array|mixed
      */
     public static function getAllTreeNodes()
@@ -87,18 +64,14 @@ class Auth
         return file_exists($nodes_path) ? require $nodes_path : [];
     }
 
-    /**
-     * @param $node
-     * @return string
-     */
     public static function hash($node): string
     {
         return md5(strtolower($node));
     }
 
     /**
-     * @param int $role_id
      * @param array $nodes
+     *
      * @return bool|int
      */
     public static function save(int $role_id, array $nodes)
@@ -122,9 +95,19 @@ class Auth
         return self::saveNodes($key, $nodes);
     }
 
+    private static function authKey(int $role_id): string
+    {
+        return Prefix::authNodes($role_id);
+    }
+
+    private static function ignoreNodesKey(): string
+    {
+        return Prefix::ignoreNodes();
+    }
+
     /**
-     * @param string $key
      * @param array $nodes
+     *
      * @return bool|int
      */
     private static function saveNodes(string $key, array $nodes)

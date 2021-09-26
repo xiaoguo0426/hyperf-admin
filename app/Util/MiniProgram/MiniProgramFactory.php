@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\MiniProgram;
-
 
 use App\Exception\InvalidConfigException;
 use Hyperf\Contract\ConfigInterface;
@@ -11,7 +11,7 @@ use Psr\Container\ContainerInterface;
 class MiniProgramFactory
 {
     /**
-     * @var MiniProgramProxy[]
+     * @var array<MiniProgramProxy>
      */
     protected array $proxies;
 
@@ -22,19 +22,14 @@ class MiniProgramFactory
             $this->proxies[$name] = make(MiniProgramProxy::class, [
                 'miniProgramName' => $name,
                 'config' => $item,
-                'container' => $container
+                'container' => $container,
             ]);
         }
     }
 
-    /**
-     * @param string $miniProgramName
-     *
-     * @return MiniProgramProxy
-     */
     public function get(string $miniProgramName = 'default'): ?MiniProgramProxy
     {
-        $proxy = $this->proxies[$miniProgramName] ?? NULL;
+        $proxy = $this->proxies[$miniProgramName] ?? null;
         if (! $proxy instanceof MiniProgramProxy) {
             throw new InvalidConfigException('Invalid MiniProgram proxy.');
         }

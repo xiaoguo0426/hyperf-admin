@@ -1,8 +1,10 @@
 <?php
 
-use Hyperf\Database\Schema\Schema;
-use Hyperf\Database\Schema\Blueprint;
+declare(strict_types=1);
+
 use Hyperf\Database\Migrations\Migration;
+use Hyperf\Database\Schema\Blueprint;
+use Hyperf\Database\Schema\Schema;
 
 class CreateGoodsSkuTable extends Migration
 {
@@ -11,7 +13,7 @@ class CreateGoodsSkuTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('goods_sku', function (Blueprint $table) {
+        Schema::create('goods_sku', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->integer('product_id', false, true)->comment('商品id');
             $table->integer('key_id', false, true)->comment('属性id');//goods_attr_key.id

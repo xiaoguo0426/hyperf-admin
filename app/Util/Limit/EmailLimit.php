@@ -1,12 +1,11 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\Limit;
 
-
 class EmailLimit extends AbstractLimit
 {
-
     protected $maxTryCount = 5;
 
     public function genKey($unique)
@@ -18,7 +17,7 @@ class EmailLimit extends AbstractLimit
     {
         $canSend = $this->redis->get($this->key);
 
-        if (false === $canSend) {
+        if ($canSend === false) {
             $canSend = 0;
             $this->redis->set($this->key, $canSend, self::TTL);
         }

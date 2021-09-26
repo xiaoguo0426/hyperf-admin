@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(strict_types=1);
+
 /**
  * Hyperf热重启简易脚本.
  *
@@ -32,7 +34,7 @@ if (is_running($watcherPidFile)) {
 }
 @cli_set_process_title('hyperf watcher');
 file_put_contents($watcherPidFile, getmypid());
-register_shutdown_function(function () use ($watcherPidFile) {
+register_shutdown_function(static function () use ($watcherPidFile): void {
     if (is_file($watcherPidFile)) {
         unlink($watcherPidFile);
     }
@@ -74,17 +76,17 @@ $watchCmd = [
     '-r',
     $rootPath . '/config/',
     '-m',
-    'poll_monitor'
+    'poll_monitor',
 ];
-$watchProcess = new SwooleProcess(function () use ($watchCmd, $rootPath, $sererPidFile) {
+$watchProcess = new SwooleProcess(static function () use ($watchCmd, $rootPath, $sererPidFile): void {
     console_info('watcher startted at ' . getmypid());
 
     $symfonyProcess = new Process($watchCmd, $rootPath);
     $wathcLock = false;
-    $symfonyProcess->setTimeout(0)->run(function ($type, $buffer) use (&$wathcLock, $sererPidFile) {
+    $symfonyProcess->setTimeout(0)->run(static function ($type, $buffer) use (&$wathcLock, $sererPidFile): void {
         // 只监听以下四种事件
         $logs = fswatch_event_parser($buffer, ['Created', 'Updated', 'Removed', 'Renamed']);
-        if (!$wathcLock && $logs) {
+        if (! $wathcLock && $logs) {
             $wathcLock = true;
 
             // 输出日志
@@ -111,7 +113,7 @@ $process->setTimeout(0);
 while (true) {
     try {
         console_info('Hyperf process is ready to start');
-        $process->run(function ($type, $buffer) use ($process) {
+        $process->run(static function ($type, $buffer): void {
             echo $buffer;
         });
     } catch (ProcessSignaledException $e) {
@@ -121,13 +123,10 @@ while (true) {
 
 /**
  * 进程是否在运行中.
- *
- * @param string $pidFile
- * @return bool
  */
-function is_running($pidFile)
+function is_running(string $pidFile): bool
 {
-    if (!is_file($pidFile)) {
+    if (! is_file($pidFile)) {
         return false;
     }
     $pid = file_get_contents($pidFile);
@@ -138,17 +137,17 @@ function is_running($pidFile)
     }
 }
 
-function console_warning($message)
+function console_warning($message): void
 {
     echo sprintf("\033[33m%s\033[39m\n", $message);
 }
 
-function console_error($message)
+function console_error($message): void
 {
     echo sprintf("\033[31m%s\033[0m\n", $message);
 }
 
-function console_info($message)
+function console_info($message): void
 {
     echo sprintf("\033[32m%s\033[0m\n", $message);
 }
@@ -156,15 +155,15 @@ function console_info($message)
 /**
  * fswatch event parser.
  *
- * @param string $event
  * @param array $eventTypes
+ *
  * @return array
  */
-function fswatch_event_parser($event, $eventTypes)
+function fswatch_event_parser(string $event, array $eventTypes): array
 {
     $logs = [];
     foreach ($eventTypes as $eventType) {
-        if (strpos($event, $eventType) != false) {
+        if (strpos($event, $eventType) !== false) {
             $logs[] = $event;
             break;
         }

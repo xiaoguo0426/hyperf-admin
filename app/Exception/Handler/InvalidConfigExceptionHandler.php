@@ -1,26 +1,21 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Exception\Handler;
 
-use App\Exception\InvalidArgumentsException;
 use App\Exception\InvalidConfigException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
-use Sentry;
 
 class InvalidConfigExceptionHandler extends ExceptionHandler
 {
-
     /**
      * Handle the exception, and return the specified result.
-     * @param Throwable $throwable
-     * @param ResponseInterface $response
-     * @return ResponseInterface
      */
-    public function handle(Throwable $throwable, ResponseInterface $response)
+    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         // TODO: Implement handle() method.
         if ($throwable instanceof InvalidConfigException) {
@@ -33,7 +28,6 @@ class InvalidConfigExceptionHandler extends ExceptionHandler
             // 阻止异常冒泡
             $this->stopPropagation();
             return $response->withStatus(200)->withBody(new SwooleStream($data));
-
         }
 
         return $response;

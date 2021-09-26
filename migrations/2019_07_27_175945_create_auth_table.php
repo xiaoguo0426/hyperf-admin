@@ -1,8 +1,10 @@
 <?php
 
-use Hyperf\Database\Schema\Schema;
-use Hyperf\Database\Schema\Blueprint;
+declare(strict_types=1);
+
 use Hyperf\Database\Migrations\Migration;
+use Hyperf\Database\Schema\Blueprint;
+use Hyperf\Database\Schema\Schema;
 
 class CreateAuthTable extends Migration
 {
@@ -11,7 +13,7 @@ class CreateAuthTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('system_auth', function (Blueprint $table) {
+        Schema::create('system_auth', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->string('title', '30')->comment('权限名称');
             $table->string('desc', 255)->comment('权限描述');

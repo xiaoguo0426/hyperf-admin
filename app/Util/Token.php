@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Util;
@@ -33,8 +34,8 @@ class Token
     }
 
     /**
-     * @param string $jwt
      * @return array
+     *
      * @throws \Exception
      */
     public function decode(string $jwt): array
@@ -44,7 +45,7 @@ class Token
             $user = $decode->data;
             $this->user = $user;
             $this->user_id = $user->user_id;
-            return (array)$decode;
+            return (array) $decode;
         } catch (ExpiredException $exception) {
             //过期token
             throw new LoginException('token过期！', -1);
@@ -59,8 +60,6 @@ class Token
 
     /**
      * 创建token
-     * @param Payload $payload
-     * @return string
      */
     public function createToken(Payload $payload): string
     {
@@ -68,8 +67,6 @@ class Token
     }
 
     /**
-     * @param string $token
-     * @return Payload
      * @throws \Exception
      */
     public function checkToken(string $token): Payload
@@ -86,18 +83,16 @@ class Token
 
         $jwt = new Payload($decode);
 
-        if (Constants::SCOPE_ROLE !== $jwt->scopes) {
+        if ($jwt->scopes !== Constants::SCOPE_ROLE) {
             throw new LoginException('token参数非法！', -2);
         }
 
         return $jwt;
-
     }
 
     /**
-     *
-     * @param string $refresh
      * @return array
+     *
      * @throws \Exception
      */
     public function checkRefreshToken(string $refresh): array
@@ -113,18 +108,18 @@ class Token
 
         $jwt = new Payload($decode);
 
-        if (Constants::SCOPE_REFRESH !== $jwt->scopes) {
+        if ($jwt->scopes !== Constants::SCOPE_REFRESH) {
             throw new LoginException('refresh-token参数非法！', -2);
         }
 
         return $jwt->toArray();
-
     }
 
     /**
      * 刷新token
+     *
      * @param $refresh
-     * @return string
+     *
      * @throws \Exception
      */
     public function refreshToken($refresh): string
@@ -139,13 +134,11 @@ class Token
             throw new LoginException('refresh-token参数有误！', -2);
         }
 
-        if (Constants::SCOPE_REFRESH !== $jwt['scopes']) {
+        if ($jwt['scopes'] !== Constants::SCOPE_REFRESH) {
             throw new LoginException('refresh-token参数非法！', -2);
         }
 
         return $jwt['data'];
-
-
     }
 
     public function getUserId(): int
@@ -157,5 +150,4 @@ class Token
     {
         return $this->user;
     }
-
 }

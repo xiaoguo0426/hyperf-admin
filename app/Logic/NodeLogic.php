@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Logic;
-
 
 use App\Util\Node;
 
@@ -12,11 +12,9 @@ class NodeLogic
     {
         $controller_path = config('controller_path', '');
         try {
-
             $nodes = Node::getClassNodes($controller_path);
 
             $methods = Node::getAuthMethodNodes($controller_path);
-
         } catch (\ReflectionException $e) {
         }
 
@@ -29,7 +27,7 @@ class NodeLogic
             $list[$lower] = [
                 'pnode' => substr($lower, 0, strrpos($lower, '/') ?: 0),
                 'node' => $lower,
-                'title' => $node_name
+                'title' => $node_name,
             ];
         }
 
@@ -47,17 +45,15 @@ class NodeLogic
     {
         $new = [];
         foreach ($list as $key => $item) {
-            if (false !== strpos($key, '/')) {
+            if (strpos($key, '/') !== false) {
                 $pnode = $item['pnode'];
-                if (!isset($new[$pnode])) {
-
+                if (! isset($new[$pnode])) {
                     $new[$pnode] = [
                         'pnode' => '',
                         'node' => $pnode,
-                        'title' => $item['title']
+                        'title' => $item['title'],
                     ];
                 }
-
             }
             $new[$key] = $item;
         }

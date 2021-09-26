@@ -1,14 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Service;
 
-use Psr\Container\ContainerInterface;
 use Hyperf\Utils\ApplicationContext;
+use Psr\Container\ContainerInterface;
 
 class BaseService
 {
-
     /**
      * @var ContainerInterface
      */
@@ -18,5 +18,4 @@ class BaseService
     {
         $this->container = ApplicationContext::getContainer();
     }
-
 }

@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util;
-
 
 use Hyperf\Contract\StdoutLoggerInterface;
 
@@ -17,5 +17,4 @@ class StdOutLog
     {
         $this->logger = $logger;
     }
-
 }

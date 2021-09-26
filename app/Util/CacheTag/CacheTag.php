@@ -1,23 +1,18 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\CacheTag;
 
-
 class CacheTag extends AbstractCacheTag
 {
-
-    const TTL = 600;
+    public const TTL = 600;
 
     public function genKey($unique): string
     {
         return $unique;
     }
 
-    /**
-     * @param $code
-     * @return bool
-     */
     public function check($code): bool
     {
         $get = $this->redis->get($this->key);
@@ -26,11 +21,11 @@ class CacheTag extends AbstractCacheTag
 
     /**
      * @param $code
+     *
      * @return mixed
      */
     public function cache($code): void
     {
         $this->redis->set($this->key, $code, self::TTL);
     }
-
 }

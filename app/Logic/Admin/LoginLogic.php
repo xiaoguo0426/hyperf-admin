@@ -1,8 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Logic\Admin;
-
 
 use App\Annotation\LoginAnnotation;
 use App\Constants\Constants;
@@ -22,16 +22,15 @@ class LoginLogic
 {
     /**
      * @LoginAnnotation()
-     * @param string $username
-     * @param string $password
+     *
      * @throws EmptyException
      * @throws InvalidConfigException
      * @throws UserNotFoundException
+     *
      * @return array
      */
     public function login(string $username, string $password): array
     {
-
         $userLogic = di(UserLogic::class);
 
         $user = di(UserService::class)->getUserByName($username);
@@ -39,7 +38,7 @@ class LoginLogic
         if (empty($user)) {
             throw new UserNotFoundException('账号不存在！', 1);
         }
-        if (0 === (int) $user->status) {
+        if ((int) $user->status === 0) {
             throw new StatusException('账号已被禁用，请联系管理员！', 1);
         }
 
@@ -53,7 +52,7 @@ class LoginLogic
 //        var_dump(\App\Facade\Redis::get($key)); //直接使用静态方法调用也是可以的。
 
         $login_err_count = $redis->get($key);
-        if (false === $login_err_count) {
+        if ($login_err_count === false) {
             $login_err_count = 0;
             $redis->set($key, $login_err_count, 3600);
         }
@@ -75,7 +74,6 @@ class LoginLogic
             }
 
             throw new LoginException($error, 1);
-
         }
         //清除错误次数
         $redis->del($key);
@@ -87,7 +85,7 @@ class LoginLogic
         if (! $auth) {
             throw new EmptyException('当前用户角色不存在，请联系管理员！');
         }
-        if (Constants::STATUS_ACTIVE !== (int) $auth->status) {
+        if ((int) $auth->status !== Constants::STATUS_ACTIVE) {
             throw new StatusException('当前用户角色被禁用，请联系管理员！');
         }
 
@@ -115,7 +113,7 @@ class LoginLogic
             'user_id' => $user->id,
             'user_name' => $user->username,
             'role_id' => $user->role_id,
-            'role_name' => $auth->title
+            'role_name' => $auth->title,
         ];
 
         $accessToken = Token::instance();
@@ -131,9 +129,10 @@ class LoginLogic
     }
 
     /**
-     *
      * @param $refresh
+     *
      * @throws \Exception
+     *
      * @return array
      */
     public function refreshToken($refresh): array
@@ -168,6 +167,5 @@ class LoginLogic
         $refresh_token = $accessToken->createToken($payload);
 
         return compact('token', 'refresh_token');
-
     }
 }

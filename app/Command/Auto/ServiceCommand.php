@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Command\Auto;
@@ -22,27 +23,19 @@ class ServiceCommand extends GeneratorCommand
 
     protected function getConfig(): array
     {
-
         $class = Arr::last(explode('\\', static::class));
         $class = Str::replaceLast('Command', '', $class);
         $key = 'devtool.auto.' . Str::snake($class, '.');
         return $this->getContainer()->get(ConfigInterface::class)->get($key) ?? [];
     }
 
-    /**
-     * @return string
-     */
     protected function getStub(): string
     {
         return $this->getConfig()['stub'] ?? __DIR__ . '/stubs/service.stub';
     }
 
-    /**
-     * @return string
-     */
     protected function getDefaultNamespace(): string
     {
         return $this->getConfig()['namespace'] ?? 'App\\Service';
     }
-
 }

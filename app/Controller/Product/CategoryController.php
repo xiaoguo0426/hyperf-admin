@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller\Product;
@@ -16,34 +17,35 @@ use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * @menu 商品分类
+ *
  * @AutoController()
  * Class CategoryController
+ *
  * @package App\Controller\Product
  */
 class CategoryController extends AbstractController
 {
     /**
      * @Inject()
+     *
      * @var CategoryLogic
      */
     private $logic;
 
     /**
      * @auth 列表
-     * @return \Psr\Http\Message\ResponseInterface
      */
     public function list(): \Psr\Http\Message\ResponseInterface
     {
         //一次性返回所有的分类，前端处理太慢了。
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidRequestMethodException();
         }
         $query = $this->request->query();
 
         $tree = $this->logic->getListCache();
 
-        if (!$tree){
-
+        if (! $tree) {
             $category = $this->logic->listWithNoPage($query);
 
             $tree = $this->logic->toTree($category['list']);
@@ -59,7 +61,7 @@ class CategoryController extends AbstractController
      */
     public function info(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
 
@@ -68,14 +70,13 @@ class CategoryController extends AbstractController
         $res = [];
 
         if ($id) {
-            $res = $this->logic->info((int)$id);
+            $res = $this->logic->info((int) $id);
 
-            if (!$res) {
+            if (! $res) {
                 throw new EmptyException('分类不存在！');
             }
 
             $res = $res->toArray();
-
         } else {
             $res['title'] = '';
             $res['desc'] = '';
@@ -84,7 +85,7 @@ class CategoryController extends AbstractController
         }
 
         $query = [
-            'parent_id' => 0
+            'parent_id' => 0,
         ];
         $category = $this->logic->listWithNoPage($query);
 
@@ -98,14 +99,14 @@ class CategoryController extends AbstractController
      */
     public function edit(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
         $id = $this->request->post('id', '');
-        $parent_id = (int)$this->request->post('parent_id', '');
+        $parent_id = (int) $this->request->post('parent_id', '');
         $title = $this->request->post('title', '');
-        $sort = (int)$this->request->post('sort', 0);
+        $sort = (int) $this->request->post('sort', 0);
         $desc = $this->request->post('desc', '');
 
         $data = [
@@ -118,20 +119,19 @@ class CategoryController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(CategoryValidate::class);
-        if (!$validate->scene($method)->check($data)) {
+        if (! $validate->scene($method)->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id, $parent_id, $title, $sort, $desc);
+        $res = $this->logic->$method((int) $id, $parent_id, $title, $sort, $desc);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('编辑失败！');
         }
 
         $this->logic->refreshListCache();
 
         return $this->response->success([], 0, '编辑成功！');
-
     }
 
     /**
@@ -139,13 +139,13 @@ class CategoryController extends AbstractController
      */
     public function add(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
-        $parent_id = (int)$this->request->post('parent_id', '');
+        $parent_id = (int) $this->request->post('parent_id', '');
         $title = $this->request->post('title', '');
-        $sort = (int)$this->request->post('sort', 0);
+        $sort = (int) $this->request->post('sort', 0);
         $desc = $this->request->post('desc', '');
 
         $data = [
@@ -157,20 +157,19 @@ class CategoryController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(CategoryValidate::class);
-        if (!$validate->scene($method)->check($data)) {
+        if (! $validate->scene($method)->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $res = $this->logic->$method($parent_id, $title, $sort, $desc);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('新增失败！');
         }
 
         $this->logic->clearListCache();
 
         return $this->response->success([], 0, '新增成功！');
-
     }
 
     /**
@@ -178,7 +177,7 @@ class CategoryController extends AbstractController
      */
     public function del(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -190,13 +189,13 @@ class CategoryController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(CategoryValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('删除失败！');
         }
 
@@ -204,18 +203,16 @@ class CategoryController extends AbstractController
         $this->logic->clearListCache();
 
         return $this->response->success([
-            'id' => $id
+            'id' => $id,
         ], 0, '删除成功！');
-
     }
-
 
     /**
      * @auth 禁用
      */
     public function forbid(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -226,7 +223,7 @@ class CategoryController extends AbstractController
         ];
         $method = __FUNCTION__;
         $validate = di(CategoryValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
@@ -234,16 +231,15 @@ class CategoryController extends AbstractController
 
 //        $logic = new AuthLogic();
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('禁用失败！');
         }
 
         $this->logic->clearListCache();
 
         return $this->response->success([], 0, '禁用成功！');
-
     }
 
     /**
@@ -251,7 +247,7 @@ class CategoryController extends AbstractController
      */
     public function resume(): \Psr\Http\Message\ResponseInterface
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -263,19 +259,18 @@ class CategoryController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(CategoryValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('启用失败！');
         }
 
         $this->logic->clearListCache();
 
         return $this->response->success([], 0, '启用成功！');
-
     }
 }

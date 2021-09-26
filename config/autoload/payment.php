@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 return [
@@ -22,11 +23,11 @@ return [
             'key_path' => env('WECHAT_PAYMENT_KEY_PATH', ''),
             'notify_url' => env('WECHAT_PAYMENT_NOTIFY_URL', ''),
             'refund_notify_url' => env('WECHAT_REFUND_NOTIFY_URL', ''),
-        ]
+        ],
     ],
     //服务重试次数
     'maxattempts' => 3,
     //重试休眠时间
-    'sleep' => 20
+    'sleep' => 20,
 
 ];

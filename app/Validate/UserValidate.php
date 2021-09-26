@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Validate;
-
 
 use think\Validate;
 
 class UserValidate extends Validate
 {
-
     protected $rule = [
         'id' => 'require',
         'role_id' => 'require',
@@ -67,7 +66,7 @@ class UserValidate extends Validate
 
     public function checkUsername($value, $rule, $data)
     {
-        if (!preg_match('/^[a-zA-Z0-9]+$/', $value)) {
+        if (! preg_match('/^[a-zA-Z0-9]+$/', $value)) {
             return '用户名不能有特殊字符';
         }
 
@@ -81,5 +80,4 @@ class UserValidate extends Validate
 
         return true;
     }
-
 }

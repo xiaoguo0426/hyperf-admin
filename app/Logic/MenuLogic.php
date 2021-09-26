@@ -1,18 +1,16 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Logic;
-
 
 use App\Exception\EmptyException;
 use App\Service\MenuService;
 
 class MenuLogic
 {
-
     public function list(): array
     {
-
         return di(MenuService::class)->list();
     }
 
@@ -37,12 +35,10 @@ class MenuLogic
         }
 
         return $di->edit($id, $pid, $title, $uri, $params, $icon, $sort);
-
     }
 
     public function del(int $id)
     {
-
         $di = di(MenuService::class);
 
         $info = $di->info($id);
@@ -52,7 +48,6 @@ class MenuLogic
         }
 
         return $di->del($id);
-
     }
 
     public function forbid(int $id)
@@ -61,7 +56,7 @@ class MenuLogic
 
         $info = $di->info($id);
 
-        if (!$info) {
+        if (! $info) {
             throw new EmptyException();
         }
 
@@ -74,12 +69,10 @@ class MenuLogic
 
         $info = $di->info($id);
 
-        if (!$info) {
+        if (! $info) {
             throw new EmptyException();
         }
 
         return $di->resume($id);
-
     }
-
 }

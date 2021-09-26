@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -8,16 +9,16 @@ use Hyperf\Utils\Filesystem\FileNotFoundException;
 
 /**
  * 节点管理
+ *
  * @AutoController()
  * Class NodeController
+ *
  * @package App\Controller
  */
 class NodeController extends AbstractController
 {
-
     public function test()
     {
-
         return $this->response->success([], '编辑成功！');
     }
 

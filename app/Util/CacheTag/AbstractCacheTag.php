@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Util\CacheTag;
-
 
 abstract class AbstractCacheTag
 {
 
-    private $unique;
+    public const TTL = 3600;
 
     protected $redis;
 
@@ -15,9 +15,8 @@ abstract class AbstractCacheTag
 
     protected $error = '';
 
-    const TTL = 3600;
-
     protected $maxTryCount = 5;
+    private $unique;
 
     public function __construct($unique)
     {

@@ -6,25 +6,27 @@ namespace App\Controller;
 
 use App\Exception\EmptyException;
 use App\Exception\InvalidAccessException;
+use App\Exception\InvalidArgumentsException;
 use App\Exception\ResultException;
 use App\Logic\AuthLogic;
 use App\Util\Auth;
 use App\Validate\AuthValidate;
 use Hyperf\Di\Annotation\Inject;
-use App\Exception\InvalidArgumentsException;
 use Hyperf\HttpServer\Annotation\AutoController;
 
 /**
  * @menu 权限管理
+ *
  * @AutoController()
  * Class AuthController
+ *
  * @package App\Controller
  */
 class AuthController extends AbstractController
 {
-
     /**
      * @Inject()
+     *
      * @var AuthLogic
      */
     private $logic;
@@ -34,7 +36,7 @@ class AuthController extends AbstractController
      */
     public function list()
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
 
@@ -43,7 +45,6 @@ class AuthController extends AbstractController
         $data = $this->logic->list($query);
 
         return $this->response->success($data['list'], $data['count']);
-
     }
 
     /**
@@ -51,8 +52,7 @@ class AuthController extends AbstractController
      */
     public function add()
     {
-
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -66,18 +66,17 @@ class AuthController extends AbstractController
         ];
 
         $validate = new AuthValidate();
-        if (!$validate->scene('add')->check($data)) {
+        if (! $validate->scene('add')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         $res = $this->logic->add($title, $nodes, $desc);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('新增失败！');
         }
 
         return $this->response->success([], 0, '新增成功！');
-
     }
 
     /**
@@ -85,7 +84,7 @@ class AuthController extends AbstractController
      */
     public function info()
     {
-        if (!$this->isGet()) {
+        if (! $this->isGet()) {
             throw new InvalidAccessException();
         }
 
@@ -94,14 +93,13 @@ class AuthController extends AbstractController
         $res = [];
 
         if ($id) {
-            $res = $this->logic->info((int)$id);
+            $res = $this->logic->info((int) $id);
 
-            if (!$res) {
+            if (! $res) {
                 throw new EmptyException('角色不存在！');
             }
 
             $res = $res->toArray();
-
         } else {
             $res['title'] = '';
             $res['desc'] = '';
@@ -110,11 +108,10 @@ class AuthController extends AbstractController
 
         $all_nodes = Auth::getAllTreeNodes();
 
-        $auths = Auth::getNodes((int)$id);
+        $auths = Auth::getNodes((int) $id);
 
         foreach ($all_nodes as &$first) {
             if (isset($first['sub'])) {
-
                 $sub_first = $first['sub'];
 
                 foreach ($sub_first as &$second) {
@@ -126,11 +123,10 @@ class AuthController extends AbstractController
                             $hash = Auth::hash($third['node']);
 
                             $third['checked'] = in_array($hash, $auths, true);
-
                         }
                         unset($third);
                         $second['sub'] = $sub_second;
-                        $second['checked'] = in_array(Auth::hash($second['node']), $auths, true);;
+                        $second['checked'] = in_array(Auth::hash($second['node']), $auths, true);
                     } else {
                         $hash = Auth::hash($second['node']);
                         $second['checked'] = in_array($hash, $auths, true);
@@ -140,14 +136,12 @@ class AuthController extends AbstractController
                 $first['sub'] = $sub_first;
             }
             $first['checked'] = in_array(Auth::hash($first['node']), $auths, true);
-
         }
         unset($first);
 
         $res['auths'] = $all_nodes;
 
         return $this->response->success($res);
-
     }
 
     /**
@@ -155,7 +149,7 @@ class AuthController extends AbstractController
      */
     public function del()
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -167,22 +161,21 @@ class AuthController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(AuthValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
         //TODO 该角色下是否存在用户
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('删除失败！');
         }
         //清除redis数据
         return $this->response->success([
-            'id' => $id
+            'id' => $id,
         ], 0, '删除成功！');
-
     }
 
     /**
@@ -190,7 +183,7 @@ class AuthController extends AbstractController
      */
     public function edit()
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -207,18 +200,17 @@ class AuthController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(AuthValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id, $title, $nodes, $desc);
+        $res = $this->logic->$method((int) $id, $title, $nodes, $desc);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('编辑失败！');
         }
 
         return $this->response->success([], 0, '编辑成功！');
-
     }
 
     /**
@@ -226,7 +218,7 @@ class AuthController extends AbstractController
      */
     public function forbid()
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -237,7 +229,7 @@ class AuthController extends AbstractController
         ];
         $method = __FUNCTION__;
         $validate = di(AuthValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
@@ -245,14 +237,13 @@ class AuthController extends AbstractController
 
 //        $logic = new AuthLogic();
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('禁用失败！');
         }
 
         return $this->response->success([], 0, '禁用成功！');
-
     }
 
     /**
@@ -260,7 +251,7 @@ class AuthController extends AbstractController
      */
     public function resume()
     {
-        if (!$this->isPost()) {
+        if (! $this->isPost()) {
             throw new InvalidAccessException();
         }
 
@@ -272,17 +263,16 @@ class AuthController extends AbstractController
 
         $method = __FUNCTION__;
         $validate = di(AuthValidate::class);
-        if (!$validate->scene('base')->check($data)) {
+        if (! $validate->scene('base')->check($data)) {
             throw new InvalidArgumentsException($validate->getError());
         }
 
-        $res = $this->logic->$method((int)$id);
+        $res = $this->logic->$method((int) $id);
 
-        if (false === $res) {
+        if ($res === false) {
             throw new ResultException('启用失败！');
         }
 
         return $this->response->success([], 0, '启用成功！');
-
     }
 }

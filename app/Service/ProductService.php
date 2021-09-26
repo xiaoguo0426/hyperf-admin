@@ -12,11 +12,11 @@ class ProductService extends BaseService
 {
     /**
      * 列表操作
+     *
      * @param array $where
      * @param array $fields
-     * @param int $page
-     * @param int $limit
-     * @return \Hyperf\Database\Model\Builder[]|\Hyperf\Database\Model\Collection
+     *
+     * @return array<\Hyperf\Database\Model\Builder>|\Hyperf\Database\Model\Collection
      */
     public function select(array $where, array $fields, int $page = 1, int $limit = 20)
     {
@@ -31,22 +31,16 @@ class ProductService extends BaseService
     }
 
     /**
-     *
      * @param array $where
-     * @param string $field
-     * @return int
      */
-    public function count(array $where, $field = '*'): int
+    public function count(array $where, string $field = '*'): int
     {
         return ProductModel::query()->where($where)->count($field);
     }
 
     /**
      * 添加操作
-     * @param int $parent_id
-     * @param string $title
-     * @param int $sort
-     * @param string $desc
+     *
      * @return bool|\Carbon\CarbonInterface|float|\Hyperf\Utils\Collection|\Hyperf\Utils\HigherOrderTapProxy|int|mixed|string
      */
     public function add(int $parent_id, string $title, int $sort, string $desc)
@@ -63,7 +57,6 @@ class ProductService extends BaseService
     }
 
     /**
-     * @param int $id
      * @return \Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|object|null
      */
     public function info(int $id)
@@ -73,53 +66,36 @@ class ProductService extends BaseService
 
     /**
      * 删除操作
-     * @param int $id
-     * @return bool
      */
     public function del(int $id): bool
     {
-        return (bool)CategoryModel::query()->where('id', $id)->delete();
+        return (bool) CategoryModel::query()->where('id', $id)->delete();
     }
 
     /**
      * 编辑
-     * @param int $id
-     * @param int $parent_id
-     * @param string $title
-     * @param string $desc
-     * @param int $sort
-     * @return bool
      */
     public function edit(int $id, int $parent_id, string $title, string $desc, int $sort): bool
     {
-        return (bool)CategoryModel::query()->where('id', $id)->update([
+        return (bool) CategoryModel::query()->where('id', $id)->update([
             'parent_id' => $parent_id,
             'title' => $title,
             'sort' => $sort,
-            'desc' => $desc
+            'desc' => $desc,
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function forbid(int $id): bool
     {
-        return (bool)CategoryModel::query()->where('id', $id)->update([
-            'status' => Constants::STATUS_FORBID
+        return (bool) CategoryModel::query()->where('id', $id)->update([
+            'status' => Constants::STATUS_FORBID,
         ]);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function resume(int $id): bool
     {
-        return (bool)CategoryModel::query()->where('id', $id)->update([
-            'status' => Constants::STATUS_ACTIVE
+        return (bool) CategoryModel::query()->where('id', $id)->update([
+            'status' => Constants::STATUS_ACTIVE,
         ]);
     }
-
 }

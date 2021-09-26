@@ -1,32 +1,30 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
  * @link     https://www.hyperf.io
+ *
  * @document https://doc.hyperf.io
+ *
  * @contact  group@hyperf.io
+ *
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
 namespace App\Controller;
 
-use App\Facade\Redis;
-use App\Factory\DefaultRedis;
-use App\Factory\TestRedis;
 use App\Logic\SettingLogic;
-use App\Queue\Pusher;
 use App\Util\RedisHash\StudentRedisHash;
 use App\Util\RedisHash\TeacherRedisHash;
-use App\Util\RedisLock2;
 use Hyperf\HttpServer\Annotation\AutoController;
-use Hyperf\Redis\RedisFactory;
-use Swoole\Coroutine;
 
 /**
  * @AutoController()
  * Class IndexController
+ *
  * @package App\Controller
  */
 class IndexController extends AbstractController
@@ -91,13 +89,12 @@ class IndexController extends AbstractController
         return $this->response->success($setting);
     }
 
-    public function test()
+    public function test(): void
     {
-
         $student = [
             'id' => '123',
             'name' => 'test',
-            'age' => '28'
+            'age' => '28',
         ];
         $studentHash = new StudentRedisHash();
 
@@ -108,11 +105,10 @@ class IndexController extends AbstractController
 
         unset($studentHash->id);
 
-
         $student = [
             'id' => '123123',
             'name' => 'xiaoguo',
-            'age' => '28'
+            'age' => '28',
         ];
         $studentHash = new TeacherRedisHash();
 

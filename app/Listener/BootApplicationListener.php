@@ -1,15 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Listener;
-
 
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
 class BootApplicationListener implements ListenerInterface
 {
-
     /**
      * @inheritDoc
      */
@@ -17,14 +16,14 @@ class BootApplicationListener implements ListenerInterface
     {
         // TODO: Implement listen() method.
         return [
-            BootApplication::class
+            BootApplication::class,
         ];
     }
 
     /**
      * @inheritDoc
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         // TODO: Implement process() method.
     }

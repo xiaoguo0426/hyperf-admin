@@ -1,6 +1,6 @@
 <?php
 
-use App\Util\MyCrontab\MyCrontab;
+declare(strict_types=1);
 
 return [
     // 是否开启定时任务

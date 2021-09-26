@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Middleware;
@@ -12,21 +13,19 @@ use Hyperf\Utils\Contracts\Arrayable;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-
 class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
 {
-
     public function dispatch(ServerRequestInterface $request): ServerRequestInterface
     {
         $path = $request->getUri()->getPath();
         //实现 类似/product-category/get-list 风格路由
-        if (false !== strpos($path, '-')) {
+        if (strpos($path, '-') !== false) {
             $lstPoint = strrpos($path, '/');
 
             $method = substr($path, $lstPoint);
 
             $sub = explode('-', $method);
-            array_walk($sub, function (&$s) {
+            array_walk($sub, static function (&$s): void {
                 $s = ucfirst($s);
             });
 
@@ -35,7 +34,6 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
             $controller = substr($path, 0, $lstPoint);
 
             $path = str_replace('-', '_', $controller) . $method;
-
         }
 
         $routes = $this->dispatcher->dispatch($request->getMethod(), $path);
@@ -48,7 +46,6 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     /**
      * Handle the response when cannot found any routes.
      *
-     * @param ServerRequestInterface $request
      * @return array|Arrayable|mixed|ResponseInterface|string
      */
     protected function handleNotFound(ServerRequestInterface $request)
@@ -77,7 +74,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         } else {
             [$controller, $action] = $this->prepareHandler($dispatched->handler->callback);
             $controllerInstance = $this->container->get($controller);
-            if (!method_exists($controller, $action)) {
+            if (! method_exists($controller, $action)) {
                 // Route found, but the handler does not exist.
                 return $this->response()->withStatus(500)->withBody(new SwooleStream('Method of class does not exist.'));
             }

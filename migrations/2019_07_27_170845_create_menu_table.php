@@ -1,8 +1,10 @@
 <?php
 
-use Hyperf\Database\Schema\Schema;
-use Hyperf\Database\Schema\Blueprint;
+declare(strict_types=1);
+
 use Hyperf\Database\Migrations\Migration;
+use Hyperf\Database\Schema\Blueprint;
+use Hyperf\Database\Schema\Schema;
 
 class CreateMenuTable extends Migration
 {
@@ -11,7 +13,7 @@ class CreateMenuTable extends Migration
      */
     public function up(): void
     {
-        Schema::create('system_menu', function (Blueprint $table) {
+        Schema::create('system_menu', static function (Blueprint $table): void {
             $table->bigIncrements('id');
             $table->bigInteger('pid')->default(0)->unsigned();
             $table->string('title', 20)->comment('名称');

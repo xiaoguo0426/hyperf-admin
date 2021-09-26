@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Validate;
@@ -7,13 +8,12 @@ use think\Validate;
 
 class CategoryValidate extends Validate
 {
-
     protected $rule = [
         'id' => 'require',
         'parent_id' => 'require',
         'title' => 'require|min:2|max:30',
         'desc' => 'require|min:1|max:255',
-        'sort' => 'require|number|min:0|max:99'
+        'sort' => 'require|number|min:0|max:99',
     ];
 
     protected $message = [
@@ -34,12 +34,11 @@ class CategoryValidate extends Validate
     protected $scene = [
         'base' => ['id'],
         'add' => ['title', 'desc', 'desc', 'sort'],
-        'edit' => ['id', 'title', 'desc', 'sort']
+        'edit' => ['id', 'title', 'desc', 'sort'],
     ];
 
 //    protected function checkAuthNodes($fieldValue)
 //    {
 //        var_dump($fieldValue);
 //    }
-
 }

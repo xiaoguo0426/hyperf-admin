@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Util;
@@ -8,7 +9,6 @@ namespace App\Util;
  */
 class Payload implements \ArrayAccess
 {
-
     private $container;
 
     public function __construct($container = [])
@@ -20,6 +20,7 @@ class Payload implements \ArrayAccess
      * 以对象的方式访问数组中的数据
      *
      * @param $key
+     *
      * @return mixed
      */
     public function __get($key)
@@ -33,7 +34,7 @@ class Payload implements \ArrayAccess
      * @param $key
      * @param $val
      */
-    public function __set($key, $val)
+    public function __set($key, $val): void
     {
         $this->container[$key] = $val;
     }
@@ -42,9 +43,8 @@ class Payload implements \ArrayAccess
      * 以对象方式判断数组元素是否设置
      *
      * @param $key
-     * @return bool
      */
-    public function __isset($key)
+    public function __isset($key): bool
     {
         return isset($this->container[$key]);
     }
@@ -54,7 +54,7 @@ class Payload implements \ArrayAccess
      *
      * @param $key
      */
-    public function __unset($key)
+    public function __unset($key): void
     {
         unset($this->container[$key]);
     }
@@ -87,6 +87,4 @@ class Payload implements \ArrayAccess
     {
         return $this->container;
     }
-
-
 }

@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Util;
 
 class Prefix
 {
-
     public static function getLoginErrCount($unique): string
     {
         return 'system-user-err-count::' . $unique;
@@ -41,4 +41,23 @@ class Prefix
         return 'system-crontabs';
     }
 
+    public static function sendWithdrawEmailCache($unique): void
+    {
+    }
+
+    public static function sendFundEmailCache($unique): void
+    {
+    }
+
+    public static function getSendWithdrawEmailLimit($unique): void
+    {
+    }
+
+    public static function getSendFundEmailLimit($unique): void
+    {
+    }
+
+    public static function feedbackIpLimit($unique): void
+    {
+    }
 }
