@@ -21,6 +21,6 @@ class SmtpSettingRedisHash extends AbstractRedisHash
     public function __construct($connect = 'default')
     {
         $this->name = Prefix::smtpSetting();
-        parent::__construct($connect);
+        parent::__construct('test');
     }
 }
