@@ -8,12 +8,12 @@ class EmailLimit extends AbstractLimit
 {
     protected $maxTryCount = 5;
 
-    public function genKey($unique)
+    public function genKey($unique): string
     {
         return '';
     }
 
-    public function can()
+    public function can(): bool
     {
         $canSend = $this->redis->get($this->key);
 
@@ -29,8 +29,8 @@ class EmailLimit extends AbstractLimit
         return true;
     }
 
-    public function incr(): void
+    public function incr(): int
     {
-        $this->redis->incr($this->key);
+        return $this->redis->incr($this->key);
     }
 }

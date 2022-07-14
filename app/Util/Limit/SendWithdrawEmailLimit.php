@@ -8,7 +8,7 @@ use App\Util\Prefix;
 
 class SendWithdrawEmailLimit extends EmailLimit
 {
-    public function genKey($unique)
+    public function genKey($unique): string
     {
         return Prefix::getSendWithdrawEmailLimit($unique);
     }

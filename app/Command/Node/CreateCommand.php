@@ -13,6 +13,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @Command
  */
+ #[Command]
 class CreateCommand extends HyperfCommand
 {
     /**

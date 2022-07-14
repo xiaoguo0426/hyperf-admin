@@ -12,6 +12,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @Command
  */
+ #[Command]
 class SaltCommand extends HyperfCommand
 {
     /**

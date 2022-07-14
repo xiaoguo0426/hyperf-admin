@@ -63,13 +63,14 @@ class LoginErrLimit
     /**
      * 增加一次
      */
-    public function incr(): void
+    public function incr(): int
     {
         $incr = $this->redis->incr($this->key);
 
         $diff = $this->maxTryCount - $incr;
 
         $this->error = $diff ? 'Incorrect username or password！' : 'Attempts reached the limit！';
+        return $incr;
     }
 
     /**
@@ -80,7 +81,7 @@ class LoginErrLimit
         return $this->redis->del($this->key);
     }
 
-    private function genKey($unique)
+    private function genKey($unique): string
     {
         return Prefix::getLoginErrCount($unique);
     }

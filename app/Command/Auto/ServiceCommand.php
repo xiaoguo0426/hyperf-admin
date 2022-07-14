@@ -13,6 +13,7 @@ use Hyperf\Utils\Str;
 /**
  * @Command
  */
+ #[Command]
 class ServiceCommand extends GeneratorCommand
 {
     public function __construct()

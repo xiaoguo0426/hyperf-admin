@@ -27,11 +27,11 @@ abstract class AbstractLimit
         $this->redis = \App\Facade\Redis::instance();
     }
 
-    abstract public function genKey($unique): void;
+    abstract public function genKey($unique): string;
 
-    abstract public function can(): void;
+    abstract public function can(): bool;
 
-    abstract public function incr(): void;
+    abstract public function incr(): int;
 
     public function getError()
     {

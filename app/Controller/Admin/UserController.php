@@ -66,7 +66,7 @@ class UserController extends AbstractController
         $user['roles'] = $roles;
 
         unset($user['password']);
-
+var_dump($user);
         return $this->response->success($user);
     }
 

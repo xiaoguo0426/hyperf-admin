@@ -37,6 +37,8 @@ class AuthMiddleware implements MiddlewareInterface
      */
     protected $response;
 
+
+
     public function __construct(ContainerInterface $container, HttpResponse $response, RequestInterface $request)
     {
         $this->container = $container;

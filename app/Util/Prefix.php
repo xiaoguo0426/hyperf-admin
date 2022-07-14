@@ -41,23 +41,33 @@ class Prefix
         return 'system-crontabs';
     }
 
-    public static function sendWithdrawEmailCache($unique): void
+    public static function sendWithdrawEmailCache($unique): string
     {
+        return '';
     }
 
-    public static function sendFundEmailCache($unique): void
+    public static function sendFundEmailCache($unique): string
     {
+        return '';
     }
 
-    public static function getSendWithdrawEmailLimit($unique): void
+    public static function getSendWithdrawEmailLimit($unique): string
     {
+        return '';
     }
 
-    public static function getSendFundEmailLimit($unique): void
+    public static function getSendFundEmailLimit($unique): string
     {
+        return '';
     }
 
-    public static function feedbackIpLimit($unique): void
+    public static function feedbackIpLimit($unique): string
     {
+        return '';
+    }
+
+    public static function getSendEmailLimit($unique): string
+    {
+        return '';
     }
 }

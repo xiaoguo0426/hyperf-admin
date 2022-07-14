@@ -10,12 +10,12 @@ class IpLimit extends AbstractLimit
 {
     protected $maxTryCount = 3;
 
-    public function genKey($unique)
+    public function genKey($unique): string
     {
         return Prefix::feedbackIpLimit($unique);
     }
 
-    public function can()
+    public function can(): bool
     {
         $can = $this->redis->get($this->key);
 
@@ -33,7 +33,7 @@ class IpLimit extends AbstractLimit
         return true;
     }
 
-    public function incr()
+    public function incr(): int
     {
         return $this->redis->incr($this->key);
     }

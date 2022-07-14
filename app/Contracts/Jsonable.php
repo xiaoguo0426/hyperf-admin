@@ -8,5 +8,5 @@ interface Jsonable
 {
 
     public function __toString(): string;
-    public function toJson(): void;
+    public function toJson(): string;
 }

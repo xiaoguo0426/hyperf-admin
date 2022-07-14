@@ -83,6 +83,7 @@ class IndexController extends AbstractController
         // }
 
         $di = di(SettingLogic::class);
+        $di->saveWeb('hyper-admin','xiaoguo0426','http://admin.hyperf.test','hyperf,admin','hyperf,admin','@2022');
 
         $setting = $di->getWeb();
 

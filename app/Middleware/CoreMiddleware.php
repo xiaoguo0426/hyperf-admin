@@ -53,13 +53,13 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         $std = $this->stdLogger();
         $std->error('REQUEST NOT FOUND!');
         $std->error('Host: ' . $request->getHeaderLine('Host'));
+        $std->error('Method: ' . $request->getMethod());
+        $std->error('Path: ' . $request->getUri()->getPath());
+        $std->error('Query: ' . $request->getUri()->getQuery());
         $std->error('X-Real-PORT: ' . $request->getHeaderLine('X-Real-PORT'));
         $std->error('X-Forwarded-For: ' . $request->getHeaderLine('X-Forwarded-For'));
         $std->error('x-real-ip: ' . $request->getHeaderLine('x-real-ip'));
         $std->error('referer: ' . $request->getHeaderLine('referer'));
-        $std->error('Method: ' . $request->getMethod());
-        $std->error('Path: ' . $request->getUri()->getPath());
-        $std->error('Query: ' . $request->getUri()->getQuery());
 
         // 重写路由找不到的处理逻辑
         return $this->response()->withStatus(404);
@@ -84,7 +84,8 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
 
         $t2 = microtime(true);
 
-        $this->stdLogger()->info(sprintf('[%s ms] [%s] %s', (number_format(($t2 - $t1) * 1000, 3)), $request->getMethod(), $request->getUri()->getPath()));
+        $uri = $request->getUri();
+        $this->stdLogger()->info(sprintf('[%s ms] [%s] %s', (number_format(($t2 - $t1) * 1000, 3)), $request->getMethod(), $uri->getPath() . ($uri->getQuery() ? '?' . $uri->getQuery() : '')));
 
         return $response;
     }

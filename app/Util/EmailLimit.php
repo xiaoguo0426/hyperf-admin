@@ -27,7 +27,7 @@ class EmailLimit
         $this->redis = \App\Facade\Redis::instance();
     }
 
-    public function canSend()
+    public function can(): bool
     {
         $canSend = $this->redis->get($this->key);
 
@@ -46,12 +46,12 @@ class EmailLimit
     /**
      * 增加一次
      */
-    public function incr(): void
+    public function incr(): int
     {
-        $this->redis->incr($this->key);
+        return $this->redis->incr($this->key);
     }
 
-    private function genKey($unique)
+    public function genKey($unique): string
     {
         return Prefix::getSendEmailLimit($unique);
     }

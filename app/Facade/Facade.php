@@ -35,7 +35,7 @@ abstract class Facade
     {
         return ApplicationContext::getContainer();
     }
-    protected static function getFacadeAccessor(): void
+    protected static function getFacadeAccessor()
     {
         throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }

@@ -101,7 +101,7 @@ $watchProcess = new SwooleProcess(static function () use ($watchCmd, $rootPath, 
             $wathcLock = false;
         }
     });
-}, false, false);
+}, false, 1);
 
 @$watchProcess->name('hyperf watcher for files');
 
