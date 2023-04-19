@@ -1,0 +1,14 @@
+<?php
+
+
+namespace App\Util\RedisHash;
+
+
+class AmazonAccessTokenHash extends AbstractRedisHash
+{
+    public function __construct($connect = 'default')
+    {
+        $this->name = 'student';
+        parent::__construct($connect);
+    }
+}
