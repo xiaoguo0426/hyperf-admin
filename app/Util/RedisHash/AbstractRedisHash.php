@@ -17,9 +17,11 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     protected $name = '';
     private $redis;
 
-    public function __construct($connect = 'default')
+    public function __construct()
     {
-        $this->key = config('redis_array_prefix') . $this->name;
+        $this->key = config('app_name') . ':' . $this->name;
+
+        $connect = 'default';
         $this->redis = di(RedisFactory::class)->get($connect);
     }
 
@@ -28,7 +30,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
      */
     public function __get($key)
     {
-        $this->getAttr($key);
+        return $this->getAttr($key);
     }
 
     /**
@@ -77,17 +79,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
      */
     public function offsetGet($offset): mixed
     {
-        $val = $this->redis->hGet($this->key, $offset);
-
-        if ($val === false) {
-            return null;
-        }
-
-        if (is_json($val)) {
-            return json_decode($val, true, 512, JSON_THROW_ON_ERROR);
-        }
-
-        return $val;
+        return $this->getAttr($offset);
     }
 
     /**
@@ -141,6 +133,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     public function getAttr(string $offset): mixed
     {
         $value = $this->redis->hGet($this->key, $offset);
+
         if ($value === false) {
             return null;
         }
@@ -170,7 +163,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
      * @param array $data
      * @return bool
      */
-    public function init(array $data): bool
+    public function load(array $data): bool
     {
         return $this->redis->hMSet($this->key, $data);
     }

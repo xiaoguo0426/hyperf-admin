@@ -28,7 +28,7 @@ if (! function_exists('is_json')) {
      */
     function is_json($data, $assoc = true): bool
     {
-        json_decode($data, $assoc, 512, JSON_THROW_ON_ERROR);
-        return json_last_error() === JSON_ERROR_NONE;
+        $result = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+        return json_last_error() === JSON_ERROR_NONE && is_object($result);
     }
 }

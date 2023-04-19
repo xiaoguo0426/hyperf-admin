@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Command\Amazon;
 
+use App\Util\AmazonApp;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;
@@ -32,6 +33,27 @@ class RunReport extends HyperfCommand
 
     public function handle(): void
     {
+        $merchant_id = $this->input->getArgument('merchant_id');
+        $merchant_store_id = $this->input->getArgument('merchant_store_id');
+        $report_type = $this->input->getArgument('report_type');
 
+        $report_start_date = $this->input->getOption('report_start_date');
+        $report_end_date = $this->input->getOption('report_end_date');
+        $is_range_date = $this->input->getOption('is_range_date');
+
+        if (is_null($is_range_date) || '0' === $is_range_date) {
+            $this->fly((int) $merchant_id, (int) $merchant_store_id, (string) $report_type, (string) $report_start_date, (string) $report_end_date);
+        } else {
+
+        }
+
+    }
+
+    private function fly(int $merchant_id, int $merchant_store_id, string $report_type, string $report_start_date, string $report_end_date)
+    {
+        return AmazonApp::tick($merchant_id, $merchant_store_id, static function () {
+
+            return true;
+        });
     }
 }

@@ -10,12 +10,10 @@ use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
 use AmazonPHP\SellingPartner\Marketplace;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use AmazonPHP\SellingPartner\STSClient;
-use app\admin\model\AmazonAppModel;
+use App\Model\AmazonAppModel;
 use App\Util\RedisHash\AmazonAccessTokenHash;
-use Buzz\Client\AbstractClient;
+use App\Util\RedisHash\AmazonSessionTokenHash;
 use Buzz\Client\Curl;
-use extension\Redis\Hash\AmazonSessionTokenHash;
-use extension\Redis\Hash\AmazonTokenHash;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -322,8 +320,7 @@ class AmazonSDK
             $requestFactory = $factory,
             $streamFactory = $factory
         );
-
-        $hash = AmazonSessionTokenHash::instance([$this->getMerchantId(), $this->getId()], true);
+        $hash = make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
         $sessionToken = $hash->sessionToken;
         if ($sessionToken) {
             $assumeRole = new STSClient\Credentials($hash->accessKeyId, $hash->secretAccessKey, $sessionToken, (int) $hash->expiration);
