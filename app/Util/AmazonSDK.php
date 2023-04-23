@@ -345,7 +345,7 @@ class AmazonSDK
         );
 
         $logger = new Logger('amazon');
-        $logger->pushHandler(new StreamHandler(app()->getRuntimePath() . '/sp-api-php.log', Logger::ERROR));
+        $logger->pushHandler(new StreamHandler(BASE_PATH . '/runtime/' . '/sp-api-php.log', Logger::ERROR));
 
         $this->sdk = SellingPartnerSDK::create($client, $factory, $factory, $configuration, $logger);
 
@@ -355,7 +355,7 @@ class AmazonSDK
 
     public function getToken(): AccessToken
     {
-        $hash = AmazonAccessTokenHash::instance([$this->getMerchantId(), $this->getId()], true);
+        $hash = make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
         $token = $hash->token;
         if ($hash->token) {
             $accessToken = new AccessToken(
@@ -367,7 +367,7 @@ class AmazonSDK
             );
         } else {
             $accessToken = $this->sdk->oAuth()->exchangeRefreshToken($this->getRefreshToken());
-            $hash->init([
+            $hash->load([
                 'token' => $accessToken->token(),
                 'refreshToken' => $accessToken->refreshToken(),
                 'type' => $accessToken->type(),

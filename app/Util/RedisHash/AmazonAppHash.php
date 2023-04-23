@@ -48,4 +48,9 @@ class AmazonAppHash extends AbstractRedisHash
     {
         return (int) $value;
     }
+
+    public function getStatusAttr($value): int
+    {
+        return (int) $value;
+    }
 }

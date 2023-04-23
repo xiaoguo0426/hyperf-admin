@@ -24,11 +24,16 @@ if (! function_exists('di')) {
 
 if (! function_exists('is_json')) {
     /**
-     * @throws JsonException
+     * @param $data
+     * @return bool
      */
-    function is_json($data, $assoc = true): bool
+    function is_json($data): bool
     {
-        $result = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
-        return json_last_error() === JSON_ERROR_NONE && is_object($result);
+        try {
+            $result = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+            return json_last_error() === JSON_ERROR_NONE && is_object($result);
+        } catch (JsonException $jsonException) {
+            return false;
+        }
     }
 }

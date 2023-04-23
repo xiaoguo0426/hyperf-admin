@@ -4,38 +4,45 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e699414b2b6d72367cd3994eac2801d7",
+    "content-hash": "2882d23c70677588d7931a189507b2a3",
     "packages": [
         {
             "name": "amazon-php/sp-api-sdk",
-            "version": "5.0.5",
+            "version": "5.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amazon-php/sp-api-sdk.git",
-                "reference": "c74fb95925b853a0f3e54ba0a5d82556d9aa5e13"
+                "reference": "1a92bd9379e9ef7e6d662a190c82fce8b8ce8789"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amazon-php/sp-api-sdk/zipball/c74fb95925b853a0f3e54ba0a5d82556d9aa5e13",
-                "reference": "c74fb95925b853a0f3e54ba0a5d82556d9aa5e13",
-                "shasum": ""
+                "url": "https://api.github.com/repos/amazon-php/sp-api-sdk/zipball/1a92bd9379e9ef7e6d662a190c82fce8b8ce8789",
+                "reference": "1a92bd9379e9ef7e6d662a190c82fce8b8ce8789",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "php": "~8.1",
+                "php": "~8.1 || ~8.2",
                 "psr/http-client": "^1.0.1",
                 "psr/http-factory": "^1.0",
                 "psr/log": "^1.1||^2.0||^3.0"
             },
             "require-dev": {
                 "kriswallsmith/buzz": "^1.2",
-                "monolog/monolog": "^2.2",
+                "monolog/monolog": "^3.3",
                 "nyholm/psr7": "^1.4",
                 "symfony/dotenv": "^6.1",
                 "symfony/var-dumper": "^6.1"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -68,9 +75,9 @@
             ],
             "support": {
                 "issues": "https://github.com/amazon-php/sp-api-sdk/issues",
-                "source": "https://github.com/amazon-php/sp-api-sdk/tree/5.0.5"
+                "source": "https://github.com/amazon-php/sp-api-sdk/tree/5.x"
             },
-            "time": "2023-02-14T09:53:20+00:00"
+            "time": "2023-04-17T10:01:15+00:00"
         },
         {
             "name": "doctrine/inflector",
@@ -8680,7 +8687,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.0"
+        "php": ">=8.1"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

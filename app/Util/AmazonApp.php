@@ -4,14 +4,18 @@
 namespace App\Util;
 
 
+use AmazonPHP\SellingPartner\Exception\ApiException;
 use App\Model\AmazonAppModel;
 use App\Util\RedisHash\AmazonAppHash;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Model\ModelNotFoundException;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonApp
 {
     public static function tick(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
+
         if (! is_callable($func)) {
             return true;//直接终止处理
         }
@@ -20,6 +24,7 @@ class AmazonApp
 
         if ($id) {
             $status = $appHash->status;
+
             if (Constants::STATUS_ACTIVE !== $appHash->status) {
                 return true;
             }
@@ -61,6 +66,7 @@ class AmazonApp
         return self::tick($merchant_id, $merchant_store_id, static function (AmazonAppModel $amazonAppModel) use ($func) {
 
             if (! is_callable($func)) {
+                var_dump(33);
                 return false;
             }
 
@@ -68,7 +74,26 @@ class AmazonApp
             $merchant_store_id = $amazonAppModel->merchant_store_id;
             $seller_id = $amazonAppModel->seller_id;
 
-            return $func();
+            $amazonSDK = make(AmazonSDK::class, [$amazonAppModel]);
+
+            $sdk = $amazonSDK->getSdk();
+
+            $console = di(StdoutLoggerInterface::class);
+
+            try {
+                $accessToken = $amazonSDK->getToken();
+            } catch (ApiException $exception) {
+                $console->error($exception->getMessage());
+                return true;
+            } catch (ClientExceptionInterface $e) {
+                $console->error($e->getMessage());
+                return true;
+            }
+
+            $region = $amazonSDK->getRegion();
+            $marketplace_ids = $amazonSDK->getMarketplaceIds();
+
+            return $func($amazonSDK, $merchant_id, $merchant_store_id, $seller_id, $sdk, $accessToken, $region, $marketplace_ids);
         });
     }
 }

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace App\Command\Amazon;
 
+use AmazonPHP\SellingPartner\AccessToken;
+use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use App\Util\AmazonApp;
+use App\Util\AmazonSDK;
+use App\Util\Log\AmazonReportLog;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Psr\Container\ContainerInterface;
@@ -42,6 +46,7 @@ class RunReport extends HyperfCommand
         $is_range_date = $this->input->getOption('is_range_date');
 
         if (is_null($is_range_date) || '0' === $is_range_date) {
+
             $this->fly((int) $merchant_id, (int) $merchant_store_id, (string) $report_type, (string) $report_start_date, (string) $report_end_date);
         } else {
 
@@ -51,7 +56,9 @@ class RunReport extends HyperfCommand
 
     private function fly(int $merchant_id, int $merchant_store_id, string $report_type, string $report_start_date, string $report_end_date)
     {
-        return AmazonApp::tick($merchant_id, $merchant_store_id, static function () {
+        return AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
+            $logger = di(AmazonReportLog::class);
+            $logger->info('123123');
 
             return true;
         });
