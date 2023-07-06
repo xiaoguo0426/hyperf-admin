@@ -1,14 +1,13 @@
 <?php
 
-
 namespace App\Util;
-
 
 use AmazonPHP\SellingPartner\Exception\ApiException;
 use App\Model\AmazonAppModel;
 use App\Util\RedisHash\AmazonAppHash;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Model\ModelNotFoundException;
+use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonApp
@@ -66,7 +65,6 @@ class AmazonApp
         return self::tick($merchant_id, $merchant_store_id, static function (AmazonAppModel $amazonAppModel) use ($func) {
 
             if (! is_callable($func)) {
-                var_dump(33);
                 return false;
             }
 
@@ -94,6 +92,60 @@ class AmazonApp
             $marketplace_ids = $amazonSDK->getMarketplaceIds();
 
             return $func($amazonSDK, $merchant_id, $merchant_store_id, $seller_id, $sdk, $accessToken, $region, $marketplace_ids);
+        });
+    }
+
+    /**
+     * @param callable $func
+     * @return bool
+     */
+    public static function trigger(callable $func): bool
+    {
+
+        $amazonAppCollections = AmazonAppModel::query()->where('status', Constants::STATUS_ACTIVE)->get();
+        if ($amazonAppCollections->isEmpty()) {
+            return true;
+        }
+
+        foreach ($amazonAppCollections as $amazonAppCollection) {
+            $func($amazonAppCollection);
+        }
+
+        return true;
+    }
+
+    public static function process(callable $func): void
+    {
+        self::trigger(static function (AmazonAppModel $amazonAppCollection) use ($func) {
+
+            if (! is_callable($func)) {
+                return false;
+            }
+
+            $merchant_id = $amazonAppCollection->merchant_id;
+            $merchant_store_id = $amazonAppCollection->merchant_store_id;
+            $seller_id = $amazonAppCollection->seller_id;
+
+            $amazonSDK = new AmazonSDK($amazonAppCollection);
+
+            try {
+                $sdk = $amazonSDK->getSdk();
+            } catch (ApiException|JsonException|ClientExceptionInterface  $e) {
+                return true;
+            }
+
+            try {
+                $accessToken = $amazonSDK->getToken();
+            } catch (ApiException|ClientExceptionInterface $exception) {
+                return true;
+            }
+
+            $region = $amazonSDK->getRegion();
+
+            $marketplace_ids = $amazonSDK->getMarketplaceIds();
+
+            return $func($amazonSDK, $merchant_id, $merchant_store_id, $seller_id, $sdk, $accessToken, $region, $marketplace_ids);
+
         });
     }
 }

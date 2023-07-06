@@ -6,6 +6,7 @@ namespace App\Util;
 
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Configuration;
+use AmazonPHP\SellingPartner\Exception\ApiException;
 use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
 use AmazonPHP\SellingPartner\Marketplace;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
@@ -14,9 +15,11 @@ use App\Model\AmazonAppModel;
 use App\Util\RedisHash\AmazonAccessTokenHash;
 use App\Util\RedisHash\AmazonSessionTokenHash;
 use Buzz\Client\Curl;
+use JsonException;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonSDK
 {
@@ -310,6 +313,11 @@ class AmazonSDK
         $this->refresh_token = $refresh_token;
     }
 
+    /**
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     */
     public function getSdk(): SellingPartnerSDK
     {
         $factory = new Psr17Factory();
@@ -353,6 +361,10 @@ class AmazonSDK
 
     }
 
+    /**
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     */
     public function getToken(): AccessToken
     {
         $hash = make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
