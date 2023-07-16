@@ -18,7 +18,7 @@ class AmazonApp
         if (! is_callable($func)) {
             return true;//直接终止处理
         }
-        $appHash = make(AmazonAppHash::class, ['merchant_id' => $merchant_id, 'merchant_store_id' => $merchant_store_id]);
+        $appHash = \Hyperf\Support\make(AmazonAppHash::class, ['merchant_id' => $merchant_id, 'merchant_store_id' => $merchant_store_id]);
         $id = $appHash->id;
 
         if ($id) {

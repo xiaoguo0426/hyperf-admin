@@ -20,4 +20,19 @@ class Prefix
     {
         return 'amazon-session-token:' . $merchant_id . ':' . $merchant_store_id;
     }
+
+    public static function queue(): string
+    {
+        return \Hyperf\Config\config('app_name') . ':queue:';
+    }
+
+    public static function amazonAsinSaleVolume(int $merchant_id, string $type): string
+    {
+        return 'amazon-asin-sales-volume:' . $merchant_id . ':' . $type;
+    }
+
+    public static function amazonAsinFbaFee(int $merchant_id, int $merchant_store_id, string $currency): string
+    {
+        return 'amazon-asin-fba-fee:' . $currency . ':' . $merchant_id . ':' . $merchant_store_id;
+    }
 }

@@ -4,7 +4,12 @@ namespace App\Util\Amazon\Report;
 
 use AmazonPHP\SellingPartner\Model\Reports\CreateReportScheduleSpecification;
 use AmazonPHP\SellingPartner\Model\Reports\CreateReportSpecification;
+use App\Util\Log\AmazonReportLog;
+use Carbon\Carbon;
 use Exception;
+use Hyperf\Context\ApplicationContext;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 abstract class ReportBase implements ReportInterface
 {
@@ -14,10 +19,12 @@ abstract class ReportBase implements ReportInterface
     public int $merchant_id;
     public int $merchant_store_id;
 
-    public ?\DateTime $report_start_date;
-    public ?\DateTime $report_end_date;
+    public ?Carbon $report_start_date;
+    public ?Carbon $report_end_date;
 
     public array $header_map;
+
+    protected string $dir;
 
     public function __construct(string $report_type, int $merchant_id, int $merchant_store_id)
     {
@@ -38,7 +45,7 @@ abstract class ReportBase implements ReportInterface
 
     }
 
-    abstract public function run($file): void;
+    abstract public function run($file): bool;
 
     /**
      * 构造报告请求报告参数(如果某些报告有特定参数，需要重写该方法)
@@ -76,13 +83,13 @@ abstract class ReportBase implements ReportInterface
 
     /**
      * 请求报告(如果特定报告有时间分组请求，需要重写该方法，参考SalesAndTrafficReportCustom.php报告)
-     * @param string $report_type
      * @param array $marketplace_ids
      * @param callable $func
+     * @return void
      */
-    public function requestReport(string $report_type, array $marketplace_ids, callable $func): void
+    public function requestReport(array $marketplace_ids, callable $func): void
     {
-        is_callable($func) && $func($this->buildReportBody($report_type, $marketplace_ids), $marketplace_ids);
+        is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, $marketplace_ids), $marketplace_ids);
     }
 
     /**
@@ -93,7 +100,7 @@ abstract class ReportBase implements ReportInterface
      */
     public function requestReportSchedule(string $report_type, array $marketplace_ids, callable $func): void
     {
-        is_callable($func) && $func($this->buildReportBodySchedule($report_type, $marketplace_ids), $marketplace_ids);
+        is_callable($func) && $func($this, $report_type, $this->buildReportBodySchedule($report_type, $marketplace_ids), $marketplace_ids);
     }
 
     /**
@@ -107,13 +114,28 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 处理报告
+     * 获得报告文件完整路径
      * @param array $marketplace_ids
+     * @return string
+     */
+    public function getReportFilePath(array $marketplace_ids): string
+    {
+        return $this->dir . $this->getReportFileName($marketplace_ids) . $this->getFileExt();
+    }
+
+
+    /**
+     * 处理报告
      * @param callable $func
+     * @param array $marketplace_ids
+     * @return void
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
-        is_callable($func) && $func($marketplace_ids);
+        if ($this->checkReportDate()) {
+            throw new \InvalidArgumentException('Report Start/End Date Required,please check');
+        }
+        is_callable($func) && $func($this, $marketplace_ids);
     }
 
     /**
@@ -121,10 +143,10 @@ abstract class ReportBase implements ReportInterface
      */
     public function setReportStartDate($date): void
     {
-        $this->report_start_date = new \DateTime($date, new \DateTimeZone('UTC'));
+        $this->report_start_date = $date ? new Carbon($date, 'UTC') : null;
     }
 
-    public function getReportStartDate(): ?\DateTime
+    public function getReportStartDate(): Carbon|null
     {
         return $this->report_start_date;
     }
@@ -134,11 +156,89 @@ abstract class ReportBase implements ReportInterface
      */
     public function setReportEndDate($date): void
     {
-        $this->report_end_date = new \DateTime($date, new \DateTimeZone('UTC'));
+        $this->report_end_date = $date ? new Carbon($date, 'UTC') : null;
     }
 
-    public function getReportEndDate(): ?\DateTime
+    public function getReportEndDate(): Carbon|null
     {
         return $this->report_end_date;
+    }
+
+    /**
+     * 报告是否需要指定开始时间与结束时间
+     * @return bool
+     */
+    public function reportDateRequired(): bool
+    {
+        return false;
+    }
+
+    public function checkReportDate(): bool
+    {
+        if ($this->reportDateRequired()) {
+            if (is_null($this->report_start_date) || is_null($this->report_end_date)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public function checkDir(): bool
+    {
+
+        $date = (new Carbon($this->getReportStartDate() ? $this->getReportStartDate()->format('Ymd') : '-1 day'))->setTimezone('UTC')->format('Ymd');
+        //检测report_type是哪个
+        $category = $this->checkReportTypeCategory($this->report_type);
+
+        $dir = sprintf('%s%s/%s/%s-%s/', \Hyperf\Config\config('amazon.report_template_path'), $category, $date, $this->merchant_id, $this->merchant_store_id);
+        $this->dir = $dir;
+
+        if (! is_dir($dir) && ! mkdir($dir, 0755, true)) {
+            try {
+                ApplicationContext::getContainer()->get(AmazonReportLog::class)->error(sprintf('Get Directory "%s" was not created', $dir));
+            } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+            }
+        }
+
+        return true;
+    }
+
+    public function getDir(): string
+    {
+        return $this->dir;
+    }
+
+    /**
+     * 检查report_type属于哪个类型  requested|scheduled
+     * @param string $report_type
+     * @return string
+     */
+    public function checkReportTypeCategory(string $report_type): string
+    {
+        $all = \Hyperf\Config\config('amazon_reports');
+        foreach ($all as $type => $report_list) {
+            foreach ($report_list as $report_type_raw) {
+                if ($report_type_raw === $report_type) {
+                    return $type;
+                }
+            }
+        }
+        throw new \InvalidArgumentException('Invalid Report Type,please check');
+    }
+
+    /**
+     * 检查报告文件是否存在
+     * @param array $marketplace_ids
+     * @return bool
+     */
+    public function checkReportFile(array $marketplace_ids): bool
+    {
+        return file_exists($this->getReportFilePath($marketplace_ids));
+    }
+
+    public function getFileExt(): string
+    {
+        return '.txt';
     }
 }

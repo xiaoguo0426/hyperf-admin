@@ -4,5 +4,8 @@ namespace App\Util\Log;
 
 class AmazonReportLog extends AbstractLog
 {
-    public string $channel = 'amazon-report';
+    public function __construct()
+    {
+        parent::__construct('log', 'amazon-report');
+    }
 }

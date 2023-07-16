@@ -25,6 +25,7 @@ class AmazonSDK
 {
     private int $id;
     private int $merchant_id;
+    private int $merchant_store_id;
     private string $seller_id;
     private string $app_id;
     private string $app_name;
@@ -47,6 +48,7 @@ class AmazonSDK
     {
         $this->setId($amazonAppModel->id);
         $this->setMerchantId($amazonAppModel->merchant_id);
+        $this->setMerchantStoreId($amazonAppModel->merchant_store_id);
         $this->setSellerId($amazonAppModel->seller_id);
         $this->setAppId($amazonAppModel->app_id);
         $this->setAppName($amazonAppModel->app_name);
@@ -103,6 +105,22 @@ class AmazonSDK
     public function setMerchantId(int $merchant_id): void
     {
         $this->merchant_id = $merchant_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMerchantStoreId(): int
+    {
+        return $this->merchant_store_id;
+    }
+
+    /**
+     * @param int $merchant_store_id
+     */
+    public function setMerchantStoreId(int $merchant_store_id): void
+    {
+        $this->merchant_store_id = $merchant_store_id;
     }
 
     /**
@@ -328,7 +346,7 @@ class AmazonSDK
             $requestFactory = $factory,
             $streamFactory = $factory
         );
-        $hash = make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
+        $hash = make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId()]);
         $sessionToken = $hash->sessionToken;
         if ($sessionToken) {
             $assumeRole = new STSClient\Credentials($hash->accessKeyId, $hash->secretAccessKey, $sessionToken, (int) $hash->expiration);

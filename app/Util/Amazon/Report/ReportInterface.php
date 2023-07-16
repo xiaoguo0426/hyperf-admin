@@ -8,5 +8,5 @@ interface ReportInterface
     /**
      * 处理报告内容
      */
-    public function run($file): void;
+    public function run($file): bool;
 }

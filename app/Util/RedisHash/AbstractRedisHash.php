@@ -7,26 +7,35 @@ namespace App\Util\RedisHash;
 use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\Jsonable;
 use Hyperf\Redis\RedisFactory;
+use Hyperf\Redis\RedisProxy;
 use Hyperf\Stringable\Str;
+use JsonException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use RedisException;
 
 class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 {
 
-    protected $key;
+    protected string $key;
 
-    protected $name = '';
-    private $redis;
+    protected string $name = '';
+    private RedisProxy $redis;
 
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
     public function __construct()
     {
-        $this->key = config('app_name') . ':' . $this->name;
+        $this->key = \Hyperf\Config\config('app_name') . ':' . $this->name;
 
         $connect = 'default';
         $this->redis = di(RedisFactory::class)->get($connect);
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function __get($key)
     {
@@ -34,7 +43,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function __set($name, $value)
     {
@@ -63,7 +72,8 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 
     /**
      * 判断属性是否存在
-     * @param mixed $offset
+     * @param $offset
+     * @throws RedisException
      * @return bool
      */
     public function offsetExists($offset): bool
@@ -73,8 +83,8 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 
     /**
      * 获得属性
-     * @param mixed $offset
-     * @throws \JsonException
+     * @param $offset
+     * @throws JsonException
      * @return mixed
      */
     public function offsetGet($offset): mixed
@@ -84,9 +94,10 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 
     /**
      * 设置属性
-     * @param mixed $offset
-     * @param mixed $value
-     * @throws \JsonException
+     * @param $offset
+     * @param $value
+     * @throws JsonException
+     * @return void
      */
     public function offsetSet($offset, $value): void
     {
@@ -95,7 +106,9 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
 
     /**
      * 删除属性
-     * @param mixed $offset
+     * @param $offset
+     * @throws RedisException
+     * @return void
      */
     public function offsetUnset($offset): void
     {
@@ -106,7 +119,8 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
      * 设置属性
      * @param string $offset
      * @param $value
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws RedisException
      * @return bool
      */
     public function setAttr(string $offset, $value): bool
@@ -127,7 +141,8 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     /**
      * 获得属性
      * @param string $offset
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws RedisException
      * @return mixed
      */
     public function getAttr(string $offset): mixed
@@ -161,6 +176,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     /**
      * 初始化
      * @param array $data
+     * @throws RedisException
      * @return bool
      */
     public function load(array $data): bool
@@ -169,6 +185,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     }
 
     /**
+     * @throws RedisException
      * @return array
      */
     public function toArray(): array
@@ -177,7 +194,9 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
+     * @throws RedisException
+     * @return string
      */
     public function toJson(): string
     {
@@ -185,7 +204,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     }
 
     /**
-     * 删除key
+     * @throws RedisException
      * @return bool
      */
     public function destroy(): bool
@@ -196,6 +215,7 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     /**
      * 设置有效期
      * @param $ttl
+     * @throws RedisException
      * @return bool
      */
     public function ttl($ttl): bool

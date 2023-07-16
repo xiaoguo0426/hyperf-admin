@@ -21,9 +21,10 @@ class ReportFactory
             'GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE' => V2SettlementReportDataFlatFile::class,
             'GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2' => V2SettlementReportDataFlatFileV2::class,
             'GET_V2_SELLER_PERFORMANCE_REPORT' => V2SellerPerformanceReport::class,
+            'GET_DATE_RANGE_FINANCIAL_TRANSACTION_DATA' => DateRangeFinancialTransactionDataReport::class,
             default => throw new \RuntimeException(sprintf('请定义%s报告处理类', $report_type)),
         };
 
-        return new $class($report_type, $merchant_id, $merchant_store_id);
+        return \Hyperf\Support\make($class, [$report_type, $merchant_id, $merchant_store_id]);
     }
 }

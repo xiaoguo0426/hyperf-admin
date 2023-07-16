@@ -2,10 +2,11 @@
 
 namespace App\Util\Log;
 
+use App\Kernel\Log;
 use DateTimeZone;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Log基础类
@@ -28,24 +29,15 @@ abstract class AbstractLog
 
     public string $channel;
 
-    private Logger $logger;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function __construct(string $channel = '', string $group = '')
     {
-        $path = '/home/laradock/erp/' . $this->channel;
-
-        $dateFormat = "Y-m-d\TH:i:sP";
-
-        $output = "[%datetime%] %channel%.%level_name%: %message% %context% \n";
-
-        $formatter = new LineFormatter($output, $dateFormat);
-
-        $this->logger = new Logger('console');
-
-        $stream = new StreamHandler($path . '/' . date('Y-m-d') . '.log');
-        $stream->setFormatter($formatter);
-
-        $this->logger->pushHandler($stream);
+        $this->logger = Log::get($channel, $group);
     }
 
     public function __call($name, $arguments)

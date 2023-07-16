@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Queue;
+
+use App\Queue\Data\AmazonReportDocumentActionData;
+use App\Queue\Data\QueueDataInterface;
+use App\Util\Amazon\Report\ReportFactory;
+use App\Util\Log\AmazonReportDocumentLog;
+use Exception;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+class AmazonReportDocumentActionQueue extends Queue
+{
+    public function getQueueName(): string
+    {
+        return 'amazon-report-document-action';
+    }
+
+    public function getQueueDataClass(): string
+    {
+        return AmazonReportDocumentActionData::class;
+    }
+
+    /**
+     * @param QueueDataInterface $queueData
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     * @return bool
+     */
+    public function handleQueueData(QueueDataInterface $queueData): bool
+    {
+        /**
+         * @var AmazonReportDocumentActionData $queueData
+         */
+        $merchant_id = $queueData->getMerchantId();
+        $merchant_store_id = $queueData->getMerchantStoreId();
+        $report_type = $queueData->getReportType();
+        $report_document_id = $queueData->getReportDocumentId();
+
+        $logger = ApplicationContext::getContainer()->get(AmazonReportDocumentLog::class);
+
+        $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+
+        $logger->info(sprintf('Action Document 报告队列数据： %s', $queueData->toJson()));
+
+        $file_base_name = $report_document_id;
+        $file_path = sprintf('%s%s/%s/%s-%s/%s.txt', config('amazon.report_template_path'), 'scheduled', $report_type, $merchant_id, $merchant_store_id, $file_base_name);
+        if (! file_exists($file_path)) {
+            $log = sprintf('%s 文件不存在', $file_path);
+            $console->error($log);
+            $logger->error($log);
+            return true;
+        }
+
+        $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
+
+        $instance->run($file_path);
+
+        return true;
+
+    }
+}

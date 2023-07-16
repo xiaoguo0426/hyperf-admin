@@ -24,4 +24,9 @@ class ConsoleLog
     {
         $this->logger = $logger;
     }
+
+    public function __call($name, $arguments)
+    {
+        return \Hyperf\Support\env('DEBUG') !== true ? $this->logger->$name(...$arguments) : null;
+    }
 }
