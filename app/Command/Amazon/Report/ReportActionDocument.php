@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Report;
 
 use App\Queue\AmazonReportDocumentActionQueue;
 use Hyperf\Command\Annotation\Command;
@@ -11,11 +11,11 @@ use Psr\Container\NotFoundExceptionInterface;
 use RedisException;
 
 #[Command]
-class AmazonReportActionDocument extends HyperfCommand
+class ReportActionDocument extends HyperfCommand
 {
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-action-document');
+        parent::__construct('amazon:report:action-document');
     }
 
     public function configure(): void

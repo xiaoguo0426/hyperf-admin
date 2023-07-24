@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Report;
 
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
@@ -17,8 +17,8 @@ use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use App\Util\Log\AmazonReportCreateLog;
 use Carbon\Carbon;
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -35,7 +35,7 @@ class ReportCreate extends HyperfCommand
 
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-create');
+        parent::__construct('amazon:report:create');
     }
 
     public function configure(): void

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Report;
 
 use App\Queue\AmazonGetReportQueue;
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -17,7 +17,7 @@ class ReportGet extends HyperfCommand
 {
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-get');
+        parent::__construct('amazon:report:get');
     }
 
     public function configure(): void

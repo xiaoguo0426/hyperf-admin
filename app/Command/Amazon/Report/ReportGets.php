@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Report;
 
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
@@ -13,8 +13,8 @@ use App\Queue\Data\AmazonGetReportDocumentData;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use App\Util\Log\AmazonReportLog;
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
@@ -24,7 +24,7 @@ class ReportGets extends HyperfCommand
 {
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-gets');
+        parent::__construct('amazon:report:gets');
     }
 
     public function configure(): void

@@ -48,7 +48,6 @@ class FbaFulfillmentRemovalOrderDetailData extends ReportBase
             $data[] = $item;
         }
         fclose($handle);
-        var_dump($data);
         return true;
     }
 }

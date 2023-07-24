@@ -2,28 +2,33 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Report;
 
-use App\Queue\AmazonGetReportDocumentQueue;
+use App\Queue\AmazonActionReportQueue;
+use App\Util\Log\AmazonReportActionLog;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
+use Hyperf\Di\Annotation\Inject;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RedisException;
 
 #[Command]
-class AmazonReportGetDocument extends HyperfCommand
+class ReportAction extends HyperfCommand
 {
+    #[Inject]
+    private AmazonReportActionLog $amazonReportLog;
+
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-gets-document');
+        parent::__construct('amazon:report:action');
     }
 
     public function configure(): void
     {
         parent::configure();
-        $this->setDescription('Amazon Gets Report Document Command');
+        $this->setDescription('Amazon Action Report');
     }
 
     /**
@@ -33,6 +38,7 @@ class AmazonReportGetDocument extends HyperfCommand
      */
     public function handle(): void
     {
-        (new AmazonGetReportDocumentQueue)->pop();
+        (new AmazonActionReportQueue())->pop();
     }
+
 }

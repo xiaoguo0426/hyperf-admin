@@ -1,45 +1,39 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Command\Amazon;
+namespace App\Command\Amazon\Finance;
 
 use AmazonPHP\SellingPartner\AccessToken;
+use AmazonPHP\SellingPartner\Exception\ApiException;
+use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
-use App\Queue\AmazonActionReportQueue;
-use App\Util\Amazon\Report\ReportBase;
-use App\Util\Amazon\Report\ReportFactory;
+use App\Constants\AmazonConstants;
+use App\Model\AmazonFinancialGroupModel;
+use App\Queue\AmazonFinanceFinancialListEventsByGroupIdQueue;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
-use App\Util\Log\AmazonReportActionLog;
-use Carbon\Carbon;
-use Hyperf\Command\Command as HyperfCommand;
+use App\Util\Log\AmazonFinanceLog;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Di\Annotation\Inject;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RedisException;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 #[Command]
-class ReportAction extends HyperfCommand
+class FinanceListFinancialEventsByGroupId extends HyperfCommand
 {
-    #[Inject]
-    private AmazonReportActionLog $amazonReportLog;
-
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:report-action');
+        parent::__construct('amazon:finance:list-financial-events-by-group-id');
     }
 
     public function configure(): void
     {
         parent::configure();
-        $this->setDescription('Amazon Action Report');
+        $this->setDescription('Amazon Finance List Financial Events By Group Id Command');
     }
 
     /**
@@ -49,7 +43,6 @@ class ReportAction extends HyperfCommand
      */
     public function handle(): void
     {
-        (new AmazonActionReportQueue())->pop();
+        (new AmazonFinanceFinancialListEventsByGroupIdQueue())->pop();
     }
-
 }
