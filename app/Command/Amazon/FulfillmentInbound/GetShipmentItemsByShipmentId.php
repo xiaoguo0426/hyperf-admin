@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command\Amazon\Finance;
+namespace App\Command\Amazon\FulfillmentInbound;
 
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
@@ -23,26 +23,20 @@ use RedisException;
 use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
-class FinanceListFinancialEventsByGroupId extends HyperfCommand
+class GetShipmentItemsByShipmentId extends HyperfCommand
 {
     public function __construct(protected ContainerInterface $container)
     {
-        parent::__construct('amazon:finance:list-financial-events-by-group-id');
+        parent::__construct('amazon:fulfillment-inbound:get-inbound-guidance');
     }
 
     public function configure(): void
     {
         parent::configure();
-        $this->setDescription('Amazon Finance List Financial Events By Group Id Command');
+        $this->setDescription('Amazon Fulfillment Inbound Get Inbound Guidance Command');
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws RedisException
-     */
     public function handle(): void
     {
-        (new AmazonFinanceFinancialListEventsByGroupIdQueue())->pop();
     }
 }

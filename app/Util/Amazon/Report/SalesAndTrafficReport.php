@@ -76,7 +76,6 @@ class SalesAndTrafficReport extends ReportBase
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
-        var_dump($this->checkReportDate());
         if (! $this->checkReportDate()) {
             throw new \InvalidArgumentException('Report Start/End Date Required,please check');
         }

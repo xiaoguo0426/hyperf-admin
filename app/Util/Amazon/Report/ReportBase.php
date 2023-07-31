@@ -36,7 +36,7 @@ abstract class ReportBase implements ReportInterface
         $this->report_start_date = null;
         $this->report_end_date = null;
 
-        $header_map = config('amazon_report_headers.' . $this->report_type);
+        $header_map = \Hyperf\Config\config('amazon_report_headers.' . $this->report_type);
         if (is_null($header_map)) {
             throw new \RuntimeException(sprintf('请在config/amazon_report_headers.php文件中配置该报告类型%s表头映射关系', $this->report_type));
         }

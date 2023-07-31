@@ -2,9 +2,14 @@
 
 namespace App\Util\Amazon\Report;
 
+use Exception;
+
 class FbaFulfillmentRemovalOrderDetailData extends ReportBase
 {
 
+    /**
+     * @throws Exception
+     */
     public function __construct(string $report_type, int $merchant_id, int $merchant_store_id)
     {
         parent::__construct($report_type, $merchant_id, $merchant_store_id);

@@ -21,7 +21,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
-class FinanceListFinancialEventGroups extends HyperfCommand
+class ListFinancialEventGroups extends HyperfCommand
 {
     public function __construct(protected ContainerInterface $container)
     {
