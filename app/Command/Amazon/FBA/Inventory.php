@@ -5,7 +5,6 @@ namespace App\Command\Amazon\FBA;
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
 use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
-use AmazonPHP\SellingPartner\Marketplace;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use App\Model\AmazonInventoryModel;
 use App\Util\AmazonApp;
