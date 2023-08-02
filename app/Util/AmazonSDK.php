@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Util;
-
 
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Configuration;
@@ -20,6 +18,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientExceptionInterface;
+use RedisException;
 
 class AmazonSDK
 {
@@ -335,6 +334,8 @@ class AmazonSDK
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @throws RedisException
+     * @return SellingPartnerSDK
      */
     public function getSdk(): SellingPartnerSDK
     {
@@ -346,7 +347,7 @@ class AmazonSDK
             $requestFactory = $factory,
             $streamFactory = $factory
         );
-        $hash = make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId()]);
+        $hash = \Hyperf\Support\make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId()]);
         $sessionToken = $hash->sessionToken;
         if ($sessionToken) {
             $assumeRole = new STSClient\Credentials($hash->accessKeyId, $hash->secretAccessKey, $sessionToken, (int) $hash->expiration);
@@ -382,10 +383,12 @@ class AmazonSDK
     /**
      * @throws ApiException
      * @throws ClientExceptionInterface
+     * @throws RedisException
+     * @return AccessToken
      */
     public function getToken(): AccessToken
     {
-        $hash = make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
+        $hash = \Hyperf\Support\make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
         $token = $hash->token;
         if ($hash->token) {
             $accessToken = new AccessToken(

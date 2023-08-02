@@ -12,6 +12,13 @@ use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonApp
 {
+    /**
+     * 单个Amazon应用配置回调
+     * @param int $merchant_id
+     * @param int $merchant_store_id
+     * @param callable $func
+     * @return bool
+     */
     public static function tick(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
 
@@ -60,6 +67,16 @@ class AmazonApp
         return $func($amazonAppCollection);
     }
 
+    /**
+     * 单个Amazon应用配置回调并触发Amazon SDK
+     * @param int $merchant_id
+     * @param int $merchant_store_id
+     * @param callable $func
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     * @return bool
+     */
     public static function tok(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
         return self::tick($merchant_id, $merchant_store_id, static function (AmazonAppModel $amazonAppModel) use ($func) {
@@ -72,7 +89,7 @@ class AmazonApp
             $merchant_store_id = $amazonAppModel->merchant_store_id;
             $seller_id = $amazonAppModel->seller_id;
 
-            $amazonSDK = make(AmazonSDK::class, [$amazonAppModel]);
+            $amazonSDK = \Hyperf\Support\make(AmazonSDK::class, [$amazonAppModel]);
 
             $sdk = $amazonSDK->getSdk();
 
@@ -96,6 +113,7 @@ class AmazonApp
     }
 
     /**
+     * 所有Amazon应用配置回调
      * @param callable $func
      * @return bool
      */
@@ -114,6 +132,11 @@ class AmazonApp
         return true;
     }
 
+    /**
+     * 所有Amazon应用配置回调并触发Amazon SDK
+     * @param callable $func
+     * @return void
+     */
     public static function process(callable $func): void
     {
         self::trigger(static function (AmazonAppModel $amazonAppCollection) use ($func) {
@@ -130,7 +153,7 @@ class AmazonApp
 
             try {
                 $sdk = $amazonSDK->getSdk();
-            } catch (ApiException|JsonException|ClientExceptionInterface  $e) {
+            } catch (ApiException|JsonException|ClientExceptionInterface  $exception) {
                 return true;
             }
 
