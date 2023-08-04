@@ -21,17 +21,15 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Di\Annotation\Inject;
+use JsonException;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
 #[Command]
 class ReportCreate extends HyperfCommand
 {
-
-    #[Inject]
-    private AmazonReportCreateLog $amazonReportCreateLog;
 
     public function __construct(protected ContainerInterface $container)
     {
@@ -51,6 +49,11 @@ class ReportCreate extends HyperfCommand
             ->setDescription('Amazon Create Report');
     }
 
+    /**
+     * @throws ClientExceptionInterface
+     * @throws ApiException
+     * @throws JsonException
+     */
     public function handle(): void
     {
 
@@ -98,10 +101,17 @@ class ReportCreate extends HyperfCommand
         }
     }
 
+    /**
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     */
     private function fly($merchant_id, $merchant_store_id, $report_type, $report_start_date, $report_end_date): void
     {
-        $logger = $this->amazonReportCreateLog;
-        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_start_date, $report_end_date, $logger) {
+
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_start_date, $report_end_date) {
+
+            $logger = di(AmazonReportCreateLog::class);
 
             $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
 

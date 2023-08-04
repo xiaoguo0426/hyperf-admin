@@ -232,9 +232,13 @@ class SalesAndTrafficReport extends ReportBase
             $orderedProductSalesAmount = $orderedProductSales['amount'];
             $orderedProductSalesCurrencyCode = $orderedProductSales['currencyCode'];
 
-            $orderedProductSalesB2B = $salesByDate['orderedProductSalesB2B'];
-            $orderedProductSalesB2BAmount = $orderedProductSalesB2B['amount'];
-            $orderedProductSalesB2BCurrencyCode = $orderedProductSalesB2B['currencyCode'];
+            $orderedProductSalesB2B = $salesByDate['orderedProductSalesB2B'] ?? null;
+            $orderedProductSalesB2BAmount = 0;
+            $orderedProductSalesB2BCurrencyCode = '';
+            if (! is_null($orderedProductSalesB2B)) {
+                $orderedProductSalesB2BAmount = $orderedProductSalesB2B['amount'];
+                $orderedProductSalesB2BCurrencyCode = $orderedProductSalesB2B['currencyCode'];
+            }
 
             $unitsOrdered = $salesByDate['unitsOrdered'];
             $unitsOrderedB2B = $salesByDate['unitsOrderedB2B'];
@@ -245,9 +249,13 @@ class SalesAndTrafficReport extends ReportBase
             $averageSalesPerOrderItemAmount = $averageSalesPerOrderItem['amount'];
             $averageSalesPerOrderItemCurrencyCode = $averageSalesPerOrderItem['currencyCode'];
 
-            $averageSalesPerOrderItemB2B = $salesByDate['averageSalesPerOrderItemB2B'];
-            $averageSalesPerOrderItemB2BAmount = $averageSalesPerOrderItemB2B['amount'];
-            $averageSalesPerOrderItemB2BCurrencyCode = $averageSalesPerOrderItemB2B['currencyCode'];
+            $averageSalesPerOrderItemB2B = $salesByDate['averageSalesPerOrderItemB2B'] ?? null;
+            $averageSalesPerOrderItemB2BAmount = 0;
+            $averageSalesPerOrderItemB2BCurrencyCode = '';
+            if (! is_null($averageSalesPerOrderItemB2B)) {
+                $averageSalesPerOrderItemB2BAmount = $averageSalesPerOrderItemB2B['amount'];
+                $averageSalesPerOrderItemB2BCurrencyCode = $averageSalesPerOrderItemB2B['currencyCode'];
+            }
 
             $averageUnitsPerOrderItem = $salesByDate['averageUnitsPerOrderItem'];
             $averageUnitsPerOrderItemB2B = $salesByDate['averageUnitsPerOrderItemB2B'];
@@ -256,9 +264,13 @@ class SalesAndTrafficReport extends ReportBase
             $averageSellingPriceAmount = $averageSellingPrice['amount'];
             $averageSellingPriceCurrencyCode = $averageSellingPrice['currencyCode'];
 
-            $averageSellingPriceB2B = $salesByDate['averageSellingPriceB2B'];
-            $averageSellingPriceB2BAmount = $averageSellingPriceB2B['amount'];
-            $averageSellingPriceB2BCurrencyCode = $averageSellingPriceB2B['currencyCode'];
+            $averageSellingPriceB2B = $salesByDate['averageSellingPriceB2B'] ?? null;
+            $averageSellingPriceB2BAmount = 0;
+            $averageSellingPriceB2BCurrencyCode = '';
+            if (!is_null($averageSellingPriceB2B)){
+                $averageSellingPriceB2BAmount = $averageSellingPriceB2B['amount'];
+                $averageSellingPriceB2BCurrencyCode = $averageSellingPriceB2B['currencyCode'];
+            }
 
             $unitsRefunded = $salesByDate['unitsRefunded'];
             $refundRate = $salesByDate['refundRate'];

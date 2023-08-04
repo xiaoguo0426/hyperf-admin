@@ -153,22 +153,22 @@ class FbaInventoryPlanningDataReport extends ReportBase
         ]);
     }
 
-    /**
-     * @param array $marketplace_ids
-     * @param callable $func
-     * @throws Exception
-     */
-    public function requestReport(array $marketplace_ids, callable $func): void
-    {
-        foreach ($marketplace_ids as $marketplace_id) {
-            is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
-        }
-    }
-
-    public function getReportFileName(array $marketplace_ids): string
-    {
-        return $this->report_type . '-' . $marketplace_ids[0];
-    }
+//    /**
+//     * @param array $marketplace_ids
+//     * @param callable $func
+//     * @throws Exception
+//     */
+//    public function requestReport(array $marketplace_ids, callable $func): void
+//    {
+//        foreach ($marketplace_ids as $marketplace_id) {
+//            is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
+//        }
+//    }
+//
+//    public function getReportFileName(array $marketplace_ids): string
+//    {
+//        return $this->report_type . '-' . $marketplace_ids[0];
+//    }
 
     /**
      * 处理报告
