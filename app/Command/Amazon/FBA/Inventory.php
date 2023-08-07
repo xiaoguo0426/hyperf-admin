@@ -10,6 +10,8 @@ use App\Model\AmazonInventoryModel;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use App\Util\Log\AmazonFbaInventory;
+use Carbon\Carbon;
+use Hyperf\Collection\Collection;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
@@ -39,6 +41,8 @@ class Inventory extends HyperfCommand
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
+            $now = Carbon::now()->format('Y-m-d H:i:s');
+
             foreach ($marketplace_ids as $marketplace_id) {
                 $retry = 30;
                 $nextToken = null;
@@ -46,13 +50,15 @@ class Inventory extends HyperfCommand
                     $inventories = [];
                     $asin_list = [];
 
+                    $collections = new Collection();
+
                     try {
                         $response = $sdk->fbaInventory()->getInventorySummaries($accessToken, $region, $granularity_type, $marketplace_id, [$marketplace_id], true, $startDate, $seller_skus, $nextToken);
                         $payload = $response->getPayload();
                         if ($payload === null) {
                             break;
                         }
-                        if (!is_null($response->getErrors())) {
+                        if (! is_null($response->getErrors())) {
                             break;
                         }
 
@@ -64,6 +70,29 @@ class Inventory extends HyperfCommand
                             $seller_sku = $summary->getSellerSku();
                             $condition = $summary->getCondition();
 
+                            $fulfillable_quantity = 0;
+                            $inbound_working_quantity = 0;
+                            $inbound_shipped_quantity = 0;
+                            $inbound_receiving_quantity = 0;
+                            $total_reserved_quantity = 0;
+                            $pending_customer_order_quantity = 0;
+                            $pending_transshipment_quantity = 0;
+                            $fc_processing_quantity = 0;
+                            $total_researching_quantity = 0;
+                            $researching_quantity_breakdown = [];
+                            $researching_quantity_in_short_term = 0;
+                            $researching_quantity_in_mid_term = 0;
+                            $researching_quantity_in_long_term = 0;
+                            $total_unfulfillable_quantity = 0;
+                            $customer_damaged_quantity = 0;
+                            $warehouse_damaged_quantity = 0;
+                            $distributor_damaged_quantity = 0;
+                            $carrier_damaged_quantity = 0;
+                            $defective_quantity = 0;
+                            $expired_quantity = 0;
+                            $last_updated_time = 0;
+                            $total_quantity = 0;
+
                             $inventoryDetails = $summary->getInventoryDetails();
                             $inventoryDetailsJson = [];
                             if ($inventoryDetails) {
@@ -73,18 +102,18 @@ class Inventory extends HyperfCommand
                                 $inbound_receiving_quantity = $inventoryDetails->getInboundReceivingQuantity() ?: 0;//亚马逊物流未处理的入库货数
 
                                 $reservedQuantity = $inventoryDetails->getReservedQuantity();
-                                $reservedQuantityJson = [];
+//                                $reservedQuantityJson = [];
                                 if ($reservedQuantity) {
                                     $total_reserved_quantity = $reservedQuantity->getTotalReservedQuantity() ?: 0;//开始配送。正在包装，运输等动态状态的货数
                                     $pending_customer_order_quantity = $reservedQuantity->getPendingCustomerOrderQuantity() ?: 0;//为客户订单保留的货品数
                                     $pending_transshipment_quantity = $reservedQuantity->getPendingTransshipmentQuantity() ?: 0;//从亚马逊库存转移到另一个亚马逊库存的货品数
                                     $fc_processing_quantity = $reservedQuantity->getFcProcessingQuantity() ?: 0;//被亚马逊物流搁置以进行其他处理的货品数
-                                    $reservedQuantityJson = [
-                                        'total_reserved_quantity' => $total_reserved_quantity,
-                                        'pending_customer_order_quantity' => $pending_customer_order_quantity,
-                                        'pending_transshipment_quantity' => $pending_transshipment_quantity,
-                                        'fc_processing_quantity' => $fc_processing_quantity,
-                                    ];
+//                                    $reservedQuantityJson = [
+//                                        'total_reserved_quantity' => $total_reserved_quantity,
+//                                        'pending_customer_order_quantity' => $pending_customer_order_quantity,
+//                                        'pending_transshipment_quantity' => $pending_transshipment_quantity,
+//                                        'fc_processing_quantity' => $fc_processing_quantity,
+//                                    ];
                                 }
 
 
@@ -93,21 +122,26 @@ class Inventory extends HyperfCommand
                                 if ($researchingQuantity) {
                                     $total_researching_quantity = $researchingQuantity->getTotalResearchingQuantity() ?: 0;//放错位置或损坏的货品总数
                                     $researchingQuantityBreakdowns = $researchingQuantity->getResearchingQuantityBreakdown() ?: [];//正在判断是否放错位置或损坏的货品总数和货品名称
-                                    $researchingQuantityBreakdownArr = [];
                                     if ($researchingQuantityBreakdowns) {
                                         foreach ($researchingQuantityBreakdowns as $researchingQuantityBreakdown) {
                                             $name = $researchingQuantityBreakdown->getName();
                                             $quantity = $researchingQuantityBreakdown->getQuantity();
-                                            $researchingQuantityBreakdownArr[] = [
-                                                'name' => $name,
-                                                'quantity' => $quantity
-                                            ];
+
+                                            match ($name) {
+                                                'researchingQuantityInShortTerm' => $researching_quantity_in_short_term = $quantity,
+                                                'researchingQuantityInMidTerm' => $researching_quantity_in_mid_term = $quantity,
+                                                'researchingQuantityInLongTerm' => $researching_quantity_in_long_term = $quantity,
+                                            };
+//                                            $researching_quantity_breakdown[] = [
+//                                                'name' => $name,
+//                                                'quantity' => $quantity
+//                                            ];
                                         }
                                     }
-                                    $researchingQuantityJson = [
-                                        'total_researching_quantity' => $total_researching_quantity,
-                                        'researching_quantity_breakdown' => $researchingQuantityBreakdownArr
-                                    ];
+//                                    $researchingQuantityJson = [
+//                                        'total_researching_quantity' => $total_researching_quantity,
+//                                        'researching_quantity_breakdown' => $researchingQuantityBreakdownArr
+//                                    ];
                                 }
 
                                 $unfulfillableQuantity = $inventoryDetails->getUnfulfillableQuantity();
@@ -121,26 +155,17 @@ class Inventory extends HyperfCommand
                                     $defective_quantity = $unfulfillableQuantity->getDefectiveQuantity() ?: 0;//正在处理的损坏的货品数
                                     $expired_quantity = $unfulfillableQuantity->getExpiredQuantity() ?: 0;//已过期的货品数
 
-                                    $unfulfillableQuantityJson = [
-                                        'total_unfulfillable_quantity' => $total_unfulfillable_quantity,
-                                        'customer_damaged_quantity' => $customer_damaged_quantity,
-                                        'warehouse_damaged_quantity' => $warehouse_damaged_quantity,
-                                        'distributor_damaged_quantity' => $distributor_damaged_quantity,
-                                        'carrier_damaged_quantity' => $carrier_damaged_quantity,
-                                        'defective_quantity' => $defective_quantity,
-                                        'expired_quantity' => $expired_quantity,
-                                    ];
+//                                    $unfulfillableQuantityJson = [
+//                                        'total_unfulfillable_quantity' => $total_unfulfillable_quantity,
+//                                        'customer_damaged_quantity' => $customer_damaged_quantity,
+//                                        'warehouse_damaged_quantity' => $warehouse_damaged_quantity,
+//                                        'distributor_damaged_quantity' => $distributor_damaged_quantity,
+//                                        'carrier_damaged_quantity' => $carrier_damaged_quantity,
+//                                        'defective_quantity' => $defective_quantity,
+//                                        'expired_quantity' => $expired_quantity,
+//                                    ];
                                 }
 
-                                $inventoryDetailsJson = [
-                                    'fulfillable_quantity' => $fulfillable_quantity,
-                                    'inbound_working_quantity' => $inbound_working_quantity,
-                                    'inbound_shipped_quantity' => $inbound_shipped_quantity,
-                                    'inbound_receiving_quantity' => $inbound_receiving_quantity,
-                                    'reserved_quantity' => $reservedQuantityJson,
-                                    'researching_quantity' => $researchingQuantityJson,
-                                    'unfulfillable_quantity' => $unfulfillableQuantityJson,
-                                ];
                             }
 
                             $lastUpdatedTime = $summary->getLastUpdatedTime();
@@ -150,58 +175,76 @@ class Inventory extends HyperfCommand
                             }
 
                             $product_name = $summary->getProductName() ?: '';
+
                             $total_quantity = $summary->getTotalQuantity() ?: 0;
 
-                            $inventories[$asin] = [
+                            $collections->offsetSet($asin, [
                                 'merchant_id' => $merchant_id,
                                 'merchant_store_id' => $merchant_store_id,
                                 'asin' => $asin,
                                 'fn_sku' => $fn_sku,
                                 'seller_sku' => $seller_sku,
-                                'condition' => $condition,
-                                'inventory_details' => json_encode($inventoryDetailsJson, JSON_THROW_ON_ERROR),
-                                'last_updated_time' => $last_updated_time,
                                 'product_name' => $product_name,
+                                'condition' => $condition,
+                                'fulfillable_quantity' => $fulfillable_quantity,
+                                'inbound_working_quantity' => $inbound_working_quantity,
+                                'inbound_shipped_quantity' => $inbound_shipped_quantity,
+                                'inbound_receiving_quantity' => $inbound_receiving_quantity,
+                                'total_reserved_quantity' => $total_reserved_quantity,
+                                'pending_customer_order_quantity' => $pending_customer_order_quantity,
+                                'pending_transshipment_quantity' => $pending_transshipment_quantity,
+                                'fc_processing_quantity' => $fc_processing_quantity,
+                                'total_researching_quantity' => $total_researching_quantity,
+                                'researching_quantity_in_short_term' => $researching_quantity_in_short_term,
+                                'researching_quantity_in_mid_term' => $researching_quantity_in_mid_term,
+                                'researching_quantity_in_long_term' => $researching_quantity_in_long_term,
+                                'total_unfulfillable_quantity' => $total_unfulfillable_quantity,
+                                'customer_damaged_quantity' => $customer_damaged_quantity,
+                                'warehouse_damaged_quantity' => $warehouse_damaged_quantity,
+                                'distributor_damaged_quantity' => $distributor_damaged_quantity,
+                                'carrier_damaged_quantity' => $carrier_damaged_quantity,
+                                'defective_quantity' => $defective_quantity,
+                                'expired_quantity' => $expired_quantity,
+                                'last_updated_time' => $last_updated_time,
                                 'total_quantity' => $total_quantity,
-                                'country_ids' => $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id)
-                            ];
+                                'country_ids' => $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id),
+                                'created_at' => $now,
+                            ]);
+
                             $asin_list[] = $asin;
                         }
-                        $amazonInventoryCollections = AmazonInventoryModel::query()
+                        $existAmazonInventoryCollections = AmazonInventoryModel::query()
                             ->where('merchant_id', $merchant_id)
                             ->where('merchant_store_id', $merchant_store_id)
                             ->whereIn('asin', $asin_list)->get();
 
-                        if ($amazonInventoryCollections->isEmpty()) {
-                            AmazonInventoryModel::insert($inventories);
+                        if ($existAmazonInventoryCollections->isEmpty()) {
+                            AmazonInventoryModel::insert($collections->all());
                         } else {
-                            $exist_asin_list = $amazonInventoryCollections->columns('asin');
 
-                            $diff_asin_list = array_diff($asin_list, $exist_asin_list);
+                            foreach ($existAmazonInventoryCollections as $existAmazonInventoryCollection) {
 
-                            $need_to_add_collections = [];
-                            foreach ($diff_asin_list as $new_asin) {
-                                $need_to_add_collections[] = $inventories[$new_asin];
-                            }
+                                $country_id = $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id);
 
-                            if ($diff_asin_list) {
-                                $insert = AmazonInventoryModel::insert($need_to_add_collections);
-
-                                if (!$insert) {
-                                    $log = sprintf('批量插入数据失败 merchant_id:%s merchant_store_id:%s', $merchant_id, $merchant_store_id);
-
-                                    $console->error($log);
-                                    $logger->error($log);
-                                }
-                            }
-
-                            foreach ($amazonInventoryCollections as $amazonInventoryCollection) {
-                                if (!empty($inventories[$amazonInventoryCollection->asin])) {
-                                    if ($inventories[$amazonInventoryCollection->asin]['last_updated_time'] !== $amazonInventoryCollection->last_updated_time) {
-                                        $update = $amazonInventoryCollection->update($inventories[$amazonInventoryCollection->asin]);
-                                        var_dump($update);
+                                if ($collections->offsetExists($existAmazonInventoryCollection->asin)) {
+                                    //update
+                                    if (! str_contains($existAmazonInventoryCollection->country_ids, $country_id)) {
+                                        $existAmazonInventoryCollection->country_ids = trim($existAmazonInventoryCollection->country_ids . ',' . $country_id, ',');
                                     }
+
+                                    $existAmazonInventoryCollection->save();
+                                } else {
+                                    //delete -- 一般情况下不会走到这里
+                                    $console->warning('merchant_id:%s merchant_store_id:%s asin:%s 被标记为删除，请检查');
                                 }
+
+                                $collections->offsetUnset($existAmazonInventoryCollection->asin);
+
+                            }
+
+                            //需要新增的数据
+                            if (! $collections->isEmpty()) {
+                                AmazonInventoryModel::insert($collections->toArray());
                             }
 
                         }

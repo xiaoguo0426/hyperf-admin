@@ -45,4 +45,43 @@ namespace App\Model;
 class AmazonInventoryModel extends Model
 {
     protected ?string $table = 'amazon_inventory';
+
+    public const CREATED_AT = 'created_at';
+
+    public const UPDATED_AT = 'updated_at';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected array $fillable = [
+        'merchant_id',
+        'merchant_store_id',
+        'asin',
+        'fn_sku',
+        'seller_sku',
+        'product_name',
+        'condition',
+        'fulfillable_quantity',
+        'inbound_working_quantity',
+        'inbound_shipped_quantity',
+        'inbound_receiving_quantity',
+        'total_reserved_quantity',
+        'pending_customer_order_quantity',
+        'pending_transshipment_quantity',
+        'fc_processing_quantity',
+        'total_researching_quantity',
+        'researching_quantity_breakdown',
+        'total_unfulfillable_quantity',
+        'customer_damaged_quantity',
+        'warehouse_damaged_quantity',
+        'distributor_damaged_quantity',
+        'carrier_damaged_quantity',
+        'defective_quantity',
+        'expired_quantity',
+        'last_updated_time',
+        'total_quantity',
+        'country_ids'
+    ];
 }

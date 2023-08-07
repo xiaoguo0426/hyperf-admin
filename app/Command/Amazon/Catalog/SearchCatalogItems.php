@@ -16,6 +16,6 @@ class SearchCatalogItems extends HyperfCommand
 
     public function handle()
     {
-        // TODO: Implement handle() method.
+
     }
 }
