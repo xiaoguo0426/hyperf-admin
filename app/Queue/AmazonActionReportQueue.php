@@ -50,16 +50,21 @@ class AmazonActionReportQueue extends Queue
 
         $logger->info(sprintf('Action 报告队列数据： %s', $queueData->toJson()));
 
-        $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
+        try {
+            $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
 
-        $instance->setReportStartDate($data_start_time);
-        $instance->setReportEndDate($data_end_time);
+            $instance->setReportStartDate($data_start_time);
+            $instance->setReportEndDate($data_end_time);
 
-        $log = sprintf('Action %s 处理文件 %s', $report_type, $report_file_path);
-        $console->info($log);
-        $logger->info($log);
+            $log = sprintf('Action %s 处理文件 %s', $report_type, $report_file_path);
+            $console->info($log);
+            $logger->info($log);
 
-        $instance->run($report_file_path);
+            $instance->run($report_file_path);
+        } catch (Exception $e) {
+            $logger->error(sprintf('Action 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $e->getMessage()));
+            $console->error(sprintf('Action 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $e->getMessage()));
+        }
 
         return true;
     }

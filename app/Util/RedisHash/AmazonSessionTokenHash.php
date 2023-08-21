@@ -16,9 +16,9 @@ use App\Util\Prefix;
  */
 class AmazonSessionTokenHash extends AbstractRedisHash
 {
-    public function __construct(int $merchant_id, int $merchant_store_id)
+    public function __construct(int $merchant_id, int $merchant_store_id, string $region)
     {
-        $this->name = Prefix::amazonSessionToken($merchant_id, $merchant_store_id);
+        $this->name = Prefix::amazonSessionToken($merchant_id, $merchant_store_id, $region);
         parent::__construct();
     }
 }

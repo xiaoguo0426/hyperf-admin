@@ -176,12 +176,16 @@ class AbstractRedisHash implements \ArrayAccess, Arrayable, Jsonable
     /**
      * 初始化
      * @param array $data
+     * @throws JsonException
      * @throws RedisException
      * @return bool
      */
     public function load(array $data): bool
     {
-        return $this->redis->hMSet($this->key, $data);
+        foreach ($data as $key => $item) {
+            $this->setAttr($key, $item);
+        }
+        return true;
     }
 
     /**

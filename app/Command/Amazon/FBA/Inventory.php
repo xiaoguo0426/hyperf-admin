@@ -10,6 +10,7 @@ use App\Model\AmazonInventoryModel;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use App\Util\Log\AmazonFbaInventory;
+use App\Util\MultiLog;
 use Carbon\Carbon;
 use Hyperf\Collection\Collection;
 use Hyperf\Command\Annotation\Command;
@@ -41,13 +42,18 @@ class Inventory extends HyperfCommand
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
+            $multiLog = \Hyperf\Support\make(MultiLog::class);
+            $multiLog->register(di(StdoutLoggerInterface::class))->register(di(AmazonFbaInventory::class));
+
             $now = Carbon::now()->format('Y-m-d H:i:s');
 
             foreach ($marketplace_ids as $marketplace_id) {
                 $retry = 30;
                 $nextToken = null;
+
+                $multiLog->error('这是有multiLog记录的日志', ['a' => 1, 'b' => 2]);
+
                 while (true) {
-                    $inventories = [];
                     $asin_list = [];
 
                     $collections = new Collection();
@@ -221,7 +227,6 @@ class Inventory extends HyperfCommand
                         if ($existAmazonInventoryCollections->isEmpty()) {
                             AmazonInventoryModel::insert($collections->all());
                         } else {
-
                             foreach ($existAmazonInventoryCollections as $existAmazonInventoryCollection) {
 
                                 $country_id = $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id);
@@ -241,14 +246,12 @@ class Inventory extends HyperfCommand
                                 $collections->offsetUnset($existAmazonInventoryCollection->asin);
 
                             }
-
                             //需要新增的数据
                             if (! $collections->isEmpty()) {
                                 AmazonInventoryModel::insert($collections->toArray());
                             }
 
                         }
-
                         $pagination = $response->getPagination();
                         if (is_null($pagination)) {
                             break;
@@ -258,15 +261,33 @@ class Inventory extends HyperfCommand
                         if (is_null($nextToken)) {
                             break;
                         }
-
                     } catch (ApiException $exception) {
+
+
                         $retry--;
-                        if ($retry <= 0) {
-                            break;
+                        if ($retry > 0) {
+                            $console->warning(sprintf('ApiException Inventory API retry:%s Exception:%s', $retry, $exception->getMessage()));
+                            sleep(10);
+                            continue;
                         }
+                        $console->error('ApiException Inventory API 重试次数耗尽', [
+                            'message' => $exception->getMessage(),
+                            'trace' => $exception->getTraceAsString()
+                        ]);
+
+                        $logger->error('ApiException Inventory API 重试次数耗尽', [
+                            'message' => $exception->getMessage(),
+                            'trace' => $exception->getTraceAsString()
+                        ]);
+
                         continue;
                     } catch (InvalidArgumentException $exception) {
-                        $logger->error('API请求错误', [
+                        $console->error('InvalidArgumentException API请求错误', [
+                            'message' => $exception->getMessage(),
+                            'trace' => $exception->getTraceAsString()
+                        ]);
+
+                        $logger->error('InvalidArgumentException API请求错误', [
                             'message' => $exception->getMessage(),
                             'trace' => $exception->getTraceAsString()
                         ]);

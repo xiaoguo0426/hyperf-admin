@@ -11,14 +11,14 @@ class Prefix
         return 'amazon-app:' . $merchant_id . ':' . $merchant_store_id;
     }
 
-    public static function amazonAccessToken(int $merchant_id, int $merchant_store_id): string
+    public static function amazonAccessToken(int $merchant_id, int $merchant_store_id, string $region): string
     {
-        return 'amazon-access-token:' . $merchant_id . ':' . $merchant_store_id;
+        return 'amazon-access-token:' . $merchant_id . ':' . $merchant_store_id . ':' . $region;
     }
 
-    public static function amazonSessionToken(int $merchant_id, int $merchant_store_id): string
+    public static function amazonSessionToken(int $merchant_id, int $merchant_store_id, string $region): string
     {
-        return 'amazon-session-token:' . $merchant_id . ':' . $merchant_store_id;
+        return 'amazon-session-token:' . $merchant_id . ':' . $merchant_store_id . ':' . $region;
     }
 
     public static function queue(): string

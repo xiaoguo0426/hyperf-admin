@@ -5,6 +5,8 @@ namespace App\Util\RedisHash;
 
 
 use App\Util\Prefix;
+use App\Util\RegionRefreshTokenConfig;
+use JsonException;
 
 /**
  * Class AmazonAppHash
@@ -24,6 +26,7 @@ use App\Util\Prefix;
  * @property $region
  * @property $country_ids
  * @property $refresh_token
+ * @property $config
  * @property $status
  */
 class AmazonAppHash extends AbstractRedisHash
@@ -52,5 +55,30 @@ class AmazonAppHash extends AbstractRedisHash
     public function getStatusAttr($value): int
     {
         return (int) $value;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function getConfigAttr($value)
+    {
+//        $config = [];
+//        $list = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+//        foreach ($list as $key => $item) {
+//            if ($item['country_ids'] && $item['refresh_token']) {
+//                $config[$key] = new RegionRefreshTokenConfig($item['region'], $item['country_ids'], $item['refresh_token']);
+//            }
+//        }
+//
+//        return $config;
+        return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function setConfigAttr($value): bool|string
+    {
+        return json_encode($value, JSON_THROW_ON_ERROR);
     }
 }

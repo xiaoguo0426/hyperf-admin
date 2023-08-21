@@ -6,6 +6,7 @@ use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Configuration;
 use AmazonPHP\SellingPartner\Exception\ApiException;
 use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
+use AmazonPHP\SellingPartner\Extension;
 use AmazonPHP\SellingPartner\Marketplace;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use AmazonPHP\SellingPartner\STSClient;
@@ -15,9 +16,13 @@ use App\Util\RedisHash\AmazonSessionTokenHash;
 use Buzz\Client\Curl;
 use JsonException;
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LogLevel;
 use RedisException;
 
 class AmazonSDK
@@ -347,7 +352,10 @@ class AmazonSDK
             $requestFactory = $factory,
             $streamFactory = $factory
         );
-        $hash = \Hyperf\Support\make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId()]);
+
+        $region = $this->getRegion();
+
+        $hash = \Hyperf\Support\make(AmazonSessionTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId(), 'region' => $region]);
         $sessionToken = $hash->sessionToken;
         if ($sessionToken) {
             $assumeRole = new STSClient\Credentials($hash->accessKeyId, $hash->secretAccessKey, $sessionToken, (int) $hash->expiration);
@@ -357,11 +365,11 @@ class AmazonSDK
                 $this->getAwsSecretKey(),
                 $this->getRoleArn()
             );
+
             $hash->accessKeyId = $assumeRole->accessKeyId();
             $hash->secretAccessKey = $assumeRole->secretAccessKey();
             $hash->sessionToken = $assumeRole->sessionToken();
-            $expiration = $assumeRole->expiration();
-            $hash->expiration = $expiration;
+            $hash->expiration = $assumeRole->expiration();
             $hash->ttl(25 * 60);
         }
 
@@ -372,7 +380,22 @@ class AmazonSDK
         );
 
         $logger = new Logger('amazon');
-        $logger->pushHandler(new StreamHandler(BASE_PATH . '/runtime/' . '/sp-api-php.log', Logger::ERROR));
+        $logger->pushHandler(new StreamHandler(BASE_PATH . '/runtime/sp-api-php.log', Level::Info));
+
+        $configuration->setDefaultLogLevel(LogLevel::INFO);
+
+        $configuration->registerExtension(new class implements Extension {
+            public function preRequest(string $api, string $operation, RequestInterface $request): void
+            {
+                echo "pre: " . $api . "::" . $operation . " " . $request->getUri() . "\n";
+            }
+
+            public function postRequest(string $api, string $operation, RequestInterface $request, ResponseInterface $response): void
+            {
+                echo "post: " . $api . "::" . $operation . " " . $request->getUri() . " "
+                    . $response->getStatusCode() . " rate limit: " . implode(' ', $response->getHeader('x-amzn-RateLimit-Limit')) . "\n";
+            }
+        });
 
         $this->sdk = SellingPartnerSDK::create($client, $factory, $factory, $configuration, $logger);
 
@@ -386,9 +409,11 @@ class AmazonSDK
      * @throws RedisException
      * @return AccessToken
      */
-    public function getToken(): AccessToken
+    public function getToken(string $region): AccessToken
     {
-        $hash = \Hyperf\Support\make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getId()]);
+
+//        $region = $this->getRegion();
+        $hash = \Hyperf\Support\make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId(), 'region' => $region]);
         $token = $hash->token;
         if ($hash->token) {
             $accessToken = new AccessToken(
@@ -407,7 +432,9 @@ class AmazonSDK
                 'expiresIn' => $accessToken->expiresIn(),
                 'grantType' => $accessToken->grantType(),
             ]);
-            $hash->ttl(24 * 60);
+
+            $ttl = $accessToken->expiresIn() - 120;
+            $hash->ttl($ttl);
         }
 
         return $accessToken;

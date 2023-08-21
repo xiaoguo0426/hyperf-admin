@@ -48,7 +48,7 @@ class AmazonReportDocumentActionQueue extends Queue
         $logger->info(sprintf('Action Document 报告队列数据： %s', $queueData->toJson()));
 
         $file_base_name = $report_document_id;
-        $file_path = sprintf('%s%s/%s/%s-%s/%s.txt', config('amazon.report_template_path'), 'scheduled', $report_type, $merchant_id, $merchant_store_id, $file_base_name);
+        $file_path = sprintf('%s%s/%s/%s-%s/%s.txt', \Hyperf\Config\config('amazon.report_template_path'), 'scheduled', $report_type, $merchant_id, $merchant_store_id, $file_base_name);
         if (! file_exists($file_path)) {
             $log = sprintf('%s 文件不存在', $file_path);
             $console->error($log);
@@ -56,9 +56,19 @@ class AmazonReportDocumentActionQueue extends Queue
             return true;
         }
 
-        $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
+        try {
 
-        $instance->run($file_path);
+            $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
+
+            $log = sprintf('Action %s 处理文件 %s', $report_type, $file_path);
+            $console->info($log);
+            $logger->info($log);
+
+            $instance->run($file_path);
+        } catch (Exception $exception) {
+            $logger->error(sprintf('Action Document 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $exception->getMessage()));
+            $console->error(sprintf('Action Document 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $exception->getMessage()));
+        }
 
         return true;
 

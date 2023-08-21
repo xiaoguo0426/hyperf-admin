@@ -21,10 +21,8 @@ use Psr\Log\LoggerInterface;
  * @method void critical($message, array $context = [])
  * @method void alert($message, array $context = [])
  * @method void emergency($message, array $context = [])
- * @method self setTimezone(DateTimeZone $tz)
- * @method DateTimeZone getTimezone
  */
-abstract class AbstractLog
+abstract class AbstractLog implements LoggerInterface
 {
 
     public string $channel;
