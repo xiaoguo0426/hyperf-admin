@@ -17,6 +17,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
+use RedisException;
 use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
@@ -38,9 +39,9 @@ class GetCatalogItem extends HyperfCommand
 
     /**
      * @throws ApiException
-     * @throws JsonException
      * @throws ClientExceptionInterface
-     * @return void
+     * @throws JsonException
+     * @throws RedisException
      */
     public function handle()
     {

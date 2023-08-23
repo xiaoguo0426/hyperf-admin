@@ -2,9 +2,10 @@
 
 namespace App\Queue\Data;
 
-use App\Queue\Data\QueueData;
+use JetBrains\PhpStorm\ArrayShape;
+use JsonException;
 
-class AmazonActionReportData extends QueueData
+class AmazonActionReportData extends QueueData implements \JsonSerializable
 {
 
     private int $merchant_id;
@@ -26,13 +27,13 @@ class AmazonActionReportData extends QueueData
      * 报告数据开始时间
      * @var string|null
      */
-    private string $data_start_time;
+    private ?string $data_start_time;
 
     /**
      * 报告数据结束时间
      * @var string|null
      */
-    private string $data_end_time;
+    private ?string $data_end_time;
 
     /**
      * @var string 报告保存路径
@@ -184,6 +185,21 @@ class AmazonActionReportData extends QueueData
         ], JSON_THROW_ON_ERROR);
     }
 
+    #[ArrayShape(['merchant_id' => "int", 'merchant_store_id' => "int", 'marketplace_ids' => "string", 'report_id' => "string", 'report_type' => "string", 'report_file_path' => "string", 'data_start_time' => "null|string", 'data_end_time' => "null|string"])]
+    public function jsonSerialize(): array
+    {
+        return [
+            'merchant_id' => $this->merchant_id,
+            'merchant_store_id' => $this->merchant_store_id,
+            'marketplace_ids' => $this->marketplace_ids,
+            'report_id' => $this->report_id,
+            'report_type' => $this->report_type,
+            'report_file_path' => $this->report_file_path,
+            'data_start_time' => $this->data_start_time,
+            'data_end_time' => $this->data_end_time,
+        ];
+    }
+
     public function parse(array $arr): AmazonActionReportData
     {
         $this->setMerchantId($arr['merchant_id']);
@@ -196,5 +212,22 @@ class AmazonActionReportData extends QueueData
         $this->setDataEndTime($arr['data_end_time']);
 
         return $this;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public static function fromJson($json): AmazonActionReportData
+    {
+        $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR); // 解码为关联数组
+        return new self(
+            $data['merchant_id'],
+            $data['merchant_store_id'],
+            $data['marketplace_ids'],
+            $data['report_id'],
+            $data['report_type'],
+            $data['report_file_path'],
+            $data['data_start_time'],
+            $data['data_end_time']);
     }
 }

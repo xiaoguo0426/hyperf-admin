@@ -73,4 +73,9 @@ class AmazonReportDocumentActionQueue extends Queue
         return true;
 
     }
+
+    public function safetyLine(): int
+    {
+        return 70;
+    }
 }

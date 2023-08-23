@@ -339,7 +339,6 @@ class AmazonSDK
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws JsonException
-     * @throws RedisException
      * @return SellingPartnerSDK
      */
     public function getSdk(): SellingPartnerSDK
@@ -370,7 +369,7 @@ class AmazonSDK
             $hash->secretAccessKey = $assumeRole->secretAccessKey();
             $hash->sessionToken = $assumeRole->sessionToken();
             $hash->expiration = $assumeRole->expiration();
-            $hash->ttl(25 * 60);
+            $hash->ttl(50 * 60);
         }
 
         $configuration = Configuration::forIAMRole(
@@ -404,9 +403,9 @@ class AmazonSDK
     }
 
     /**
+     * @param string $region
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws RedisException
      * @return AccessToken
      */
     public function getToken(string $region): AccessToken

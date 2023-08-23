@@ -2,6 +2,7 @@
 
 namespace App\Queue;
 
+use App\Queue\Data\QueueData;
 use App\Queue\Data\QueueDataInterface;
 use App\Util\Log\QueueLog;
 use Exception;
@@ -89,6 +90,9 @@ class Queue extends AbstractQueue
             //            }
 
             $class = $this->getQueueDataClass();
+            /**
+             * @var QueueData $dataObject
+             */
             $dataObject = new $class();
 
             $arr = $dataObject->toArr($data);

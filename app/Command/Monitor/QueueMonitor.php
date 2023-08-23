@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Command\Monitor;
+
+
+use App\Queue\AbstractQueue;
+use App\Queue\AmazonActionReportQueue;
+use App\Queue\AmazonGetReportDocumentQueue;
+use App\Queue\AmazonGetReportQueue;
+use App\Queue\AmazonReportDocumentActionQueue;
+use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
+use Psr\Container\ContainerInterface;
+
+#[Command]
+class QueueMonitor extends HyperfCommand
+{
+
+    public function __construct(protected ContainerInterface $container)
+    {
+        parent::__construct('monitor:queue');
+    }
+
+    public function configure(): void
+    {
+        parent::configure();
+        // 指令配置
+        $this->setDescription('Monitor Queue');
+    }
+
+    public function handle()
+    {
+        /**
+         * @var AbstractQueue[] $queueCollections
+         */
+        $queueCollections = [
+            AmazonActionReportQueue::class,
+//            AmazonEvaluationQueue::class,
+            AmazonGetReportDocumentQueue::class,
+            AmazonGetReportQueue::class,
+//            AmazonOrderQueue::class,
+//            AmazonOrdersQueue::class,
+            AmazonReportDocumentActionQueue::class,
+//            LazadaOrderQueue::class,
+//            ShopeeOrderQueue::class,
+        ];
+
+        foreach ($queueCollections as $queueCollection) {
+            /**
+             * @var AbstractQueue $queueCollection
+             */
+            $instance = new $queueCollection();
+
+            $safety_line = $instance->safetyLine();
+            if ($safety_line === 0) {
+                continue;
+            }
+
+            $len = $instance->len();
+            if ($instance->len() > $safety_line) {
+                //TODO LOG
+            }
+        }
+
+    }
+}

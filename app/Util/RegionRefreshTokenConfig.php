@@ -2,6 +2,7 @@
 
 namespace App\Util;
 
+use JetBrains\PhpStorm\ArrayShape;
 use JsonException;
 use JsonSerializable;
 
@@ -39,6 +40,10 @@ class RegionRefreshTokenConfig implements JsonSerializable
         return $this->refresh_token;
     }
 
+    /**
+     * @return array
+     */
+    #[ArrayShape(['region' => "string", 'country_ids' => "string", 'refresh_token' => "string"])]
     public function jsonSerialize(): array
     {
         return [

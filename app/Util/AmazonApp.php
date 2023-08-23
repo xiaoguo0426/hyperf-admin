@@ -81,7 +81,6 @@ class AmazonApp
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws JsonException
-     * @throws RedisException
      * @return bool
      */
     public static function tok(int $merchant_id, int $merchant_store_id, callable $func): bool
@@ -147,7 +146,6 @@ class AmazonApp
     /**
      * 所有Amazon应用配置回调并触发Amazon SDK
      * @param callable $func
-     * @throws RedisException
      * @return void
      */
     public static function process(callable $func): void

@@ -68,4 +68,12 @@ class AmazonActionReportQueue extends Queue
 
         return true;
     }
+
+    /**
+     * @return int
+     */
+    public function safetyLine(): int
+    {
+        return 70;
+    }
 }
