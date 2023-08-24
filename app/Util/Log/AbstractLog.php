@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
  * @method void alert($message, array $context = [])
  * @method void emergency($message, array $context = [])
  */
-abstract class AbstractLog implements LoggerInterface
+abstract class AbstractLog
 {
 
     public string $channel;

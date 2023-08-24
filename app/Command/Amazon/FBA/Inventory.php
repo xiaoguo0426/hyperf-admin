@@ -42,16 +42,11 @@ class Inventory extends HyperfCommand
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
-            $multiLog = \Hyperf\Support\make(MultiLog::class);
-            $multiLog->register(di(StdoutLoggerInterface::class))->register(di(AmazonFbaInventory::class));
-
             $now = Carbon::now()->format('Y-m-d H:i:s');
 
             foreach ($marketplace_ids as $marketplace_id) {
                 $retry = 30;
                 $nextToken = null;
-
-                $multiLog->error('这是有multiLog记录的日志', ['a' => 1, 'b' => 2]);
 
                 while (true) {
                     $asin_list = [];
