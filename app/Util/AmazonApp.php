@@ -11,7 +11,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Model\ModelNotFoundException;
 use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
-use RedisException;
 
 class AmazonApp
 {
@@ -167,7 +166,7 @@ class AmazonApp
 
             try {
                 $sdk = $amazonSDK->getSdk();
-            } catch (ApiException|JsonException|ClientExceptionInterface  $exception) {
+            } catch (ApiException|JsonException|ClientExceptionInterface $exception) {
                 return true;
             }
 

@@ -578,16 +578,16 @@
         },
         {
             "name": "friendsofhyperf/sentry",
-            "version": "v3.0.70",
+            "version": "v3.0.79",
             "source": {
                 "type": "git",
                 "url": "https://github.com/friendsofhyperf/sentry.git",
-                "reference": "165140ebd9ad70fd55ccd7c9ebbeec02d0a4e8d0"
+                "reference": "95e81918fd16be24c679b57794a0bb8b992a2484"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsofhyperf/sentry/zipball/165140ebd9ad70fd55ccd7c9ebbeec02d0a4e8d0",
-                "reference": "165140ebd9ad70fd55ccd7c9ebbeec02d0a4e8d0",
+                "url": "https://api.github.com/repos/friendsofhyperf/sentry/zipball/95e81918fd16be24c679b57794a0bb8b992a2484",
+                "reference": "95e81918fd16be24c679b57794a0bb8b992a2484",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -641,7 +641,7 @@
                 "issues": "https://github.com/friendsofhyperf/components/issues",
                 "source": "https://github.com/friendsofhyperf/components"
             },
-            "time": "2023-08-17T02:04:26+00:00"
+            "time": "2023-08-23T01:00:46+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1308,16 +1308,16 @@
         },
         {
             "name": "hyperf/collection",
-            "version": "v3.0.29",
+            "version": "v3.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/collection.git",
-                "reference": "c2e3f919f8c445da69e0e0c10920c6fc0754b9ad"
+                "reference": "0126536ab2634b6f446bcdd24ee4f4448951390b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/collection/zipball/c2e3f919f8c445da69e0e0c10920c6fc0754b9ad",
-                "reference": "c2e3f919f8c445da69e0e0c10920c6fc0754b9ad",
+                "url": "https://api.github.com/repos/hyperf/collection/zipball/0126536ab2634b6f446bcdd24ee4f4448951390b",
+                "reference": "0126536ab2634b6f446bcdd24ee4f4448951390b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1363,7 +1363,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2023-07-14T03:41:52+00:00"
+            "time": "2023-08-18T03:42:33+00:00"
         },
         {
             "name": "hyperf/command",
@@ -1777,16 +1777,16 @@
         },
         {
             "name": "hyperf/coroutine",
-            "version": "v3.0.16",
+            "version": "v3.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/coroutine.git",
-                "reference": "4944ce69d5f35407e5dbcf7e9991f1db3366f254"
+                "reference": "0cad1ddb1d233b02b16ebfb26d0cc5c863b0e5dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/coroutine/zipball/4944ce69d5f35407e5dbcf7e9991f1db3366f254",
-                "reference": "4944ce69d5f35407e5dbcf7e9991f1db3366f254",
+                "url": "https://api.github.com/repos/hyperf/coroutine/zipball/0cad1ddb1d233b02b16ebfb26d0cc5c863b0e5dd",
+                "reference": "0cad1ddb1d233b02b16ebfb26d0cc5c863b0e5dd",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1833,7 +1833,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2023-04-12T05:34:25+00:00"
+            "time": "2023-08-17T06:16:35+00:00"
         },
         {
             "name": "hyperf/dag",
@@ -2026,16 +2026,16 @@
         },
         {
             "name": "hyperf/di",
-            "version": "v3.0.24",
+            "version": "v3.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/di.git",
-                "reference": "4fa46897ffe0e1f2d1260a65a1e25dadaacbdcd2"
+                "reference": "bd5bf72af5f9261c2352b56d1a2ce677c1c0e304"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/di/zipball/4fa46897ffe0e1f2d1260a65a1e25dadaacbdcd2",
-                "reference": "4fa46897ffe0e1f2d1260a65a1e25dadaacbdcd2",
+                "url": "https://api.github.com/repos/hyperf/di/zipball/bd5bf72af5f9261c2352b56d1a2ce677c1c0e304",
+                "reference": "bd5bf72af5f9261c2352b56d1a2ce677c1c0e304",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2093,7 +2093,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2023-06-05T07:53:17+00:00"
+            "time": "2023-08-15T07:08:10+00:00"
         },
         {
             "name": "hyperf/dispatcher",
@@ -3685,16 +3685,16 @@
         },
         {
             "name": "hyperf/tracer",
-            "version": "v3.0.32",
+            "version": "v3.0.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/tracer.git",
-                "reference": "d2848d85cc84718ce57b1a13ab865e828c1463bf"
+                "reference": "8bdd7842febd8d020987b7586cdd6d19b45a6bc6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/tracer/zipball/d2848d85cc84718ce57b1a13ab865e828c1463bf",
-                "reference": "d2848d85cc84718ce57b1a13ab865e828c1463bf",
+                "url": "https://api.github.com/repos/hyperf/tracer/zipball/8bdd7842febd8d020987b7586cdd6d19b45a6bc6",
+                "reference": "8bdd7842febd8d020987b7586cdd6d19b45a6bc6",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -3750,7 +3750,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2023-08-04T02:40:33+00:00"
+            "time": "2023-08-17T06:16:35+00:00"
         },
         {
             "name": "hyperf/utils",
@@ -8640,16 +8640,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.28",
+            "version": "1.10.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "e4545b55904ebef470423d3ddddb74fa7325497a"
+                "reference": "c0eb159b598e2b637cbd52840e3d08f28d25dd47"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/e4545b55904ebef470423d3ddddb74fa7325497a",
-                "reference": "e4545b55904ebef470423d3ddddb74fa7325497a",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c0eb159b598e2b637cbd52840e3d08f28d25dd47",
+                "reference": "c0eb159b598e2b637cbd52840e3d08f28d25dd47",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -8704,7 +8704,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-08T12:33:42+00:00"
+            "time": "2023-08-24T14:26:09+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",

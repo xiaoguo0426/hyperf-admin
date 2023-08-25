@@ -43,7 +43,6 @@ class RegionRefreshTokenConfig implements JsonSerializable
     /**
      * @return array
      */
-    #[ArrayShape(['region' => "string", 'country_ids' => "string", 'refresh_token' => "string"])]
     public function jsonSerialize(): array
     {
         return [

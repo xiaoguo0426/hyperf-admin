@@ -185,7 +185,6 @@ class AmazonActionReportData extends QueueData implements \JsonSerializable
         ], JSON_THROW_ON_ERROR);
     }
 
-    #[ArrayShape(['merchant_id' => "int", 'merchant_store_id' => "int", 'marketplace_ids' => "string", 'report_id' => "string", 'report_type' => "string", 'report_file_path' => "string", 'data_start_time' => "null|string", 'data_end_time' => "null|string"])]
     public function jsonSerialize(): array
     {
         return [
