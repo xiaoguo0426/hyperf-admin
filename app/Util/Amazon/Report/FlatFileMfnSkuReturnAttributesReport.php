@@ -9,7 +9,13 @@ use Exception;
 
 class FlatFileMfnSkuReturnAttributesReport extends ReportBase
 {
-    public function run($file): bool
+
+    /**
+     * @param string $report_id
+     * @param string $file
+     * @return bool
+     */
+    public function run(string $report_id, string $file): bool
     {
         // TODO: Implement run() method.
         return true;

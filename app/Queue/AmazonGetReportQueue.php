@@ -20,6 +20,7 @@ use Exception;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonGetReportQueue extends Queue
 {
@@ -46,6 +47,7 @@ class AmazonGetReportQueue extends Queue
     /**
      * @param QueueDataInterface $queueData
      * @throws Exception
+     * @throws ClientExceptionInterface
      * @return bool
      */
     public function handleQueueData(QueueDataInterface $queueData): bool

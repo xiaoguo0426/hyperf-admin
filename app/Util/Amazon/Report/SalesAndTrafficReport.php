@@ -94,7 +94,12 @@ class SalesAndTrafficReport extends ReportBase
         return true;
     }
 
-    public function run($file): bool
+    /**
+     * @param string $report_id
+     * @param string $file
+     * @return bool
+     */
+    public function run(string $report_id, string $file): bool
     {
         $merchant_id = $this->merchant_id;
         $merchant_store_id = $this->merchant_store_id;

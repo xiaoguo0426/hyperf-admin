@@ -53,11 +53,12 @@ class SalesAndTrafficReportCustom extends ReportBase
     }
 
     /**
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @param string $report_id
+     * @param string $file
      * @throws RedisException
+     * @return bool
      */
-    public function run($file): bool
+    public function run(string $report_id, string $file): bool
     {
 
         $merchant_id = $this->merchant_id;

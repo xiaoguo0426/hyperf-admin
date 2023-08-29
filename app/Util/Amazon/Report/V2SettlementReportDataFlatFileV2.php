@@ -8,12 +8,21 @@ use App\Util\Log\AmazonReportDocumentLog;
 use Carbon\Carbon;
 use Hyperf\Collection\Collection;
 use Hyperf\Context\ApplicationContext;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use SplFileObject;
 
 class V2SettlementReportDataFlatFileV2 extends ReportBase
 {
 
-    public function run($file): bool
+    /**
+     * @param string $report_id
+     * @param string $file
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @return bool
+     */
+    public function run(string $report_id, string $file): bool
     {
         $currency_list = [
             'USD',

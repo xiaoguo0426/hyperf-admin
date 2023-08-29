@@ -45,7 +45,13 @@ abstract class ReportBase implements ReportInterface
 
     }
 
-    abstract public function run($file): bool;
+    /**
+     * 处理报告内容
+     * @param string $report_id
+     * @param string $file
+     * @return bool
+     */
+    abstract public function run(string $report_id, string $file): bool;
 
     /**
      * 构造报告请求报告参数(如果某些报告有特定参数，需要重写该方法)
@@ -65,23 +71,6 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 构造报告请求报告参数(如果某些报告有特定参数，需要重写该方法)
-     * @param string $report_type
-     * @param array $marketplace_ids
-     * @return CreateReportScheduleSpecification
-     */
-    public function buildReportBodySchedule(string $report_type, array $marketplace_ids): CreateReportScheduleSpecification
-    {
-        return new CreateReportScheduleSpecification([
-            'report_options' => null,
-            'report_type' => $report_type,//报告类型
-            'data_start_time' => $this->getReportStartDate(),//报告数据开始时间
-            'data_end_time' => $this->getReportEndDate(),//报告数据结束时间
-            'marketplace_ids' => $marketplace_ids//市场标识符列表
-        ]);
-    }
-
-    /**
      * 请求报告(如果特定报告有时间分组请求，需要重写该方法，参考SalesAndTrafficReportCustom.php报告)
      * @param array $marketplace_ids
      * @param callable $func
@@ -90,17 +79,6 @@ abstract class ReportBase implements ReportInterface
     public function requestReport(array $marketplace_ids, callable $func): void
     {
         is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, $marketplace_ids), $marketplace_ids);
-    }
-
-    /**
-     * 请求报告(如果特定报告有时间分组请求，需要重写该方法，参考SalesAndTrafficReportCustom.php报告)
-     * @param string $report_type
-     * @param array $marketplace_ids
-     * @param callable $func
-     */
-    public function requestReportSchedule(string $report_type, array $marketplace_ids, callable $func): void
-    {
-        is_callable($func) && $func($this, $report_type, $this->buildReportBodySchedule($report_type, $marketplace_ids), $marketplace_ids);
     }
 
     /**
