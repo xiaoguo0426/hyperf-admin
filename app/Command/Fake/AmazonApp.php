@@ -2,15 +2,11 @@
 
 namespace App\Command\Fake;
 
-use AmazonPHP\SellingPartner\AccessToken;
-use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use App\Model\AmazonAppModel;
-use App\Util\AmazonSDK;
 use App\Util\Log\AmazonFbaInventory;
 use App\Util\MultiLog;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;

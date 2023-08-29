@@ -17,7 +17,9 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
+use JsonException;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
@@ -36,6 +38,11 @@ class ListFinancialEventGroups extends HyperfCommand
             ->setDescription('Amazon Finance List Financial Event Groups Command');
     }
 
+    /**
+     * @throws ApiException
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     */
     public function handle(): void
     {
         $merchant_id = (int) $this->input->getArgument('merchant_id');

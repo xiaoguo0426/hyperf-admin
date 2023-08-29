@@ -12,7 +12,6 @@ class ShipmentEventList extends FinanceBase
      */
     public function run($financialEvents): bool
     {
-        var_dump($financialEvents);
         /**
          * @var ShipmentEvent $financialEvent
          */

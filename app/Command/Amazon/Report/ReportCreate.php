@@ -176,7 +176,7 @@ class ReportCreate extends HyperfCommand
                         $retry--;
                         if ($retry > 0) {
                             $console->warning(sprintf('Create %s report fail, retry: %s  merchant_id: %s merchant_store_id: %s ', $report_type, $retry, $merchant_id, $merchant_store_id));
-                            sleep(10);
+                            sleep(5);
                             continue;
                         }
                         $logger->error(sprintf('ApiException %s 创建报告出错 merchant_id: %s merchant_store_id: %s', $report_type, $merchant_id, $merchant_store_id), [

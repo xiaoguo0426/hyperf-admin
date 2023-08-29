@@ -48,10 +48,6 @@ use App\Util\Log\AmazonFinanceLog;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Dag\Dag;
-use Swoole\Coroutine;
-use Swoole\Event;
-use Swoole\Process\Manager;
-use Swoole\Process\Pool;
 
 class AmazonFinanceFinancialListEventsByGroupIdQueue extends Queue
 {
@@ -152,7 +148,7 @@ class AmazonFinanceFinancialListEventsByGroupIdQueue extends Queue
 
                     $dag = new Dag();
                     foreach ($eventList as $eventName => $financialEvents) {
-                        $dag->addVertex(\Hyperf\Dag\Vertex::make(function () use ($merchant_id, $merchant_store_id, $eventName, $financialEvents) {
+                        $dag->addVertex(\Hyperf\Dag\Vertex::make(static function () use ($merchant_id, $merchant_store_id, $eventName, $financialEvents) {
                             $finance = FinanceFactory::getInstance($merchant_id, $merchant_store_id, $eventName);
                             $finance->run($financialEvents);
                         }));
