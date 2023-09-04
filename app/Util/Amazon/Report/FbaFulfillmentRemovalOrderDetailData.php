@@ -1,14 +1,19 @@
 <?php
 
-namespace App\Util\Amazon\Report;
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
-use Exception;
+namespace App\Util\Amazon\Report;
 
 class FbaFulfillmentRemovalOrderDetailData extends ReportBase
 {
-
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct(string $report_type, int $merchant_id, int $merchant_store_id)
     {
@@ -20,11 +25,6 @@ class FbaFulfillmentRemovalOrderDetailData extends ReportBase
         $this->setReportEndDate($end_time);
     }
 
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -34,7 +34,7 @@ class FbaFulfillmentRemovalOrderDetailData extends ReportBase
 
         $handle = fopen($file, 'rb');
         $header_line = str_replace("\r\n", '', fgets($handle));
-        //表头 需要处理换行符
+        // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];

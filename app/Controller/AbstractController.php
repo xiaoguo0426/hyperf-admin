@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
  */
+
 namespace App\Controller;
 
 use Hyperf\Di\Annotation\Inject;
@@ -29,7 +28,6 @@ abstract class AbstractController
 
     /**
      * 是否Post请求
-     * @return bool
      */
     public function isPost(): bool
     {
@@ -38,7 +36,6 @@ abstract class AbstractController
 
     /**
      * 是否Get请求
-     * @return bool
      */
     public function isGet(): bool
     {
@@ -47,7 +44,6 @@ abstract class AbstractController
 
     /**
      * 是否为异步请求
-     * @return bool
      */
     public function isAjax(): bool
     {

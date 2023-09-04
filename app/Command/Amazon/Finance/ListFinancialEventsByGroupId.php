@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\Finance;
 
 use App\Queue\AmazonFinanceFinancialListEventsByGroupIdQueue;
@@ -8,7 +16,6 @@ use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use RedisException;
 
 #[Command]
 class ListFinancialEventsByGroupId extends HyperfCommand
@@ -27,7 +34,7 @@ class ListFinancialEventsByGroupId extends HyperfCommand
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws RedisException
+     * @throws \RedisException
      */
     public function handle(): void
     {

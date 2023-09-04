@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 
 /**
- * Class ConsoleLog
- * @package extension\Log
+ * Class ConsoleLog.
  * @method void info($message)
  * @method void error($message)
  * @method void comment($message)
@@ -15,9 +22,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
  */
 class ConsoleLog
 {
-    /**
-     * @var StdoutLoggerInterface
-     */
     protected StdoutLoggerInterface $logger;
 
     public function __construct(StdoutLoggerInterface $logger)
@@ -27,6 +31,6 @@ class ConsoleLog
 
     public function __call($name, $arguments)
     {
-        return \Hyperf\Support\env('DEBUG') !== true ? $this->logger->$name(...$arguments) : null;
+        return \Hyperf\Support\env('DEBUG') !== true ? $this->logger->{$name}(...$arguments) : null;
     }
 }

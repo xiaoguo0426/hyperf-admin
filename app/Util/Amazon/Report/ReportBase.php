@@ -1,25 +1,32 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
-use AmazonPHP\SellingPartner\Model\Reports\CreateReportScheduleSpecification;
 use AmazonPHP\SellingPartner\Model\Reports\CreateReportSpecification;
 use App\Util\Log\AmazonReportLog;
 use Carbon\Carbon;
-use Exception;
 use Hyperf\Context\ApplicationContext;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 
 abstract class ReportBase implements ReportInterface
 {
-
     public string $report_type;
 
     public int $merchant_id;
+
     public int $merchant_store_id;
 
     public ?Carbon $report_start_date;
+
     public ?Carbon $report_end_date;
 
     public array $header_map;
@@ -42,39 +49,29 @@ abstract class ReportBase implements ReportInterface
         }
 
         $this->header_map = $header_map;
-
     }
 
     /**
-     * 处理报告内容
-     * @param string $report_id
-     * @param string $file
-     * @return bool
+     * 处理报告内容.
      */
     abstract public function run(string $report_id, string $file): bool;
 
     /**
-     * 构造报告请求报告参数(如果某些报告有特定参数，需要重写该方法)
-     * @param string $report_type
-     * @param array $marketplace_ids
-     * @return CreateReportSpecification
+     * 构造报告请求报告参数(如果某些报告有特定参数，需要重写该方法).
      */
     public function buildReportBody(string $report_type, array $marketplace_ids): CreateReportSpecification
     {
         return new CreateReportSpecification([
             'report_options' => null,
-            'report_type' => $report_type,//报告类型
-            'data_start_time' => $this->getReportStartDate(),//报告数据开始时间
-            'data_end_time' => $this->getReportEndDate(),//报告数据结束时间
-            'marketplace_ids' => $marketplace_ids//市场标识符列表
+            'report_type' => $report_type, // 报告类型
+            'data_start_time' => $this->getReportStartDate(), // 报告数据开始时间
+            'data_end_time' => $this->getReportEndDate(), // 报告数据结束时间
+            'marketplace_ids' => $marketplace_ids, // 市场标识符列表
         ]);
     }
 
     /**
-     * 请求报告(如果特定报告有时间分组请求，需要重写该方法，参考SalesAndTrafficReportCustom.php报告)
-     * @param array $marketplace_ids
-     * @param callable $func
-     * @return void
+     * 请求报告(如果特定报告有时间分组请求，需要重写该方法，参考SalesAndTrafficReportCustom.php报告).
      */
     public function requestReport(array $marketplace_ids, callable $func): void
     {
@@ -82,9 +79,7 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 报告名称(如果特定报告有)
-     * @param array $marketplace_ids
-     * @return string
+     * 报告名称(如果特定报告有).
      */
     public function getReportFileName(array $marketplace_ids): string
     {
@@ -92,21 +87,15 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 获得报告文件完整路径
-     * @param array $marketplace_ids
-     * @return string
+     * 获得报告文件完整路径.
      */
     public function getReportFilePath(array $marketplace_ids): string
     {
         return $this->dir . $this->getReportFileName($marketplace_ids) . $this->getFileExt();
     }
 
-
     /**
-     * 处理报告
-     * @param callable $func
-     * @param array $marketplace_ids
-     * @return void
+     * 处理报告.
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
@@ -117,7 +106,8 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * @throws Exception
+     * @param mixed $date
+     * @throws \Exception
      */
     public function setReportStartDate($date): void
     {
@@ -130,7 +120,8 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * @throws Exception
+     * @param mixed $date
+     * @throws \Exception
      */
     public function setReportEndDate($date): void
     {
@@ -143,8 +134,7 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 报告是否需要指定开始时间与结束时间
-     * @return bool
+     * 报告是否需要指定开始时间与结束时间.
      */
     public function reportDateRequired(): bool
     {
@@ -161,12 +151,10 @@ abstract class ReportBase implements ReportInterface
         return true;
     }
 
-
     public function checkDir(): bool
     {
-
         $date = (new Carbon($this->getReportStartDate() ? $this->getReportStartDate()->format('Ymd') : '-1 day'))->setTimezone('UTC')->format('Ymd');
-        //检测report_type是哪个
+        // 检测report_type是哪个
         $category = $this->checkReportTypeCategory($this->report_type);
 
         $dir = sprintf('%s%s/%s/%s-%s/', \Hyperf\Config\config('amazon.report_template_path'), $category, $date, $this->merchant_id, $this->merchant_store_id);
@@ -188,9 +176,7 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 检查report_type属于哪个类型  requested|scheduled
-     * @param string $report_type
-     * @return string
+     * 检查report_type属于哪个类型  requested|scheduled.
      */
     public function checkReportTypeCategory(string $report_type): string
     {
@@ -206,9 +192,7 @@ abstract class ReportBase implements ReportInterface
     }
 
     /**
-     * 检查报告文件是否存在
-     * @param array $marketplace_ids
-     * @return bool
+     * 检查报告文件是否存在.
      */
     public function checkReportFile(array $marketplace_ids): bool
     {

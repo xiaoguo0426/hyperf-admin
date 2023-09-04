@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Model;
 
 use App\Util\RegionRefreshTokenConfig;
-use JsonException;
 
 /**
- * Class AmazonAppModel
- * @package App\Model
+ * Class AmazonAppModel.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id
@@ -33,29 +39,31 @@ class AmazonAppModel extends Model
     protected ?string $table = 'amazon_app';
 
     /**
-     * @throws JsonException
+     * @param mixed $value
+     * @throws \JsonException
      */
     public function getConfigAttribute($value): array
     {
-//        $data = [];
-//        $decodes = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-//        foreach ($decodes as $region => $json) {
-//            $data[$region] = new RegionRefreshTokenConfig($json['region'], $json['country_ids'], $json['refresh_token']);
-//        }
-//        return $data;
+        //        $data = [];
+        //        $decodes = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        //        foreach ($decodes as $region => $json) {
+        //            $data[$region] = new RegionRefreshTokenConfig($json['region'], $json['country_ids'], $json['refresh_token']);
+        //        }
+        //        return $data;
         return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
-     * @throws JsonException
+     * @param mixed $configs
+     * @throws \JsonException
      */
     public function setConfigAttribute($configs): void
     {
-//        $data = [];
-//        foreach ($configs as $region => $config) {
-//            $data[$region] = json_encode($config, JSON_THROW_ON_ERROR);
-//        }
-//        $this->attributes['config'] = json_encode($data, JSON_THROW_ON_ERROR);
+        //        $data = [];
+        //        foreach ($configs as $region => $config) {
+        //            $data[$region] = json_encode($config, JSON_THROW_ON_ERROR);
+        //        }
+        //        $this->attributes['config'] = json_encode($data, JSON_THROW_ON_ERROR);
         $this->attributes['config'] = json_encode($configs, JSON_THROW_ON_ERROR);
     }
 
@@ -72,5 +80,4 @@ class AmazonAppModel extends Model
         }
         return $configs;
     }
-
 }

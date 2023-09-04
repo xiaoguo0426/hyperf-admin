@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Command\Amazon\Report;
 
@@ -10,7 +16,6 @@ use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use RedisException;
 
 #[Command]
 class ReportGet extends HyperfCommand
@@ -29,8 +34,7 @@ class ReportGet extends HyperfCommand
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws RedisException
-     * @return void
+     * @throws \RedisException
      */
     public function handle(): void
     {

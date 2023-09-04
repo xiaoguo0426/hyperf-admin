@@ -1,37 +1,40 @@
 <?php
 
-namespace App\Queue\Data;
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
-use JetBrains\PhpStorm\ArrayShape;
-use JsonException;
+namespace App\Queue\Data;
 
 class AmazonActionReportData extends QueueData implements \JsonSerializable
 {
-
     private int $merchant_id;
+
     private int $merchant_store_id;
-    /**
-     * @var string
-     */
+
     private string $marketplace_ids;
+
     /**
      * @var string 报告id
      */
     private string $report_id;
+
     /**
      * @var string 报告类型
      */
     private string $report_type;
 
     /**
-     * 报告数据开始时间
-     * @var string|null
+     * 报告数据开始时间.
      */
     private ?string $data_start_time;
 
     /**
-     * 报告数据结束时间
-     * @var string|null
+     * 报告数据结束时间.
      */
     private ?string $data_end_time;
 
@@ -40,132 +43,81 @@ class AmazonActionReportData extends QueueData implements \JsonSerializable
      */
     private string $report_file_path;
 
-    /**
-     * @return int
-     */
     public function getMerchantId(): int
     {
         return $this->merchant_id;
     }
 
-    /**
-     * @param int $merchant_id
-     */
     public function setMerchantId(int $merchant_id): void
     {
         $this->merchant_id = $merchant_id;
     }
 
-    /**
-     * @return int
-     */
     public function getMerchantStoreId(): int
     {
         return $this->merchant_store_id;
     }
 
-    /**
-     * @param int $merchant_store_id
-     */
     public function setMerchantStoreId(int $merchant_store_id): void
     {
         $this->merchant_store_id = $merchant_store_id;
     }
 
-    /**
-     * @return array
-     */
     public function getMarketplaceIds(): array
     {
         return explode(',', $this->marketplace_ids);
     }
 
-    /**
-     * @param array $marketplace_id
-     */
     public function setMarketplaceIds(array $marketplace_id): void
     {
         $this->marketplace_ids = implode(',', $marketplace_id);
     }
 
-
-    /**
-     * @return string
-     */
     public function getReportId(): string
     {
         return $this->report_id;
     }
 
-    /**
-     * @param string $report_id
-     */
     public function setReportId(string $report_id): void
     {
         $this->report_id = $report_id;
     }
 
-    /**
-     * @return string
-     */
     public function getReportType(): string
     {
         return $this->report_type;
     }
 
-    /**
-     * @param string $report_type
-     */
     public function setReportType(string $report_type): void
     {
         $this->report_type = $report_type;
     }
 
-    /**
-     * @return string
-     */
     public function getReportFilePath(): string
     {
         return $this->report_file_path;
     }
 
-    /**
-     * @param string $report_file_path
-     */
     public function setReportFilePath(string $report_file_path): void
     {
         $this->report_file_path = $report_file_path;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataStartTime(): string|null
     {
         return $this->data_start_time;
     }
 
-    /**
-     * @param string|null $data_start_time
-     * @return void
-     */
     public function setDataStartTime(string|null $data_start_time): void
     {
         $this->data_start_time = $data_start_time;
     }
 
-    /**
-     * @return string|null
-     */
     public function getDataEndTime(): string|null
     {
         return $this->data_end_time;
     }
 
-    /**
-     * @param string|null $data_end_time
-     * @return void
-     */
     public function setDataEndTime(string|null $data_end_time): void
     {
         $this->data_end_time = $data_end_time;
@@ -214,7 +166,8 @@ class AmazonActionReportData extends QueueData implements \JsonSerializable
     }
 
     /**
-     * @throws JsonException
+     * @param mixed $json
+     * @throws \JsonException
      */
     public static function fromJson($json): AmazonActionReportData
     {
@@ -227,6 +180,7 @@ class AmazonActionReportData extends QueueData implements \JsonSerializable
             $data['report_type'],
             $data['report_file_path'],
             $data['data_start_time'],
-            $data['data_end_time']);
+            $data['data_end_time']
+        );
     }
 }

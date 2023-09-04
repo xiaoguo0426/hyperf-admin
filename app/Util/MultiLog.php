@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util;
 
 use App\Util\Log\AbstractLog;
@@ -9,14 +17,12 @@ use Psr\Log\LogLevel;
 
 /**
  * 多平台日志基础类
- * Class AbstractConsoleLog
- * @package extension\Log
+ * Class AbstractConsoleLog.
  */
 class MultiLog implements LoggerInterface
 {
-
     /**
-     * @var AbstractLog[]|StdoutLoggerInterface[] $loggers
+     * @var AbstractLog[]|StdoutLoggerInterface[]
      */
     private array $loggers;
 
@@ -66,12 +72,10 @@ class MultiLog implements LoggerInterface
         $this->log(LogLevel::DEBUG, $message, $context);
     }
 
-
     public function log($level, string|\Stringable $message, array $context = []): void
     {
         foreach ($this->loggers as $logger) {
             $logger->log($level, $message, $context);
         }
     }
-
 }

@@ -1,13 +1,19 @@
 <?php
 
-
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 use Hyperf\Context\ApplicationContext;
 
 if (! function_exists('di')) {
     /**
      * Finds an entry of the container by its identifier and returns it.
      *
-     * @param mixed|null $id
+     * @param null|mixed $id
      *
      * @return mixed|\Psr\Container\ContainerInterface
      */
@@ -23,10 +29,6 @@ if (! function_exists('di')) {
 }
 
 if (! function_exists('is_json')) {
-    /**
-     * @param $data
-     * @return bool
-     */
     function is_json($data): bool
     {
         try {

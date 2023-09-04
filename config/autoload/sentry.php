@@ -1,15 +1,12 @@
 <?php
 
 declare(strict_types=1);
-
 /**
- * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
- * @contact  huangdijia@gmail.com
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
  */
-
 use function Hyperf\Support\env;
 
 return [
@@ -35,6 +32,6 @@ return [
     'integrations' => [],
 
     'ignore_exceptions' => [
-//        Hyperf\Validation\ValidationException::class,
+        //        Hyperf\Validation\ValidationException::class,
     ],
 ];

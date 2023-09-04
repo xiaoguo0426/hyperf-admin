@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Model;
 
 /**
- * Class AmazonReportFbaInventoryPlanningDataModel
- * @package App\Model
+ * Class AmazonReportFbaInventoryPlanningDataModel.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id

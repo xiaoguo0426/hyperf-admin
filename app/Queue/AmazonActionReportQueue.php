@@ -1,12 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Queue;
 
 use App\Queue\Data\AmazonActionReportData;
 use App\Queue\Data\QueueDataInterface;
 use App\Util\Amazon\Report\ReportFactory;
 use App\Util\Log\AmazonReportLog;
-use Exception;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerExceptionInterface;
@@ -25,11 +32,9 @@ class AmazonActionReportQueue extends Queue
     }
 
     /**
-     * @param QueueDataInterface $queueData
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws Exception
-     * @return bool
+     * @throws \Exception
      */
     public function handleQueueData(QueueDataInterface $queueData): bool
     {
@@ -61,7 +66,7 @@ class AmazonActionReportQueue extends Queue
             $logger->info($log);
 
             $instance->run($report_file_path);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $logger->error(sprintf('Action 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $e->getMessage()));
             $console->error(sprintf('Action 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $e->getMessage()));
         }
@@ -69,9 +74,6 @@ class AmazonActionReportQueue extends Queue
         return true;
     }
 
-    /**
-     * @return int
-     */
     public function safetyLine(): int
     {
         return 70;

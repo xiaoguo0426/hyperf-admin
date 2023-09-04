@@ -1,16 +1,20 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Util\RedisHash;
 
-
 use App\Util\Prefix;
 use App\Util\RegionRefreshTokenConfig;
-use JsonException;
 
 /**
- * Class AmazonAppHash
- * @package App\Util\RedisHash
+ * Class AmazonAppHash.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id
@@ -58,24 +62,26 @@ class AmazonAppHash extends AbstractRedisHash
     }
 
     /**
-     * @throws JsonException
+     * @param mixed $value
+     * @throws \JsonException
      */
     public function getConfigAttr($value)
     {
-//        $config = [];
-//        $list = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-//        foreach ($list as $key => $item) {
-//            if ($item['country_ids'] && $item['refresh_token']) {
-//                $config[$key] = new RegionRefreshTokenConfig($item['region'], $item['country_ids'], $item['refresh_token']);
-//            }
-//        }
-//
-//        return $config;
+        //        $config = [];
+        //        $list = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        //        foreach ($list as $key => $item) {
+        //            if ($item['country_ids'] && $item['refresh_token']) {
+        //                $config[$key] = new RegionRefreshTokenConfig($item['region'], $item['country_ids'], $item['refresh_token']);
+        //            }
+        //        }
+        //
+        //        return $config;
         return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
     }
 
     /**
-     * @throws JsonException
+     * @param mixed $value
+     * @throws \JsonException
      */
     public function setConfigAttr($value): bool|string
     {

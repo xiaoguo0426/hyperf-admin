@@ -1,10 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Model;
 
 /**
- * Class AmazonInventoryModel
- * @package App\Model
+ * Class AmazonInventoryModel.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id
@@ -44,16 +51,14 @@ namespace App\Model;
  */
 class AmazonInventoryModel extends Model
 {
-    protected ?string $table = 'amazon_inventory';
-
     public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = 'updated_at';
 
+    protected ?string $table = 'amazon_inventory';
+
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array
      */
     protected array $fillable = [
         'merchant_id',
@@ -82,6 +87,6 @@ class AmazonInventoryModel extends Model
         'expired_quantity',
         'last_updated_time',
         'total_quantity',
-        'country_ids'
+        'country_ids',
     ];
 }

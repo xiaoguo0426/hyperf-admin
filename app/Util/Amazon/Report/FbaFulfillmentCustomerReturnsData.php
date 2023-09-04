@@ -1,16 +1,22 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
 use App\Model\AmazonReportFbaFulfillmentCustomerReturnDataModel;
 use Carbon\Carbon;
-use Exception;
 
 class FbaFulfillmentCustomerReturnsData extends ReportBase
 {
-
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function __construct(string $report_type, int $merchant_id, int $merchant_store_id)
     {
@@ -23,11 +29,6 @@ class FbaFulfillmentCustomerReturnsData extends ReportBase
         $this->setReportEndDate($end_time);
     }
 
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -37,7 +38,7 @@ class FbaFulfillmentCustomerReturnsData extends ReportBase
 
         $handle = fopen($file, 'rb');
         $header_line = str_replace("\r\n", '', fgets($handle));
-        //表头 需要处理换行符
+        // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];
@@ -63,7 +64,6 @@ class FbaFulfillmentCustomerReturnsData extends ReportBase
         fclose($handle);
 
         foreach ($data as $item) {
-
             // 没有sku或则订单id则跳过
             if (empty($item['sku']) || empty($item['order_id'])) {
                 continue;

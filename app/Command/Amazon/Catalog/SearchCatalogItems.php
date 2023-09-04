@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\Catalog;
 
 use Hyperf\Command\Annotation\Command;
@@ -16,6 +24,5 @@ class SearchCatalogItems extends HyperfCommand
 
     public function handle()
     {
-
     }
 }

@@ -2,12 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
  */
 return [
     'default' => [
@@ -28,7 +26,7 @@ return [
         ],
     ],
 
-    //队列日志 日志文件按日期轮转
+    // 队列日志 日志文件按日期轮转
     'queue' => [
         'handler' => [
             'class' => Monolog\Handler\RotatingFileHandler::class,
@@ -65,7 +63,7 @@ return [
             ],
         ],
     ],
-    //Amazon Report 日志文件按日期轮转
+    // Amazon Report 日志文件按日期轮转
     'amazon-report' => [
         'handler' => [
             'class' => Monolog\Handler\RotatingFileHandler::class,

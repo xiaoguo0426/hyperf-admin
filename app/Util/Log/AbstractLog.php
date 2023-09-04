@@ -1,17 +1,23 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Log;
 
 use App\Kernel\Log;
-use DateTimeZone;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 
 /**
  * Log基础类
- * Class AbstractConsoleLog
- * @package extension\Log
+ * Class AbstractConsoleLog.
  * @method void log(mixed $level, string $message, array $context = [])
  * @method void debug($message, array $context = [])
  * @method void info($message, array $context = [])
@@ -24,7 +30,6 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractLog
 {
-
     public string $channel;
 
     private LoggerInterface $logger;
@@ -40,6 +45,6 @@ abstract class AbstractLog
 
     public function __call($name, $arguments)
     {
-        return $this->logger->$name(...$arguments);
+        return $this->logger->{$name}(...$arguments);
     }
 }

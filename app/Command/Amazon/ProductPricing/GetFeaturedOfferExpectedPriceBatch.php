@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\ProductPricing;
 
 use Hyperf\Command\Annotation\Command;
@@ -9,7 +17,6 @@ use Psr\Container\ContainerInterface;
 #[Command]
 class GetFeaturedOfferExpectedPriceBatch extends HyperfCommand
 {
-
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:product-pricing:get-featured-offer-expected-price-batch');
@@ -17,6 +24,5 @@ class GetFeaturedOfferExpectedPriceBatch extends HyperfCommand
 
     public function handle()
     {
-
     }
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
 use App\Model\AmazonReportFbaEstimatedFeeModel;
@@ -8,12 +16,6 @@ use App\Util\RedisHash\AmazonFbaEstimatedFeeHash;
 
 class FbaEstimatedFeeTxtDataReport extends ReportBase
 {
-
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -23,7 +25,7 @@ class FbaEstimatedFeeTxtDataReport extends ReportBase
 
         $handle = fopen($file, 'rb');
         $header_line = str_replace("\r\n", '', fgets($handle));
-        //表头 需要处理换行符
+        // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];
@@ -58,7 +60,6 @@ class FbaEstimatedFeeTxtDataReport extends ReportBase
                     ->where('currency', $currency)
                     ->where('asin', $asin)->first();
                 if (is_null($model)) {
-
                     $model = new AmazonReportFbaEstimatedFeeModel();
                     $model->merchant_id = $currency_item['merchant_id'];
                     $model->merchant_store_id = $currency_item['merchant_store_id'];
@@ -91,12 +92,10 @@ class FbaEstimatedFeeTxtDataReport extends ReportBase
                     continue;
                 }
 
-                //设置缓存
+                // 设置缓存
                 $hash = \Hyperf\Support\make(AmazonFbaEstimatedFeeHash::class, [$merchant_id, $merchant_store_id, $currency_item['currency']]);
                 $hash[$asin] = $currency_item['expected_fulfillment_fee_per_unit'];
-
             }
-
         }
         return true;
     }

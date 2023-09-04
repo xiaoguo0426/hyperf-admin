@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Queue\Data;
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
-use Exception;
-use JsonException;
+namespace App\Queue\Data;
 
 abstract class QueueData implements QueueDataInterface
 {
     /**
-     * 重试次数
-     * @var int
+     * 重试次数.
      */
     protected int $retry = 0;
 
-    /**
-     * @return int
-     */
     public function getRetry(): int
     {
         return $this->retry;
     }
 
     /**
-     * @param int $retry
      * @return $this
      */
     public function setRetry(int $retry): QueueData
@@ -32,7 +32,7 @@ abstract class QueueData implements QueueDataInterface
     }
 
     /**
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function toArr(string $json): array
     {
@@ -40,11 +40,11 @@ abstract class QueueData implements QueueDataInterface
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function toJson(): string
     {
-        throw new Exception('请在子类中实现 toJson 方法');
+        throw new \Exception('请在子类中实现 toJson 方法');
     }
 
     abstract public function parse(array $arr);

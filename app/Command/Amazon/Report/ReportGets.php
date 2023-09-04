@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Command\Amazon\Report;
 
@@ -33,13 +39,9 @@ class ReportGets extends HyperfCommand
         $this->setDescription('Amazon Gets Report Command');
     }
 
-    /**
-     * @return void
-     */
     public function handle(): void
     {
         AmazonApp::process(static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
-
             $logger = ApplicationContext::getContainer()->get(AmazonReportLog::class);
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
@@ -48,12 +50,11 @@ class ReportGets extends HyperfCommand
                 $logger->error('请配置亚马逊报告');
                 return false;
             }
-            $process_states = ['DONE'];//报告处理进度
-            $page_size = 100;//分页大小
-            $created_since = null;//默认获取最近90天的数据
+            $process_states = ['DONE']; // 报告处理进度
+            $page_size = 100; // 分页大小
+            $created_since = null; // 默认获取最近90天的数据
             $created_until = null;
             $next_token = null;
-
 
             $report_template_path = config('amazon.report_template_path');
             $queue = new AmazonGetReportDocumentQueue();
@@ -84,9 +85,9 @@ class ReportGets extends HyperfCommand
                             $file_base_name = $report_document_id;
                             $file_path = $dir . $file_base_name . '.txt';
                             if (file_exists($file_path)) {
-                                //文件存在了直接返回
+                                // 文件存在了直接返回
                                 $console->warning($file_path . ' 文件已存在');
-//                                continue;
+                                //                                continue;
                             }
 
                             $amazonGetReportDocumentData = new AmazonGetReportDocumentData();
@@ -96,18 +97,16 @@ class ReportGets extends HyperfCommand
                             $amazonGetReportDocumentData->setReportType($report_type);
                             $amazonGetReportDocumentData->setMarketplaceIds($marketplace_ids);
 
-                            //将同一报告类型 的文档id投递到队列，异步拉取报告
+                            // 将同一报告类型 的文档id投递到队列，异步拉取报告
                             $queue->push($amazonGetReportDocumentData);
-
                         }
 
                         $next_token = $response->getNextToken();
                         if (is_null($next_token)) {
                             break;
                         }
-
                     } catch (ApiException $e) {
-                        $retry--;
+                        --$retry;
                         if ($retry > 0) {
                             $console->warning(sprintf('Report Gets. report_type: %s retry: %s ', $report_type, $retry));
                             sleep(10);
@@ -124,15 +123,13 @@ class ReportGets extends HyperfCommand
                         $console->error($log);
                         $logger->error($log, [
                             'message' => $e->getMessage(),
-                            'response body' => $e->getResponseBody()
+                            'response body' => $e->getResponseBody(),
                         ]);
-
                     } catch (InvalidArgumentException $e) {
                         $logger->error(sprintf('InvalidArgumentException %s 创建报告出错 merchant_id: %s merchant_store_id: %s', $report_type, $merchant_id, $merchant_store_id));
                         break;
                     }
                 }
-
             }
 
             return true;

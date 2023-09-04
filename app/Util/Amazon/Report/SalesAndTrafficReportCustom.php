@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
 use AmazonPHP\SellingPartner\Marketplace;
@@ -7,13 +15,10 @@ use AmazonPHP\SellingPartner\Model\Reports\CreateReportSpecification;
 use App\Util\Log\AmazonReportActionLog;
 use App\Util\RedisHash\AmazonAsinSaleVolumeHash;
 use Carbon\Carbon;
-use Exception;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use JsonException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use RedisException;
 
 class SalesAndTrafficReportCustom extends ReportBase
 {
@@ -24,10 +29,10 @@ class SalesAndTrafficReportCustom extends ReportBase
         parent::__construct($report_type, $merchant_id, $merchant_store_id);
 
         $last_end_time = Carbon::now('UTC')->subDays(2)->format('Y-m-d 23:59:59');
-        $last_3days_start_time = Carbon::now('UTC')->subDays(4)->format('Y-m-d 00:00:00');//最近3天
-        $last_7days_start_time = Carbon::now('UTC')->subDays(8)->format('Y-m-d 00:00:00');//最近7天
-        $last_14days_start_time = Carbon::now('UTC')->subDays(15)->format('Y-m-d 00:00:00');//最近14天
-        $last_31days_start_time = Carbon::now('UTC')->subDays(31)->format('Y-m-d 00:00:00');//最近30天
+        $last_3days_start_time = Carbon::now('UTC')->subDays(4)->format('Y-m-d 00:00:00'); // 最近3天
+        $last_7days_start_time = Carbon::now('UTC')->subDays(8)->format('Y-m-d 00:00:00'); // 最近7天
+        $last_14days_start_time = Carbon::now('UTC')->subDays(15)->format('Y-m-d 00:00:00'); // 最近14天
+        $last_31days_start_time = Carbon::now('UTC')->subDays(31)->format('Y-m-d 00:00:00'); // 最近30天
 
         $this->date_list = [
             'last_3days' => [
@@ -45,33 +50,28 @@ class SalesAndTrafficReportCustom extends ReportBase
             'last_30days' => [
                 'start_time' => $last_31days_start_time,
                 'end_time' => $last_end_time,
-            ]
+            ],
         ];
-
 
         $this->report_type = 'GET_SALES_AND_TRAFFIC_REPORT';
     }
 
     /**
-     * @param string $report_id
-     * @param string $file
-     * @throws RedisException
-     * @return bool
+     * @throws \RedisException
      */
     public function run(string $report_id, string $file): bool
     {
-
         $merchant_id = $this->merchant_id;
         $merchant_store_id = $this->merchant_store_id;
 
         $logger = di(AmazonReportActionLog::class);
-//        $console = di(StdoutLoggerInterface::class);
+        //        $console = di(StdoutLoggerInterface::class);
 
         $content = file_get_contents($file);
 
         try {
             $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException $jsonException) {
+        } catch (\JsonException $jsonException) {
             try {
                 $logger = ApplicationContext::getContainer()->get(AmazonReportActionLog::class);
                 $logger->error(sprintf('Action %s 解析错误 merchant_id: %s merchant_store_id: %s', $this->report_type, $merchant_id, $merchant_store_id));
@@ -98,10 +98,10 @@ class SalesAndTrafficReportCustom extends ReportBase
         $diff = $endDate->diff($startDate);
         $diff_days = $diff->days + 1;
 
-        //报告更多参数，请见SalesAndTrafficReport类
+        // 报告更多参数，请见SalesAndTrafficReport类
         $data_time = $json['reportSpecification']['dataStartTime'];
         $marketplace_id = $json['reportSpecification']['marketplaceIds'][0];
-        //目前销量只统计US
+        // 目前销量只统计US
         $us_marketplace_id = Marketplace::US()->id();
         if ($marketplace_id !== $us_marketplace_id) {
             return true;
@@ -110,7 +110,6 @@ class SalesAndTrafficReportCustom extends ReportBase
         $salesAndTrafficByAsin = $json['salesAndTrafficByAsin'];
 
         $type = sprintf('last_%sdays', $diff_days);
-
 
         /**
          * @var AmazonAsinSaleVolumeHash $hash
@@ -122,7 +121,7 @@ class SalesAndTrafficReportCustom extends ReportBase
         foreach ($salesAndTrafficByAsin as $salesAndTraffic) {
             $childAsin = $salesAndTraffic['childAsin'];
 
-            $salesByAsin = $salesAndTraffic['salesByAsin'];//销量
+            $salesByAsin = $salesAndTraffic['salesByAsin']; // 销量
 
             $unitsOrdered = (int) $salesByAsin['unitsOrdered'];
             if ($unitsOrdered === 0) {
@@ -130,7 +129,6 @@ class SalesAndTrafficReportCustom extends ReportBase
             }
 
             $asin_maps[$childAsin] = $unitsOrdered;
-
         }
 
         foreach ($asin_maps as $asin => $quantity_ordered) {
@@ -142,7 +140,7 @@ class SalesAndTrafficReportCustom extends ReportBase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function buildReportBody(string $report_type, array $marketplace_ids): CreateReportSpecification
     {
@@ -151,23 +149,19 @@ class SalesAndTrafficReportCustom extends ReportBase
                 'dateGranularity' => 'DAY',
                 'asinGranularity' => 'SKU',
             ],
-            'report_type' => $report_type,//报告类型
-            'data_start_time' => $this->getReportStartDate(),//报告数据开始时间
-            'data_end_time' => $this->getReportEndDate(),//报告数据结束时间
-            'marketplace_ids' => $marketplace_ids//市场标识符列表
+            'report_type' => $report_type, // 报告类型
+            'data_start_time' => $this->getReportStartDate(), // 报告数据开始时间
+            'data_end_time' => $this->getReportEndDate(), // 报告数据结束时间
+            'marketplace_ids' => $marketplace_ids, // 市场标识符列表
         ]);
     }
 
     /**
-     * @param array $marketplace_ids
-     * @param callable $func
-     * @throws Exception
-     * @return void
+     * @throws \Exception
      */
     public function requestReport(array $marketplace_ids, callable $func): void
     {
         foreach ($this->date_list as $key => $item) {
-
             $this->setReportStartDate($item['start_time']);
             $this->setReportEndDate($item['end_time']);
 
@@ -175,7 +169,6 @@ class SalesAndTrafficReportCustom extends ReportBase
                 is_callable($func) && $func($this, 'GET_SALES_AND_TRAFFIC_REPORT_CUSTOM', $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
             }
         }
-
     }
 
     public function getReportFileName(array $marketplace_ids): string
@@ -184,11 +177,8 @@ class SalesAndTrafficReportCustom extends ReportBase
     }
 
     /**
-     * 处理报告
-     * @param callable $func
-     * @param array $marketplace_ids
-     * @throws Exception
-     * @return void
+     * 处理报告.
+     * @throws \Exception
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
@@ -204,6 +194,5 @@ class SalesAndTrafficReportCustom extends ReportBase
                 is_callable($func) && $func($this, [$marketplace_id]);
             }
         }
-
     }
 }

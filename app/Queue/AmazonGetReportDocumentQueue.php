@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Queue;
 
 use AmazonPHP\SellingPartner\AccessToken;
@@ -50,7 +58,6 @@ class AmazonGetReportDocumentQueue extends Queue
         $logger->info(sprintf('Get Document 报告队列数据：%s', $queueData->toJson()));
 
         return AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_document_id) {
-
             $amazonReportDocumentActionQueue = new AmazonReportDocumentActionQueue();
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
@@ -77,7 +84,7 @@ class AmazonGetReportDocumentQueue extends Queue
 
                     if ($compression_algorithm === ReportDocument::COMPRESSION_ALGORITHM_GZIP) {
                         $file_path_gz = $dir . $file_base_name . '.gz';
-                        file_put_contents($file_path_gz, file_get_contents($document_url));//保存gz文件
+                        file_put_contents($file_path_gz, file_get_contents($document_url)); // 保存gz文件
 
                         $handle = fopen($file_path, 'wb');
 
@@ -85,17 +92,17 @@ class AmazonGetReportDocumentQueue extends Queue
                         $handle_gz = gzopen($file_path_gz, 'rb');
 
                         while (! gzeof($handle_gz)) {
-                            fwrite($handle, gzread($handle_gz, $buffer_size));//提取gz文件内容
+                            fwrite($handle, gzread($handle_gz, $buffer_size)); // 提取gz文件内容
                         }
 
                         gzclose($handle_gz);
                         fclose($handle);
-                        //线上环境gz文件解压提取后需要删除
-//                        if (! app()->isDebug()) {
-//                        unlink($file_path_gz);
-//                        }
+                        // 线上环境gz文件解压提取后需要删除
+                        //                        if (! app()->isDebug()) {
+                        //                        unlink($file_path_gz);
+                        //                        }
                     } else {
-                        //下载并保存文件
+                        // 下载并保存文件
                         file_put_contents($file_path, file_get_contents($document_url));
                     }
 
@@ -110,9 +117,8 @@ class AmazonGetReportDocumentQueue extends Queue
                     sleep(5);
 
                     return true;
-
                 } catch (ApiException $e) {
-                    $retry--;
+                    --$retry;
                     if ($retry > 0) {
                         $console->warning(sprintf('Get Document report_type: %s report_document_id: %s retry: %s ', $report_type, $report_document_id, $retry));
                         sleep(10);
@@ -130,13 +136,13 @@ class AmazonGetReportDocumentQueue extends Queue
                     $console->error($log);
                     $logger->error($log, [
                         'message' => $e->getMessage(),
-                        'response body' => $e->getResponseBody()
+                        'response body' => $e->getResponseBody(),
                     ]);
 
                     break;
                 } catch (InvalidArgumentException $e) {
                     $logger->error(sprintf('Get Document report_type: %s  report_id: %s merchant_id: %s merchant_store_id: %s 获取报告出错', $report_type, $report_document_id, $merchant_id, $merchant_store_id), [
-                        'message' => 'InvalidArgumentException ' . $e->getMessage()
+                        'message' => 'InvalidArgumentException ' . $e->getMessage(),
                     ]);
                     break;
                 }

@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Exception\Handler;
 
@@ -8,14 +14,12 @@ use App\Exception\InvalidAccessException;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Psr\Http\Message\ResponseInterface;
-use Throwable;
 
 class FileNotFoundExceptionHandler extends ExceptionHandler
 {
-    public function handle(Throwable $throwable, ResponseInterface $response)
+    public function handle(\Throwable $throwable, ResponseInterface $response)
     {
         if ($throwable instanceof InvalidAccessException) {
-
             // 格式化输出
             $data = json_encode([
                 'code' => $throwable->getCode(),
@@ -29,7 +33,7 @@ class FileNotFoundExceptionHandler extends ExceptionHandler
         return $response;
     }
 
-    public function isValid(Throwable $throwable): bool
+    public function isValid(\Throwable $throwable): bool
     {
         return true;
     }

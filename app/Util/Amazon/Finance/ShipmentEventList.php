@@ -1,22 +1,27 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Finance;
 
 use AmazonPHP\SellingPartner\Model\Finances\ShipmentEvent;
+use Hyperf\Collection\Collection;
 
 class ShipmentEventList extends FinanceBase
 {
-    /**
-     * @param $financialEvents
-     * @return bool
-     */
     public function run($financialEvents): bool
     {
+        $collection = new Collection();
         /**
          * @var ShipmentEvent $financialEvent
          */
         foreach ($financialEvents as $financialEvent) {
-
             $amazon_order_id = $financialEvent->getAmazonOrderId() ?? '';
             $seller_order_id = $financialEvent->getSellerOrderId() ?? '';
             $marketplace_name = $financialEvent->getMarketplaceName() ?? '';
@@ -25,7 +30,7 @@ class ShipmentEventList extends FinanceBase
             $order_charge_list = [];
             if (! is_null($orderChargeList)) {
                 foreach ($orderChargeList as $orderChargeItem) {
-                    $charge_type = $orderChargeItem->getChargeType() ?? '';//卖方账户上的费用类型
+                    $charge_type = $orderChargeItem->getChargeType() ?? ''; // 卖方账户上的费用类型
 
                     $chargeAmount = $orderChargeItem->getChargeAmount();
                     $charge_amount = 0.00;
@@ -47,7 +52,7 @@ class ShipmentEventList extends FinanceBase
             $order_charge_adjustment_list = [];
             if (! is_null($orderChargeAdjustmentList)) {
                 foreach ($orderChargeAdjustmentList as $orderChargeAdjustmentItem) {
-                    $charge_type = $orderChargeAdjustmentItem->getChargeType() ?? '';//卖方账户上的费用类型
+                    $charge_type = $orderChargeAdjustmentItem->getChargeType() ?? ''; // 卖方账户上的费用类型
 
                     $chargeAmount = $orderChargeAdjustmentItem->getChargeAmount();
                     $charge_amount = 0.00;
@@ -69,8 +74,8 @@ class ShipmentEventList extends FinanceBase
             $shipment_fee_list = [];
             if (! is_null($shipmentFeeList)) {
                 foreach ($shipmentFeeList as $shipmentFeeItem) {
-                    $shipmentFeeItem->getFeeType();//费用类型
-                    $shipmentFeeAmount = $shipmentFeeItem->getFeeAmount();//费用金额
+                    $shipmentFeeItem->getFeeType(); // 费用类型
+                    $shipmentFeeAmount = $shipmentFeeItem->getFeeAmount(); // 费用金额
                     $shipment_fee_amount = 0.00;
                     $shipment_fee_amount_currency = '';
                     if (! is_null($shipmentFeeAmount)) {
@@ -90,7 +95,7 @@ class ShipmentEventList extends FinanceBase
             $shipment_fee_adjustment_list = [];
             if (! is_null($shipmentFeeAdjustmentList)) {
                 foreach ($shipmentFeeAdjustmentList as $shipmentFeeAdjustmentItem) {
-                    $shipmentFeeAmount = $shipmentFeeAdjustmentItem->getFeeAmount();//费用金额
+                    $shipmentFeeAmount = $shipmentFeeAdjustmentItem->getFeeAmount(); // 费用金额
                     $fee_amount = 0.00;
                     $fee_amount_currency = '';
                     if (! is_null($shipmentFeeAmount)) {
@@ -170,7 +175,7 @@ class ShipmentEventList extends FinanceBase
                             $item_fee_list[] = [
                                 'fee_type' => $fee_type,
                                 'fee_amount' => $fee_amount,
-                                'fee_currency' => $fee_currency
+                                'fee_currency' => $fee_currency,
                             ];
                         }
                     }
@@ -190,7 +195,7 @@ class ShipmentEventList extends FinanceBase
                             $item_fee_adjustment_list[] = [
                                 'fee_type' => $fee_type,
                                 'fee_amount' => $fee_amount,
-                                'fee_currency' => $fee_currency
+                                'fee_currency' => $fee_currency,
                             ];
                         }
                     }
@@ -204,7 +209,7 @@ class ShipmentEventList extends FinanceBase
                             $taxes_with_held_list = [];
                             if (! is_null($taxesWithheld)) {
                                 foreach ($taxesWithheld as $taxWithheld) {
-                                    $charge_type = $taxWithheld->getChargeType();//https://developer-docs.amazon.com/sp-api/docs/finances-api-reference#chargecomponent
+                                    $charge_type = $taxWithheld->getChargeType(); // https://developer-docs.amazon.com/sp-api/docs/finances-api-reference#chargecomponent
                                     $chargeAmount = $taxWithheld->getChargeAmount();
                                     $charge_amount = 0.00;
                                     $charge_currency = '';
@@ -372,7 +377,24 @@ class ShipmentEventList extends FinanceBase
                 $posted_date = $postedDate->format('Y-m-d H:i:s');
             }
 
+            $collection->push([
+                'merchant_id' => $this->merchant_id,
+                'merchant_store_id' => $this->merchant_store_id,
+                'amazon_order_id' => $amazon_order_id,
+                'seller_order_id' => $seller_order_id,
+                'marketplace_name' => $marketplace_name,
+                'order_charge_list' => $order_charge_list,
+                'order_charge_adjustment_list' => $order_charge_adjustment_list,
+                'shipment_fee_list' => $shipment_fee_list,
+                'shipment_fee_adjustment_list' => $shipment_fee_adjustment_list,
+                'shipment_item_adjustment_list' => $shipment_item_adjustment_list,
+                'order_fee_list' => $order_fee_list,
+                'order_fee_adjustment_list' => $order_fee_adjustment_list,
+                'direct_payment_list' => $direct_payment_list,
+                'posted_date' => $posted_date,
+            ]);
         }
+
         return true;
     }
 }

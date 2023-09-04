@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Command\Amazon\Report;
 
@@ -21,7 +27,6 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,7 +35,6 @@ use Symfony\Component\Console\Input\InputOption;
 #[Command]
 class ReportCreate extends HyperfCommand
 {
-
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:report:create');
@@ -52,11 +56,10 @@ class ReportCreate extends HyperfCommand
     /**
      * @throws ClientExceptionInterface
      * @throws ApiException
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function handle(): void
     {
-
         $merchant_id = (int) $this->input->getArgument('merchant_id');
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
         $report_type = (string) $this->input->getArgument('report_type');
@@ -91,26 +94,28 @@ class ReportCreate extends HyperfCommand
 
                 $reportStartDate->addDay();
 
-                $diff_days--;
+                --$diff_days;
             }
 
             foreach ($date_ranges as $date_range) {
                 $this->fly($merchant_id, $merchant_store_id, $report_type, $date_range['start_date'], $date_range['end_date']);
             }
-
         }
     }
 
     /**
+     * @param mixed $merchant_id
+     * @param mixed $merchant_store_id
+     * @param mixed $report_type
+     * @param mixed $report_start_date
+     * @param mixed $report_end_date
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws JsonException
+     * @throws \JsonException
      */
     private function fly($merchant_id, $merchant_store_id, $report_type, $report_start_date, $report_end_date): void
     {
-
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_start_date, $report_end_date) {
-
             $logger = di(AmazonReportCreateLog::class);
 
             $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
@@ -122,19 +127,19 @@ class ReportCreate extends HyperfCommand
                 $instance->setReportEndDate($report_end_date);
             }
 
-            //解决某些Report只能传一个marketplace_id的问题，但同时店铺又存在多个地区。需要重写requestReport方法，参考GET_SALES_AND_TRAFFIC_REPORT
-            $instance->requestReport($marketplace_ids, function (ReportBase $instance, $report_type, CreateReportSpecification $body, array $marketplace_ids) use ($sdk, $accessToken, $region, $logger, $merchant_id, $merchant_store_id, $seller_id) {
+            // 解决某些Report只能传一个marketplace_id的问题，但同时店铺又存在多个地区。需要重写requestReport方法，参考GET_SALES_AND_TRAFFIC_REPORT
+            $instance->requestReport($marketplace_ids, function (ReportBase $instance, $report_type, CreateReportSpecification $body, array $marketplace_ids) use ($sdk, $accessToken, $region, $logger, $merchant_id, $merchant_store_id) {
                 $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
-                //注意匿名函数里的$marketplace_ids的值
-                if (false === $instance->checkDir()) {
+                // 注意匿名函数里的$marketplace_ids的值
+                if ($instance->checkDir() === false) {
                     $console->error('报告保存路径有误，请检查 ' . $instance->getDir());
                     return true;
                 }
                 $dir = $instance->getDir();
 
                 if ($instance->checkReportFile($marketplace_ids)) {
-                    //文件存在了直接返回
+                    // 文件存在了直接返回
                     $console->warning($instance->getReportFilePath($marketplace_ids) . ' 文件已存在');
                     return true;
                 }
@@ -148,7 +153,6 @@ class ReportCreate extends HyperfCommand
 
                 while (true) {
                     try {
-
                         $response = $sdk->reports()->createReport($accessToken, $region, $body);
                         $report_id = $response->getReportId();
 
@@ -166,14 +170,14 @@ class ReportCreate extends HyperfCommand
                         $logger->info($log, [
                             'marketplace_ids' => $marketplace_ids,
                             'data_start_time' => $data_start_time,
-                            'data_end_time' => $data_end_time
+                            'data_end_time' => $data_end_time,
                         ]);
 
                         $queue->push($amazonGetReportData);
 
                         break;
                     } catch (ApiException $e) {
-                        $retry--;
+                        --$retry;
                         if ($retry > 0) {
                             $console->warning(sprintf('Create %s report fail, retry: %s  merchant_id: %s merchant_store_id: %s ', $report_type, $retry, $merchant_id, $merchant_store_id));
                             sleep(5);
@@ -183,7 +187,7 @@ class ReportCreate extends HyperfCommand
                             'message' => $e->getMessage(),
                             'response body' => $e->getResponseBody(),
                             'data_start_time' => $body->getDataStartTime(),
-                            'data_end_time' => $body->getDataEndTime()
+                            'data_end_time' => $body->getDataEndTime(),
                         ]);
                         break;
                     } catch (InvalidArgumentException $e) {

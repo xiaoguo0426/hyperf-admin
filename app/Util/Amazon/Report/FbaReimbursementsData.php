@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
-use AmazonPHP\SellingPartner\Model\Reports\CreateReportSpecification;
 use App\Model\AmazonReportFbaReimbursementsDataModel;
 use Carbon\Carbon;
-use Exception;
 
 class FbaReimbursementsData extends ReportBase
 {
@@ -15,22 +21,17 @@ class FbaReimbursementsData extends ReportBase
     {
         parent::__construct($report_type, $merchant_id, $merchant_store_id);
 
-        $last_7days_start_time = Carbon::now('UTC')->subDays(15)->format('Y-m-d 00:00:00');//最近7天
+        $last_7days_start_time = Carbon::now('UTC')->subDays(15)->format('Y-m-d 00:00:00'); // 最近7天
         $last_end_time = Carbon::yesterday('UTC')->format('Y-m-d 23:59:59');
 
         $this->date_list = [
             [
                 'start_time' => $last_7days_start_time,
                 'end_time' => $last_end_time,
-            ]
+            ],
         ];
     }
 
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -40,7 +41,7 @@ class FbaReimbursementsData extends ReportBase
 
         $handle = fopen($file, 'rb');
         $header_line = str_replace("\r\n", '', fgets($handle));
-        //表头 需要处理换行符
+        // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];
@@ -66,7 +67,6 @@ class FbaReimbursementsData extends ReportBase
         fclose($handle);
 
         foreach ($data as $item) {
-
             $collection = AmazonReportFbaReimbursementsDataModel::query()
                 ->where('merchant_id', $merchant_id)
                 ->where('merchant_store_id', $merchant_store_id)
@@ -105,15 +105,12 @@ class FbaReimbursementsData extends ReportBase
     }
 
     /**
-     * 请求报告
-     * @param array $marketplace_ids
-     * @param callable $func
-     * @throws Exception
+     * 请求报告.
+     * @throws \Exception
      */
     public function requestReport(array $marketplace_ids, callable $func): void
     {
         foreach ($this->date_list as $key => $item) {
-
             $this->setReportStartDate($item['start_time']);
             $this->setReportEndDate($item['end_time']);
 
@@ -121,20 +118,16 @@ class FbaReimbursementsData extends ReportBase
                 is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
             }
         }
-
     }
 
     /**
-     * 处理报告
-     * @param array $marketplace_ids
-     * @param callable $func
-     * @throws Exception
+     * 处理报告.
+     * @throws \Exception
      * @deprecated
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
         foreach ($this->date_list as $key => $item) {
-
             $this->setReportStartDate($item['start_time']);
             $this->setReportEndDate($item['end_time']);
 
@@ -142,6 +135,5 @@ class FbaReimbursementsData extends ReportBase
                 is_callable($func) && $func($this, [$marketplace_id]);
             }
         }
-
     }
 }

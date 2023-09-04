@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\Finance;
 
 use AmazonPHP\SellingPartner\AccessToken;
@@ -17,7 +25,6 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,7 +48,7 @@ class ListFinancialEventGroups extends HyperfCommand
     /**
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws JsonException
+     * @throws \JsonException
      */
     public function handle(): void
     {
@@ -49,14 +56,13 @@ class ListFinancialEventGroups extends HyperfCommand
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
 
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
-
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
             $logger = ApplicationContext::getContainer()->get(AmazonFinanceLog::class);
 
             $retry = 10;
             $max_results_per_page = 100;
-            $financial_event_group_started_before = date_create_from_format(DATE_ATOM, date(DATE_ATOM, strtotime("now -1 year")));
-            $financial_event_group_started_after = date_create_from_format(DATE_ATOM, date(DATE_ATOM, strtotime("now -3 minute")));
+            $financial_event_group_started_before = date_create_from_format(DATE_ATOM, date(DATE_ATOM, strtotime('now -1 year')));
+            $financial_event_group_started_after = date_create_from_format(DATE_ATOM, date(DATE_ATOM, strtotime('now -3 minute')));
             $next_token = null;
 
             /**
@@ -71,7 +77,7 @@ class ListFinancialEventGroups extends HyperfCommand
 
             while (true) {
                 try {
-                    //指定日期范围内的财务事件组
+                    // 指定日期范围内的财务事件组
                     $response = $sdk->finances()->listFinancialEventGroups($accessToken, $region, $max_results_per_page, $financial_event_group_started_after, $financial_event_group_started_before, $next_token);
 
                     $errorList = $response->getErrors();
@@ -95,7 +101,6 @@ class ListFinancialEventGroups extends HyperfCommand
 
                     $financialEventGroupList = $payload->getFinancialEventGroupList();
                     foreach ($financialEventGroupList as $financialEventGroup) {
-
                         $financial_event_group_id = $financialEventGroup->getFinancialEventGroupId() ?? '';
                         if ($financial_event_group_id === '') {
                             continue;
@@ -154,7 +159,7 @@ class ListFinancialEventGroups extends HyperfCommand
                             ->where('financial_event_group_id', $financial_event_group_id)
                             ->first();
 
-                        $can_queue = false;//是否可以入队
+                        $can_queue = false; // 是否可以入队
                         if (is_null($collection)) {
                             $collection = new AmazonFinancialGroupModel();
                             $collection->merchant_id = $merchant_id;
@@ -175,16 +180,14 @@ class ListFinancialEventGroups extends HyperfCommand
                             $collection->financial_event_group_end = $financial_event_group_end;
 
                             $can_queue = true;
-
-                        } else if ($processing_status === AmazonConstants::FINANCE_GROUP_PROCESS_STATUS_CLOSED && $processing_status !== $collection->processing_status) {
-                            //重新拉取该财务组数据
+                        } elseif ($processing_status === AmazonConstants::FINANCE_GROUP_PROCESS_STATUS_CLOSED && $processing_status !== $collection->processing_status) {
+                            // 重新拉取该财务组数据
                             $can_queue = true;
                         }
 
                         $collection->save();
 
                         if ($can_queue) {
-
                             $queueData->setMerchantId($merchant_id);
                             $queueData->setMerchantStoreId($merchant_store_id);
                             $queueData->setFinancialEventGroupId($financial_event_group_id);
@@ -193,18 +196,22 @@ class ListFinancialEventGroups extends HyperfCommand
                         }
                     }
 
-                    //如果下一页没有数据，nextToken 会变成null
+                    // 如果下一页没有数据，nextToken 会变成null
                     $next_token = $payload->getNextToken();
                     if (is_null($next_token)) {
                         break;
                     }
                 } catch (ApiException $e) {
-                    $retry--;
+                    --$retry;
                     if ($retry > 0) {
                         $console->warning(sprintf('Finance ApiException listFinancialEventGroups Failed. retry:%s merchant_id: %s merchant_store_id: %s ', $retry, $merchant_id, $merchant_store_id));
                         sleep(10);
                         continue;
                     }
+
+                    $log = sprintf('Finance ApiException listFinancialEventGroups Failed. merchant_id: %s merchant_store_id: %s ', $merchant_id, $merchant_store_id);
+                    $console->error($log);
+                    $logger->error($log);
                     break;
                 } catch (InvalidArgumentException $e) {
                     $log = sprintf('Finance InvalidArgumentException listFinancialEventGroups Failed. merchant_id: %s merchant_store_id: %s ', $merchant_id, $merchant_store_id);
@@ -216,6 +223,5 @@ class ListFinancialEventGroups extends HyperfCommand
 
             return true;
         });
-
     }
 }

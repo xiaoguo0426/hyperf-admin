@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
 use App\Model\AmazonReportFbaMyiUnsuppressedInventoryDataModel;
 
 class FbaMyiUnsuppressedInventoryDataReport extends ReportBase
 {
-
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -20,7 +22,7 @@ class FbaMyiUnsuppressedInventoryDataReport extends ReportBase
         $merchant_store_id = $this->merchant_store_id;
 
         $handle = fopen($file, 'rb');
-        $header_line = str_replace("\r\n", '', fgets($handle));//表头 需要处理换行符
+        $header_line = str_replace("\r\n", '', fgets($handle)); // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];
@@ -85,7 +87,6 @@ class FbaMyiUnsuppressedInventoryDataReport extends ReportBase
             $collection->afn_future_supply_buyable = $item['afn_future_supply_buyable'];
 
             $collection->save();
-
         }
         return true;
     }

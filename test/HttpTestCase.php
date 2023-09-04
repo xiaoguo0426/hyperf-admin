@@ -2,13 +2,12 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
  */
+
 namespace HyperfTest;
 
 use Hyperf\Testing\Client;

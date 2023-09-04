@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\Catalog;
 
 use AmazonPHP\SellingPartner\AccessToken;
@@ -14,16 +22,13 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
-use RedisException;
 use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
 class GetCatalogItem extends HyperfCommand
 {
-
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:catalog:get-catalog-items');
@@ -40,8 +45,8 @@ class GetCatalogItem extends HyperfCommand
     /**
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws JsonException
-     * @throws RedisException
+     * @throws \JsonException
+     * @throws \RedisException
      */
     public function handle()
     {
@@ -49,7 +54,6 @@ class GetCatalogItem extends HyperfCommand
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
 
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
-
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
             $logger = ApplicationContext::getContainer()->get(AmazonCatalogLog::class);
 
@@ -61,12 +65,11 @@ class GetCatalogItem extends HyperfCommand
             }
 
             foreach ($amazonInventoryCollections as $amazonInventoryCollection) {
-
                 $asin = $amazonInventoryCollection->asin;
                 var_dump($asin);
                 while (true) {
                     try {
-                        //指定日期范围内的财务事件组
+                        // 指定日期范围内的财务事件组
                         $item = $sdk->catalogItem()->getCatalogItem($accessToken, $region, $asin, $marketplace_ids);
 
                         $asin = $item->getAsin();
@@ -328,20 +331,20 @@ class GetCatalogItem extends HyperfCommand
                             }
                         }
 
-                        die();
-                        //如果下一页没有数据，nextToken 会变成null
-//                    $next_token = $payload->getNextToken();
-//                    if (is_null($next_token)) {
-//                        break;
-//                    }
+                        exit;
+                        // 如果下一页没有数据，nextToken 会变成null
+                        //                    $next_token = $payload->getNextToken();
+                        //                    if (is_null($next_token)) {
+                        //                        break;
+                        //                    }
                     } catch (ApiException $e) {
                         $message = $e->getMessage();
-//                    $retry--;
-//                    if ($retry > 0) {
-//                        $console->warning(sprintf('Finance ApiException listFinancialEventGroups Failed. retry:%s merchant_id: %s merchant_store_id: %s ', $retry, $merchant_id, $merchant_store_id));
-//                        sleep(10);
-//                        continue;
-//                    }
+                        //                    $retry--;
+                        //                    if ($retry > 0) {
+                        //                        $console->warning(sprintf('Finance ApiException listFinancialEventGroups Failed. retry:%s merchant_id: %s merchant_store_id: %s ', $retry, $merchant_id, $merchant_store_id));
+                        //                        sleep(10);
+                        //                        continue;
+                        //                    }
                         break;
                     } catch (InvalidArgumentException $e) {
                         $log = sprintf('Finance InvalidArgumentException listFinancialEventGroups Failed. merchant_id: %s merchant_store_id: %s ', $merchant_id, $merchant_store_id);
@@ -350,7 +353,6 @@ class GetCatalogItem extends HyperfCommand
                         break;
                     }
                 }
-
             }
 
             return true;

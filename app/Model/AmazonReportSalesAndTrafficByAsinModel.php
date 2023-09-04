@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Model;
 
 /**
- * Class AmazonSalesAndTrafficByAsinModel
+ * Class AmazonSalesAndTrafficByAsinModel.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id

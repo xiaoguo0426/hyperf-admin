@@ -1,6 +1,12 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Util;
 
@@ -10,9 +16,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
-use function sprintf;
-use function str_replace;
 
 /**
  * Default logger for logging server start and requests.
@@ -24,9 +27,9 @@ class StdoutLogger implements StdoutLoggerInterface
     private OutputInterface $output;
 
     private array $tags = [
-//        'component',
+        //        'component',
         'context',
-        'extra'
+        'extra',
     ];
 
     public function __construct(private ConfigInterface $config, ?OutputInterface $output = null)
@@ -89,10 +92,10 @@ class StdoutLogger implements StdoutLoggerInterface
             }
         }
         $search = array_map(function ($key) {
-            return sprintf('{%s}', $key);
+            return \sprintf('{%s}', $key);
         }, $keys);
 
-        $message = str_replace($search, $context, $this->getMessage((string) $message, $level, $tags));
+        $message = \str_replace($search, $context, $this->getMessage((string) $message, $level, $tags));
 
         $this->output->writeln($message . ' ' . json_encode($context));
     }
@@ -108,13 +111,13 @@ class StdoutLogger implements StdoutLoggerInterface
 
         $datetime = Carbon::now()->format('Y-m-d H:i:s-v');
 
-        $template = sprintf('[%s] <%s>[%s]</>', $datetime, $tag, strtoupper($level));
+        $template = \sprintf('[%s] <%s>[%s]</>', $datetime, $tag, strtoupper($level));
 
         $implodedTags = '';
         foreach ($tags as $value) {
             $implodedTags .= (' [' . $value . ']');
         }
 
-        return sprintf($template . ' %s' . $implodedTags, $message);
+        return \sprintf($template . ' %s' . $implodedTags, $message);
     }
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Amazon\Sales;
 
 use Hyperf\Command\Annotation\Command;
@@ -9,7 +17,6 @@ use Psr\Container\ContainerInterface;
 #[Command]
 class GetOrderMetrics extends HyperfCommand
 {
-
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:order:get-order-metrics');
@@ -17,6 +24,5 @@ class GetOrderMetrics extends HyperfCommand
 
     public function handle()
     {
-
     }
 }

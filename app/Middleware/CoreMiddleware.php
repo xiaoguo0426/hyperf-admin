@@ -1,10 +1,15 @@
 <?php
 
 declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Middleware;
 
-use Closure;
 use Hyperf\Context\Context;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\HttpMessage\Stream\SwooleStream;
@@ -18,7 +23,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     public function dispatch(ServerRequestInterface $request): ServerRequestInterface
     {
         $path = $request->getUri()->getPath();
-        //实现 类似/product-category/get-list 风格路由
+        // 实现 类似/product-category/get-list 风格路由
         if (str_contains($path, '-')) {
             $lstPoint = strrpos($path, '/');
 
@@ -43,10 +48,6 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         return Context::set(ServerRequestInterface::class, $request->withAttribute(Dispatched::class, $dispatched));
     }
 
-    /**
-     * @param ServerRequestInterface $request
-     * @return mixed
-     */
     protected function handleNotFound(ServerRequestInterface $request): mixed
     {
         $std = $this->stdLogger();
@@ -65,9 +66,6 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     }
 
     /**
-     * @param Dispatched $dispatched
-     * @param ServerRequestInterface $request
-     * @return mixed
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -75,12 +73,12 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
     {
         $t1 = microtime(true);
 
-        if ($dispatched->handler->callback instanceof Closure) {
+        if ($dispatched->handler->callback instanceof \Closure) {
             $response = \Hyperf\Support\call($dispatched->handler->callback);
         } else {
             [$controller, $action] = $this->prepareHandler($dispatched->handler->callback);
             $controllerInstance = $this->container->get($controller);
-            if (!method_exists($controller, $action)) {
+            if (! method_exists($controller, $action)) {
                 // Route found, but the handler does not exist.
                 return $this->response()->withStatus(500)->withBody(new SwooleStream('Method of class does not exist.'));
             }
@@ -91,7 +89,7 @@ class CoreMiddleware extends \Hyperf\HttpServer\CoreMiddleware
         $t2 = microtime(true);
 
         $uri = $request->getUri();
-        $this->stdLogger()->info(sprintf('[%s ms] [%s] %s', (number_format(($t2 - $t1) * 1000, 3)), $request->getMethod(), $uri->getPath() . ($uri->getQuery() ? '?' . $uri->getQuery() : '')));
+        $this->stdLogger()->info(sprintf('[%s ms] [%s] %s', number_format(($t2 - $t1) * 1000, 3), $request->getMethod(), $uri->getPath() . ($uri->getQuery() ? '?' . $uri->getQuery() : '')));
 
         return $response;
     }

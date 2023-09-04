@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Util\Amazon\Report;
 
 use AmazonPHP\SellingPartner\Model\Reports\CreateReportSpecification;
@@ -8,12 +16,6 @@ use Exception;
 
 class FbaInventoryPlanningDataReport extends ReportBase
 {
-
-    /**
-     * @param string $report_id
-     * @param string $file
-     * @return bool
-     */
     public function run(string $report_id, string $file): bool
     {
         $config = $this->header_map;
@@ -22,7 +24,7 @@ class FbaInventoryPlanningDataReport extends ReportBase
         $merchant_store_id = $this->merchant_store_id;
 
         $handle = fopen($file, 'rb');
-        $header_line = str_replace("\r\n", '', fgets($handle));//表头 需要处理换行符
+        $header_line = str_replace("\r\n", '', fgets($handle)); // 表头 需要处理换行符
         $headers = explode("\t", $header_line);
 
         $map = [];
@@ -146,39 +148,37 @@ class FbaInventoryPlanningDataReport extends ReportBase
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public function buildReportBody(string $report_type, array $marketplace_ids): CreateReportSpecification
     {
         return new CreateReportSpecification([
-            'report_type' => $report_type,//报告类型
-            'data_start_time' => $this->getReportStartDate(),//报告数据开始时间
-            'data_end_time' => $this->getReportEndDate(),//报告数据结束时间
-            'marketplace_ids' => $marketplace_ids,//市场标识符列表
+            'report_type' => $report_type, // 报告类型
+            'data_start_time' => $this->getReportStartDate(), // 报告数据开始时间
+            'data_end_time' => $this->getReportEndDate(), // 报告数据结束时间
+            'marketplace_ids' => $marketplace_ids, // 市场标识符列表
         ]);
     }
 
-//    /**
-//     * @param array $marketplace_ids
-//     * @param callable $func
-//     * @throws Exception
-//     */
-//    public function requestReport(array $marketplace_ids, callable $func): void
-//    {
-//        foreach ($marketplace_ids as $marketplace_id) {
-//            is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
-//        }
-//    }
-//
-//    public function getReportFileName(array $marketplace_ids): string
-//    {
-//        return $this->report_type . '-' . $marketplace_ids[0];
-//    }
+    //    /**
+    //     * @param array $marketplace_ids
+    //     * @param callable $func
+    //     * @throws Exception
+    //     */
+    //    public function requestReport(array $marketplace_ids, callable $func): void
+    //    {
+    //        foreach ($marketplace_ids as $marketplace_id) {
+    //            is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
+    //        }
+    //    }
+    //
+    //    public function getReportFileName(array $marketplace_ids): string
+    //    {
+    //        return $this->report_type . '-' . $marketplace_ids[0];
+    //    }
 
     /**
-     * 处理报告
-     * @param array $marketplace_ids
-     * @param callable $func
+     * 处理报告.
      */
     public function processReport(callable $func, array $marketplace_ids): void
     {
@@ -190,5 +190,4 @@ class FbaInventoryPlanningDataReport extends ReportBase
             is_callable($func) && $func($this, [$marketplace_id]);
         }
     }
-
 }

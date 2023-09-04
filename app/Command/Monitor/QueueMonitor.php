@@ -1,7 +1,14 @@
 <?php
 
-namespace App\Command\Monitor;
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
+namespace App\Command\Monitor;
 
 use App\Queue\AbstractQueue;
 use App\Queue\AmazonActionReportQueue;
@@ -15,7 +22,6 @@ use Psr\Container\ContainerInterface;
 #[Command]
 class QueueMonitor extends HyperfCommand
 {
-
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('monitor:queue');
@@ -35,14 +41,14 @@ class QueueMonitor extends HyperfCommand
          */
         $queueCollections = [
             AmazonActionReportQueue::class,
-//            AmazonEvaluationQueue::class,
+            //            AmazonEvaluationQueue::class,
             AmazonGetReportDocumentQueue::class,
             AmazonGetReportQueue::class,
-//            AmazonOrderQueue::class,
-//            AmazonOrdersQueue::class,
+            //            AmazonOrderQueue::class,
+            //            AmazonOrdersQueue::class,
             AmazonReportDocumentActionQueue::class,
-//            LazadaOrderQueue::class,
-//            ShopeeOrderQueue::class,
+            //            LazadaOrderQueue::class,
+            //            ShopeeOrderQueue::class,
         ];
 
         foreach ($queueCollections as $queueCollection) {
@@ -58,9 +64,8 @@ class QueueMonitor extends HyperfCommand
 
             $len = $instance->len();
             if ($instance->len() > $safety_line) {
-                //TODO LOG
+                // TODO LOG
             }
         }
-
     }
 }

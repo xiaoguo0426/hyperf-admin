@@ -1,14 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
 
 namespace App\Util\RedisHash;
-
 
 use App\Util\Prefix;
 
 /**
- * Class AmazonSessionTokenHash
- * @package App\Util\RedisHash
+ * Class AmazonSessionTokenHash.
  * @property $accessKeyId
  * @property $secretAccessKey
  * @property $sessionToken

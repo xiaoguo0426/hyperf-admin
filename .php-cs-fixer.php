@@ -1,12 +1,10 @@
 <?php
 
 $header = <<<'EOF'
-This file is part of Hyperf.
 
-@link     https://www.hyperf.io
-@document https://hyperf.wiki
-@contact  group@hyperf.io
-@license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+@author   xiaoguo0426
+@contact  740644717@qq.com
+@license  MIT
 EOF;
 
 return (new PhpCsFixer\Config())
@@ -74,6 +72,7 @@ return (new PhpCsFixer\Config())
         'no_unused_imports' => true,
         'not_operator_with_successor_space' => true,
         'not_operator_with_space' => false,
+        'no_trailing_whitespace_in_comment' => true,
         'ordered_class_elements' => true,
         'php_unit_strict' => false,
         'phpdoc_separation' => false,

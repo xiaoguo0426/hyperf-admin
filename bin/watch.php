@@ -2,22 +2,12 @@
 <?php
 
 declare(strict_types=1);
-
 /**
- * Hyperf热重启简易脚本.
  *
- * 使用方法：
- * 1. 安装fswatch工具，wiki: https://github.com/emcrisostomo/fswatch
- * Mac: brew install fswatch
- * Ubuntu: apt install -y fswatch
- * CentOS: yum -y install fswatch
- *
- * 2. 启动watch
- * php bin/watch.php
- *
- * 如果需要其他配置，请自行修改源码 bin/watch.php
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
  */
-
 use Swoole\Process as SwooleProcess;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
@@ -60,7 +50,7 @@ if (empty($cmd)) {
 $watchCmd = [
     'fswatch',
     '-rtx',
-    '--utc-time',//可以考虑改成UTC+8
+    '--utc-time', // 可以考虑改成UTC+8
     '-e',
     '/vendor/',
     '-e',
@@ -91,7 +81,7 @@ $watchProcess = new SwooleProcess(static function () use ($watchCmd, $rootPath, 
 
             // 输出日志
             foreach ($logs as $log) {
-                console_warning($log);//进程重启，警告日志
+                console_warning($log); // 进程重启，警告日志
             }
 
             // kill掉server，另外一个进程会拉起
@@ -154,10 +144,6 @@ function console_info($message): void
 
 /**
  * fswatch event parser.
- *
- * @param array $eventTypes
- *
- * @return array
  */
 function fswatch_event_parser(string $event, array $eventTypes): array
 {

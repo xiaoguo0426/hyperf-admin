@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+/**
+ *
+ * @author   xiaoguo0426
+ * @contact  740644717@qq.com
+ * @license  MIT
+ */
+
 namespace App\Command\Fake;
 
+use App\Util\MyString as MyStringNew;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerInterface;
-use App\Util\MyString as MyStringNew;
 
 #[Command]
 class MyString extends HyperfCommand
@@ -17,180 +25,180 @@ class MyString extends HyperfCommand
 
     public function handle(): void
     {
-//        $common = MyStringNew::findCommonSubstring('abcdefg', 'defghij');
-//        if (! empty($common)) {
-//            $this->info("重复部分: " . $common);
-//        } else {
-//            $this->info('没有重复部分');
-//        }
-//
-//        $str1 = "apple123";
-//        $str2 = "treeapple";
-//
-//        $commonPrefix = MyStringNew::findCommonPrefix($str1, $str2);
-//        if (! empty($commonPrefix)) {
-//            $this->info("重复开头部分: " . $commonPrefix);
-//        } else {
-//            $this->info('没有重复开头部分');
-//        }
+        //        $common = MyStringNew::findCommonSubstring('abcdefg', 'defghij');
+        //        if (! empty($common)) {
+        //            $this->info("重复部分: " . $common);
+        //        } else {
+        //            $this->info('没有重复部分');
+        //        }
+        //
+        //        $str1 = "apple123";
+        //        $str2 = "treeapple";
+        //
+        //        $commonPrefix = MyStringNew::findCommonPrefix($str1, $str2);
+        //        if (! empty($commonPrefix)) {
+        //            $this->info("重复开头部分: " . $commonPrefix);
+        //        } else {
+        //            $this->info('没有重复开头部分');
+        //        }
 
-//        $data = [
-//            'TA-LXL-GrayOrg-L',
-//            'TA-LXL-LightGreen-L',
-//            'TA-LXL-Leopard-L',
-//            'TA-LXL-WhiteBlack-L',
-//            'TA-LXL-Black-L',
-//            'SWY-SW-BLACK-US',
-//            'SWY-SW-Apricot-US',
-//            'SWY-SW-Grey-US',
-//            'SWB880-black',
-//            'SWB880-khaki',
-//            'SWB880-blue',
-//            'SWB880-white',
-//            'SWB880-grey',
-//            'L-SWY-707-US-GRAY',
-//            'L-SWY-707-US-NAVY BLUE',
-//            'L-SWY-707-US-RED',
-//            'L-SWY-707-US-PINK',
-//            'L-SWY-707-US-BLACK',
-//            'CB-8265-black',
-//            'ZM-6672-black',
-//            'CB-10001-15-grey',
-//            'CB-10001-15-black',
-//            'CB-10001-15-Navy Blue',
-//            'CB-10001-17-black',
-//            'CB-10001-17-Navy Blue',
-//            'CB-10001-17-grey',
-//            'LK-20123-Black-US',
-//            'LK-20123-Silver-US',
-//            'LK-20123-White-US',
-//            'LK-20123-Pink-US',
-//            'LK-20123-Khaki-US',
-//            'TBG-13047-Coffee-US',
-//            'TBG-13047-Pink-US',
-//            'TBG-13047-Black-US',
-//            'TBG-13047-Red-US',
-//            'TBG-13047-Grey-US',
-//            'HZ-11595-KHAKI-US',
-//            'HZ-11595-WHITE-US',
-//            'HZ-11595-BROWN-US',
-//            'HZ-11595-MUD-US',
-//            'HZ-11595-BLACK-US',
-//            'UW-6619-BEIGE-US',
-//            'UW-6619-BLACK-US',
-//            'UW-6619-BROWN-US',
-//            'UW-6619-COFFEE-new-US',
-//            'UW-6619-COFFEE-US',
-//            'UW-6619-WHITE-US',
-//            'FW-LW259-BEIGE-US',
-//            'FW-LW259-BLACK-US',
-//            'FW-LW259-BLUE-US',
-//            'FW-LW259-PURPLE-US',
-//            'FW-LW259-WHITE-US',
-//            'FW-LW259-GREEN-US',
-//            'FW-L-LW259-BEIGE-US',
-//            'FW-L-LW259-BLACK-US',
-//            'FW-L-LW259-BLUE-US',
-//            'FW-L-LW259-PURPLE-US',
-//            'FW-L-LW259-WHITE-US',
-//            'FW-L-LW259-GREEN-US',
-//            'ZK-2054-BLACK-US',
-//            'ZK-2054-BEIGE-US',
-//            'ZK-2054-WHITE-new-US',
-//            'ZK-2054-KHAKI-US',
-//            'ZK-2054-BROWN-US',
-//            'DFMP-SHIN284-BLACK-US',
-//            'DFMP-SHIN284-BLUE-US',
-//            'DFMP-SHIN284-GREEN-US',
-//            'DFMP-SHIN284-KHAKI-US',
-//            'DFMP-SHIN284-PINK-US',
-//            'DFMP-SHIN284-WHITE-US',
-//            'DFMP-STR304-BEIGE-US',
-//            'DFMP-STR304-BLACK-US',
-//            'DFMP-STR304-GRADIENT-US',
-//            'DFMP-STR304-GREEN-US',
-//            'DFMP-STR304-PINK-US',
-//            'DFMP-STR304-WHITE-US',
-//            'SY-3344-BLACK-US',
-//            'SY-3344-GOLD-US',
-//            'SY-3344-SILVER-US',
-//            'SY-3347-BLACK-US',
-//            'SY-3347-RED-US',
-//            'SY-3347-WINEREDUS',
-//            'JS-0007-BLACK-US',
-//            'JS-0007-BLACKSILVER-US',
-//            'JS-0007-GOLD-US',
-//            'JS-0007-GREY-US',
-//            'JS-0007-SILVER-US',
-//            'KL-20651-92-BLACK-US',
-//            'KL-20651-92-GOLD-US',
-//            'KL-20651-92-SILVER-US',
-//            'QY-20651-E7-BLACK-US',
-//            'QY-20651-E7-GOLD-US',
-//            'QY-20651-E7-SILVER-US',
-//            'HCY-A3518-BLACK-US',
-//            'HCY-A3518-BROWN-US',
-//            'HCY-A3518-COFFEE-US',
-//            'HCY-A3518-GREEN-US',
-//            'HCY-A3518-PINK-US',
-//            'HCY-A3518-PURPLE-US',
-//            'HCY-A3518-WHITE-US',
-//            'HCY-A3518-YELLOW-US',
-//            'HCY-A3518-NUDE-US',
-//            'SN-6824-BEIGE-US',
-//            'SN-6824-BLACK-US',
-//            'SN-6824-BROWN-US',
-//            'SN-6824-WHITE-US',
-//            'SM-009-WHITE-US',
-//            'SM-009-KHAKI-US',
-//            'SM-009-BLACK-US',
-//            'SM-009-GREY-US',
-//            'SM-009-COFFEE-US',
-//            'SM-009-GREEN-US',
-//            'SM-009-BEIGE-US',
-//            'SM-009-BROWN-US',
-//            'HZ-828-BLACK-US',
-//            'HZ-828-BLACK-new-US',
-//            'HZ-828-BROWN-US',
-//            'HZ-828-COFFEE-US',
-//            'HZ-828-WHITE-US',
-//            'HZ-828-YELLOW-US',
-//            'HZ-828-PURPLE-US',
-//            'HZ-828-GREEN-US',
-//            'HZ-828-SILVER-US',
-//            'HZ-828-PINK-US',
-//            'HJ-9389-BLACK-US',
-//            'HJ-9389-GOLD-US',
-//            'HJ-9389-GREEN-US',
-//            'HJ-9389-GUNSILVER-US',
-//            'HJ-9389-KHAKI-US',
-//            'HJ-9389-OLIVE-US',
-//            'HJ-9389-ORANGE-US',
-//            'HJ-9389-PINK-US',
-//            'HJ-9389-SILVER-US',
-//            'HJ-9389-WHITE-US',
-//            'HZ-60935-BLACK-US',
-//            'HZ-60935-BROWN-US',
-//            'HZ-60935-GREEN-US',
-//            'HZ-60935-WHITE-US',
-//            'AP-1925-BLACK-US',
-//            'AP-1925-SILVER-US',
-//            'AP-1925-WHITE-US',
-//            'HX-7757-BLACK-US',
-//            'HX-7757-BROWN-US',
-//            'HX-7757-KHAKI-US',
-//            'HX-7757-WHITE-US',
-//            'SWY-B1683-APRICOT-US',
-//            'SWY-B1683-BLACK-US',
-//            'SWY-B1683-KHAKI-US',
-//            'SWY-B1683-SILVER-US',
-//            'SWY-B1683-WHITE-US',
-//            'SWY-B249-APRICOT-US',
-//            'SWY-B249-BLACK-US',
-//            'SWY-B249-BROWN-US',
-//            'SWY-B249-GUNSILVER-US',
-//            'SWY-B249-WHITE-US',
-//        ];
+        //        $data = [
+        //            'TA-LXL-GrayOrg-L',
+        //            'TA-LXL-LightGreen-L',
+        //            'TA-LXL-Leopard-L',
+        //            'TA-LXL-WhiteBlack-L',
+        //            'TA-LXL-Black-L',
+        //            'SWY-SW-BLACK-US',
+        //            'SWY-SW-Apricot-US',
+        //            'SWY-SW-Grey-US',
+        //            'SWB880-black',
+        //            'SWB880-khaki',
+        //            'SWB880-blue',
+        //            'SWB880-white',
+        //            'SWB880-grey',
+        //            'L-SWY-707-US-GRAY',
+        //            'L-SWY-707-US-NAVY BLUE',
+        //            'L-SWY-707-US-RED',
+        //            'L-SWY-707-US-PINK',
+        //            'L-SWY-707-US-BLACK',
+        //            'CB-8265-black',
+        //            'ZM-6672-black',
+        //            'CB-10001-15-grey',
+        //            'CB-10001-15-black',
+        //            'CB-10001-15-Navy Blue',
+        //            'CB-10001-17-black',
+        //            'CB-10001-17-Navy Blue',
+        //            'CB-10001-17-grey',
+        //            'LK-20123-Black-US',
+        //            'LK-20123-Silver-US',
+        //            'LK-20123-White-US',
+        //            'LK-20123-Pink-US',
+        //            'LK-20123-Khaki-US',
+        //            'TBG-13047-Coffee-US',
+        //            'TBG-13047-Pink-US',
+        //            'TBG-13047-Black-US',
+        //            'TBG-13047-Red-US',
+        //            'TBG-13047-Grey-US',
+        //            'HZ-11595-KHAKI-US',
+        //            'HZ-11595-WHITE-US',
+        //            'HZ-11595-BROWN-US',
+        //            'HZ-11595-MUD-US',
+        //            'HZ-11595-BLACK-US',
+        //            'UW-6619-BEIGE-US',
+        //            'UW-6619-BLACK-US',
+        //            'UW-6619-BROWN-US',
+        //            'UW-6619-COFFEE-new-US',
+        //            'UW-6619-COFFEE-US',
+        //            'UW-6619-WHITE-US',
+        //            'FW-LW259-BEIGE-US',
+        //            'FW-LW259-BLACK-US',
+        //            'FW-LW259-BLUE-US',
+        //            'FW-LW259-PURPLE-US',
+        //            'FW-LW259-WHITE-US',
+        //            'FW-LW259-GREEN-US',
+        //            'FW-L-LW259-BEIGE-US',
+        //            'FW-L-LW259-BLACK-US',
+        //            'FW-L-LW259-BLUE-US',
+        //            'FW-L-LW259-PURPLE-US',
+        //            'FW-L-LW259-WHITE-US',
+        //            'FW-L-LW259-GREEN-US',
+        //            'ZK-2054-BLACK-US',
+        //            'ZK-2054-BEIGE-US',
+        //            'ZK-2054-WHITE-new-US',
+        //            'ZK-2054-KHAKI-US',
+        //            'ZK-2054-BROWN-US',
+        //            'DFMP-SHIN284-BLACK-US',
+        //            'DFMP-SHIN284-BLUE-US',
+        //            'DFMP-SHIN284-GREEN-US',
+        //            'DFMP-SHIN284-KHAKI-US',
+        //            'DFMP-SHIN284-PINK-US',
+        //            'DFMP-SHIN284-WHITE-US',
+        //            'DFMP-STR304-BEIGE-US',
+        //            'DFMP-STR304-BLACK-US',
+        //            'DFMP-STR304-GRADIENT-US',
+        //            'DFMP-STR304-GREEN-US',
+        //            'DFMP-STR304-PINK-US',
+        //            'DFMP-STR304-WHITE-US',
+        //            'SY-3344-BLACK-US',
+        //            'SY-3344-GOLD-US',
+        //            'SY-3344-SILVER-US',
+        //            'SY-3347-BLACK-US',
+        //            'SY-3347-RED-US',
+        //            'SY-3347-WINEREDUS',
+        //            'JS-0007-BLACK-US',
+        //            'JS-0007-BLACKSILVER-US',
+        //            'JS-0007-GOLD-US',
+        //            'JS-0007-GREY-US',
+        //            'JS-0007-SILVER-US',
+        //            'KL-20651-92-BLACK-US',
+        //            'KL-20651-92-GOLD-US',
+        //            'KL-20651-92-SILVER-US',
+        //            'QY-20651-E7-BLACK-US',
+        //            'QY-20651-E7-GOLD-US',
+        //            'QY-20651-E7-SILVER-US',
+        //            'HCY-A3518-BLACK-US',
+        //            'HCY-A3518-BROWN-US',
+        //            'HCY-A3518-COFFEE-US',
+        //            'HCY-A3518-GREEN-US',
+        //            'HCY-A3518-PINK-US',
+        //            'HCY-A3518-PURPLE-US',
+        //            'HCY-A3518-WHITE-US',
+        //            'HCY-A3518-YELLOW-US',
+        //            'HCY-A3518-NUDE-US',
+        //            'SN-6824-BEIGE-US',
+        //            'SN-6824-BLACK-US',
+        //            'SN-6824-BROWN-US',
+        //            'SN-6824-WHITE-US',
+        //            'SM-009-WHITE-US',
+        //            'SM-009-KHAKI-US',
+        //            'SM-009-BLACK-US',
+        //            'SM-009-GREY-US',
+        //            'SM-009-COFFEE-US',
+        //            'SM-009-GREEN-US',
+        //            'SM-009-BEIGE-US',
+        //            'SM-009-BROWN-US',
+        //            'HZ-828-BLACK-US',
+        //            'HZ-828-BLACK-new-US',
+        //            'HZ-828-BROWN-US',
+        //            'HZ-828-COFFEE-US',
+        //            'HZ-828-WHITE-US',
+        //            'HZ-828-YELLOW-US',
+        //            'HZ-828-PURPLE-US',
+        //            'HZ-828-GREEN-US',
+        //            'HZ-828-SILVER-US',
+        //            'HZ-828-PINK-US',
+        //            'HJ-9389-BLACK-US',
+        //            'HJ-9389-GOLD-US',
+        //            'HJ-9389-GREEN-US',
+        //            'HJ-9389-GUNSILVER-US',
+        //            'HJ-9389-KHAKI-US',
+        //            'HJ-9389-OLIVE-US',
+        //            'HJ-9389-ORANGE-US',
+        //            'HJ-9389-PINK-US',
+        //            'HJ-9389-SILVER-US',
+        //            'HJ-9389-WHITE-US',
+        //            'HZ-60935-BLACK-US',
+        //            'HZ-60935-BROWN-US',
+        //            'HZ-60935-GREEN-US',
+        //            'HZ-60935-WHITE-US',
+        //            'AP-1925-BLACK-US',
+        //            'AP-1925-SILVER-US',
+        //            'AP-1925-WHITE-US',
+        //            'HX-7757-BLACK-US',
+        //            'HX-7757-BROWN-US',
+        //            'HX-7757-KHAKI-US',
+        //            'HX-7757-WHITE-US',
+        //            'SWY-B1683-APRICOT-US',
+        //            'SWY-B1683-BLACK-US',
+        //            'SWY-B1683-KHAKI-US',
+        //            'SWY-B1683-SILVER-US',
+        //            'SWY-B1683-WHITE-US',
+        //            'SWY-B249-APRICOT-US',
+        //            'SWY-B249-BLACK-US',
+        //            'SWY-B249-BROWN-US',
+        //            'SWY-B249-GUNSILVER-US',
+        //            'SWY-B249-WHITE-US',
+        //        ];
         $data = [
             'TA-LXL-GrayOrg-L' => 'TA-LXL',
             'TA-LXL-LightGreen-L' => 'TA-LXL',
@@ -446,20 +454,19 @@ class MyString extends HyperfCommand
                 $win = '';
                 if ($datum === $skuToSpu) {
                     $win = '[skuToSpu win]';
-                } else if ($datum === $sellerSku2Spu) {
+                } elseif ($datum === $sellerSku2Spu) {
                     $win = '[sellerSku2Spu win]';
                 }
                 $this->info(sprintf('%s 期望:%s VS skuToSpu:%s VS sellerSku2Spu:%s  Result:%s', $key, $datum, $skuToSpu, $sellerSku2Spu, $win));
             }
         }
-
     }
 
     public function skuToSpu($seller_sku)
     {
         $sku = strtoupper($seller_sku);
         $skuArr = explode('-', $sku);
-        $skuArr = array_diff($skuArr, ["NEW", "US", "EU"]);
+        $skuArr = array_diff($skuArr, ['NEW', 'US', 'EU']);
         $skuArr = array_filter($skuArr);
         $pop = array_pop($skuArr);
         if ($pop === 'L') { // 把L当到最后的要额外处理
@@ -476,11 +483,11 @@ class MyString extends HyperfCommand
             return '';
         }
         if ($count > 2) {
-            $count -= 1;
+            --$count;
         }
         $seller_sku = str_replace(['BLACK', 'BLUE', 'YELLOW', 'BROWN', 'GREEN', 'KHAKI', 'WHITE', 'ORANGE', 'PINK', 'SILVER', 'GOLD', 'COFFEE'], '', $seller_sku);
         $pos = 0;
-        for ($i = 0; $i < $count; $i++) {
+        for ($i = 0; $i < $count; ++$i) {
             $pos = strpos($seller_sku, '-', $pos + 1);
             if ($pos === false) {
                 break;
@@ -488,7 +495,5 @@ class MyString extends HyperfCommand
         }
         $substr = substr($seller_sku, 0, $pos);
         return $substr === false ? '' : trim($substr, '-');
-
     }
-
 }
