@@ -51,11 +51,12 @@ namespace App\Model;
  */
 class AmazonInventoryModel extends Model
 {
+
+    protected ?string $table = 'amazon_inventory';
+
     public const CREATED_AT = 'created_at';
 
     public const UPDATED_AT = 'updated_at';
-
-    protected ?string $table = 'amazon_inventory';
 
     /**
      * The attributes that are mass assignable.
