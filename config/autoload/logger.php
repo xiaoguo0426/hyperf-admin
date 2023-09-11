@@ -136,4 +136,22 @@ return [
             ],
         ],
     ],
+    'amazon-sales' => [
+        'handler' => [
+            'class' => Monolog\Handler\RotatingFileHandler::class,
+            'constructor' => [
+                'dateFormat' => 'Y-m-d',
+                'filenameFormat' => '{date}',
+                'filename' => BASE_PATH . '/runtime/logs/amazon-sales/.log',
+            ],
+        ],
+        'formatter' => [
+            'class' => Monolog\Formatter\LineFormatter::class,
+            'constructor' => [
+                'format' => null,
+                'dateFormat' => 'Y-m-d H:i:s',
+                'allowInlineLineBreaks' => true,
+            ],
+        ],
+    ],
 ];

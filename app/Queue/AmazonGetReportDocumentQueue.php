@@ -25,6 +25,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonGetReportDocumentQueue extends Queue
 {
@@ -39,9 +40,13 @@ class AmazonGetReportDocumentQueue extends Queue
     }
 
     /**
+     * @param QueueDataInterface $queueData
+     * @throws ApiException
+     * @throws ClientExceptionInterface
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \Exception
+     * @throws \JsonException
+     * @return bool
      */
     public function handleQueueData(QueueDataInterface $queueData): bool
     {
@@ -151,7 +156,6 @@ class AmazonGetReportDocumentQueue extends Queue
             return true;
         });
 
-        return true;
     }
 
     public function safetyLine(): int

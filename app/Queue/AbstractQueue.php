@@ -22,7 +22,7 @@ abstract class AbstractQueue
 
     protected string $queue_name;
 
-    protected int $timeout = 10;
+    protected int $timeout = 3;
 
     protected int $retryInterval = 10;
 

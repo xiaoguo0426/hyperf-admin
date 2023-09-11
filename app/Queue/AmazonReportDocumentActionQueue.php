@@ -32,9 +32,10 @@ class AmazonReportDocumentActionQueue extends Queue
     }
 
     /**
+     * @param QueueDataInterface $queueData
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \Exception
+     * @return bool
      */
     public function handleQueueData(QueueDataInterface $queueData): bool
     {
@@ -68,7 +69,7 @@ class AmazonReportDocumentActionQueue extends Queue
             $console->info($log);
             $logger->info($log);
 
-            $instance->run($file_path);
+            $instance->run($report_document_id, $file_path);
         } catch (\Exception $exception) {
             $logger->error(sprintf('Action Document 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $exception->getMessage()));
             $console->error(sprintf('Action Document 报告队列数据：%s 出错。Error Message: %s', $queueData->toJson(), $exception->getMessage()));

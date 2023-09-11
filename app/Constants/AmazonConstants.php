@@ -24,4 +24,14 @@ class AmazonConstants
      * @Message("Closed")
      */
     public const FINANCE_GROUP_PROCESS_STATUS_CLOSED = 'Closed';
+
+    /**
+     * @Message("hour")
+     */
+    public const INTERVAL_TYPE_HOUR = 'hour';
+
+    /**
+     * @Message("day")
+     */
+    public const INTERVAL_TYPE_DAY = 'day';
 }

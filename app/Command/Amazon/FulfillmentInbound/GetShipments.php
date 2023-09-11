@@ -18,6 +18,7 @@ use App\Model\AmazonShipmentModel;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use App\Util\Log\AmazonFinanceLog;
+use App\Util\RuntimeCalculator;
 use Carbon\Carbon;
 use Hyperf\Collection\Collection;
 use Hyperf\Command\Annotation\Command;
@@ -58,7 +59,6 @@ class GetShipments extends HyperfCommand
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
             $logger = ApplicationContext::getContainer()->get(AmazonFinanceLog::class);
 
-            $query_type = 'SHIPMENT';
             $shipment_status_list = [
                 'WORKING',
                 'READY_TO_SHIP',
@@ -77,17 +77,25 @@ class GetShipments extends HyperfCommand
             $last_updated_after = null;
             $last_updated_before = null;
 
+            $now = Carbon::now()->format('Y-m-d H:i:s');
+
+
+            $runtimeCalculator = new RuntimeCalculator();
+            $runtimeCalculator->start();
+
+            $console->info(sprintf('FulfillmentInbound marketplace_ids:%s merchant_id:%s merchant_store_id:%s 开始处理.', implode(',', $marketplace_ids), $merchant_id, $merchant_store_id));
+
             $collections = new Collection();
 
             $shipment_ids = [];
 
-            $now = Carbon::now()->format('Y-m-d H:i:s');
+            $query_type = 'SHIPMENT';
 
             $retry = 10;
             $next_token = null;
             while (true) {
                 try {
-                    $response = $sdk->fulfillmentInbound()->getShipments($accessToken, $region, $query_type, implode(',', $marketplace_ids), $shipment_status_list, null, $last_updated_after, $last_updated_before, $next_token);
+                    $response = $sdk->fulfillmentInbound()->getShipments($accessToken, $region, $query_type, '', $shipment_status_list, null, $last_updated_after, $last_updated_before, $next_token);
 
                     $payload = $response->getPayload();
                     if ($payload === null) {
@@ -98,7 +106,6 @@ class GetShipments extends HyperfCommand
                         break;
                     }
 
-                    $retry = 10;
                     foreach ($inboundShipmentList as $inboundShipment) {
                         $shipment_id = $inboundShipment->getShipmentId() ?? '';
                         $shipment_name = $inboundShipment->getShipmentName() ?? '';
@@ -160,6 +167,8 @@ class GetShipments extends HyperfCommand
                         $collections->offsetSet($shipment_id, [
                             'merchant_id' => $merchant_id,
                             'merchant_store_id' => $merchant_store_id,
+//                            'marketplace_id' => $marketplace_id,
+                            'marketplace_id' => '',
                             'shipment_id' => $shipment_id,
                             'shipment_name' => $shipment_name,
                             'shipment_from_address' => json_encode($shipment_from_address, JSON_THROW_ON_ERROR),
@@ -184,6 +193,7 @@ class GetShipments extends HyperfCommand
                         break;
                     }
                     $query_type = 'NEXT_TOKEN';//如果有下一页，需要把query_type设置为NEXT_TOKEN
+                    $retry = 10;
                 } catch (ApiException $e) {
                     --$retry;
                     if ($retry > 0) {
@@ -240,6 +250,10 @@ class GetShipments extends HyperfCommand
                 //需要新增的部分
                 AmazonShipmentModel::insert($collections->toArray());
             }
+
+            $console->notice(sprintf('FulfillmentInbound merchant_id:%s merchant_store_id:%s 完成处理，耗时:%s. 更新:%s 新增:%s', $merchant_id, $merchant_store_id, $runtimeCalculator->stop(), $existShipments->count(), $collections->count()));
+
+
             return true;
         });
     }

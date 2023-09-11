@@ -10,10 +10,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use App\Util\RegionRefreshTokenConfig;
-
 /**
- * Class AmazonAppModel.
+ * Class AmazonShipmentModel.
  * @property $id
  * @property $merchant_id
  * @property $merchant_store_id
