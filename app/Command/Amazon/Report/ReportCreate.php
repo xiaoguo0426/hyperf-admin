@@ -166,7 +166,7 @@ class ReportCreate extends HyperfCommand
                         $amazonGetReportData->setDataEndTime($data_end_time);
 
                         $log = sprintf('Create %s report_id: %s merchant_id: %s merchant_store_id: %s  start_time:%s end_time:%s', $report_type, $report_id, $merchant_id, $merchant_store_id, $data_start_time, $data_end_time);
-                        $logger->info($log);
+                        $console->info($log);
                         $logger->info($log, [
                             'marketplace_ids' => $marketplace_ids,
                             'data_start_time' => $data_start_time,
