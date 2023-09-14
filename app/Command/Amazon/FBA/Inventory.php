@@ -25,6 +25,7 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\InputArgument;
 
 #[Command]
 class Inventory extends HyperfCommand
@@ -34,9 +35,26 @@ class Inventory extends HyperfCommand
         parent::__construct('amazon:fba:inventory');
     }
 
+    public function configure(): void
+    {
+        parent::configure();
+        $this->addArgument('merchant_id', InputArgument::REQUIRED, '商户id')
+            ->addArgument('merchant_store_id', InputArgument::REQUIRED, '店铺id')
+            ->setDescription('Amazon FBA Inventory Command');
+    }
+
+
+    /**
+     * @throws ApiException
+     * @throws \Psr\Http\Client\ClientExceptionInterface
+     * @throws \JsonException
+     */
     public function handle()
     {
-        AmazonApp::process(static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
+        $merchant_id = (int) $this->input->getArgument('merchant_id');
+        $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
+
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
             $logger = ApplicationContext::getContainer()->get(AmazonFbaInventory::class);
 
             $startDate = new \DateTime();
