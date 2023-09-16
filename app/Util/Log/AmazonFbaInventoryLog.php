@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace App\Util\Log;
 
-class AmazonFbaInventory extends AbstractLog
+class AmazonFbaInventoryLog extends AbstractLog
 {
     public function __construct()
     {

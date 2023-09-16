@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace App\Command\Fake;
 
 use App\Model\AmazonAppModel;
-use App\Util\Log\AmazonFbaInventory;
+use App\Util\Log\AmazonFbaInventoryLog;
 use App\Util\MultiLog;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
@@ -44,7 +44,7 @@ class AmazonApp extends HyperfCommand
         \App\Util\AmazonApp::tick($merchant_id, $merchant_store_id, static function (AmazonAppModel $amazonAppCollection) {
             //            $multiLog = \Hyperf\Support\make(MultiLog::class);
             $multiLog = new MultiLog();
-            $multiLog->register(di(StdoutLoggerInterface::class))->register(di(AmazonFbaInventory::class));
+            $multiLog->register(di(StdoutLoggerInterface::class))->register(di(AmazonFbaInventoryLog::class));
             //            $multiLog->info('{a} 343242342423423 {b}', ['a' => 1, 'b' => 333]);
             $multiLog->info('自定义日志信息 {a}-{b}', ['a' => 1, 'b' => 333]);
             $multiLog->error('自定义日志信息 {a}-{b}', ['a' => 3333, 'b' => 4444]);

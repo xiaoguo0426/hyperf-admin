@@ -17,7 +17,7 @@ use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use App\Model\AmazonInventoryModel;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
-use App\Util\Log\AmazonFbaInventory;
+use App\Util\Log\AmazonFbaInventoryLog;
 use Carbon\Carbon;
 use Hyperf\Collection\Collection;
 use Hyperf\Command\Annotation\Command;
@@ -55,7 +55,7 @@ class Inventory extends HyperfCommand
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
 
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
-            $logger = ApplicationContext::getContainer()->get(AmazonFbaInventory::class);
+            $logger = ApplicationContext::getContainer()->get(AmazonFbaInventoryLog::class);
 
             $startDate = new \DateTime();
             $startDate->setDate(2022, 03, 01)->setTime(00, 00, 00);
