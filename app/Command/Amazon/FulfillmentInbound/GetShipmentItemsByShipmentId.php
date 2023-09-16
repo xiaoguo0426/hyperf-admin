@@ -18,7 +18,7 @@ use App\Model\AmazonShipmentItemsModel;
 use App\Model\AmazonShipmentModel;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
-use App\Util\Log\AmazonFinanceLog;
+use App\Util\Log\AmazonFulfillmentInboundGetShipmentItemsByShipmentIdLog;
 use App\Util\RuntimeCalculator;
 use Carbon\Carbon;
 use Hyperf\Collection\Collection;
@@ -26,7 +26,6 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Database\Model\ModelNotFoundException;
 use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -64,11 +63,12 @@ class GetShipmentItemsByShipmentId extends HyperfCommand
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
-            $logger = ApplicationContext::getContainer()->get(AmazonFinanceLog::class);
+            $logger = ApplicationContext::getContainer()->get(AmazonFulfillmentInboundGetShipmentItemsByShipmentIdLog::class);
 
             $amazonShipmentCollections = AmazonShipmentModel::query()
                 ->where('merchant_id', $merchant_id)
                 ->where('merchant_store_id', $merchant_store_id)
+                ->orderByDesc('id')
                 ->get();
             if ($amazonShipmentCollections->isEmpty()) {
                 return true;

@@ -66,7 +66,6 @@ class VoidTransport extends HyperfCommand
 
                 $shipment_id = $amazonShipmentsCollection->shipment_id;
                 try {
-                    var_dump($shipment_id);
                     $voidTransportResponse = $sdk->fulfillmentInbound()->voidTransport($accessToken, $region, $shipment_id);
                     $payload = $voidTransportResponse->getPayload();
                     if (is_null($payload)) {
