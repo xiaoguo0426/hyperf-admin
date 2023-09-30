@@ -16,6 +16,7 @@ use Hyperf\Command\Command as HyperfCommand;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use RedisException;
 
 #[Command]
 class ReportGet extends HyperfCommand
@@ -34,7 +35,7 @@ class ReportGet extends HyperfCommand
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \RedisException
+     * @throws RedisException
      */
     public function handle(): void
     {

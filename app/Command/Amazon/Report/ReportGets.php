@@ -41,7 +41,7 @@ class ReportGets extends HyperfCommand
 
     public function handle(): void
     {
-        AmazonApp::process(static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
+        AmazonApp::process(static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
             $logger = ApplicationContext::getContainer()->get(AmazonReportLog::class);
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
@@ -56,7 +56,7 @@ class ReportGets extends HyperfCommand
             $created_until = null;
             $next_token = null;
 
-            $report_template_path = config('amazon.report_template_path');
+            $report_template_path = \Hyperf\Config\config('amazon.report_template_path');
             $queue = new AmazonGetReportDocumentQueue();
 
             foreach ($report_types as $report_type) {
@@ -71,7 +71,7 @@ class ReportGets extends HyperfCommand
 
                         foreach ($reports as $report) {
                             $report_type = $report->getReportType();
-                            $marketplace_ids = $report->getMarketplaceIds();
+//                            $marketplace_ids = $report->getMarketplaceIds();
                             $data_start_time = $report->getDataStartTime();
                             $data_end_time = $report->getDataEndTime();
                             $report_schedule_id = $report->getReportScheduleId();

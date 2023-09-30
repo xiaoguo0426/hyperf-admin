@@ -15,8 +15,10 @@ use AmazonPHP\SellingPartner\Regions;
 use App\Exception\BusinessException;
 use App\Model\AmazonAppModel;
 use App\Util\RedisHash\AmazonAppHash;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Model\ModelNotFoundException;
+use JsonException;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonApp
@@ -75,7 +77,7 @@ class AmazonApp
      * 单个Amazon应用配置回调并触发Amazon SDK.
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function tok(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
@@ -86,7 +88,7 @@ class AmazonApp
 
             $merchant_id = $amazonAppModel->merchant_id;
             $merchant_store_id = $amazonAppModel->merchant_store_id;
-            $seller_id = $amazonAppModel->seller_id;
+//            $seller_id = $amazonAppModel->seller_id;
 
             /**
              * @var AmazonSDK $amazonSDK
@@ -100,8 +102,6 @@ class AmazonApp
 
             $console = di(StdoutLoggerInterface::class);
 
-            //            $multiRegions = $amazonAppModel->getRegionRefreshTokenConfigs();
-
             try {
                 $accessToken = $amazonSDK->getToken($region);
             } catch (ApiException $exception) {
@@ -112,7 +112,7 @@ class AmazonApp
                 return true;
             }
 
-            return $func($amazonSDK, $merchant_id, $merchant_store_id, $seller_id, $sdk, $accessToken, $region, $marketplace_ids);
+            return $func($amazonSDK, $merchant_id, $merchant_store_id, $sdk, $accessToken, $region, $marketplace_ids);
         });
     }
 
@@ -145,7 +145,6 @@ class AmazonApp
 
             $merchant_id = $amazonAppCollection->merchant_id;
             $merchant_store_id = $amazonAppCollection->merchant_store_id;
-            $seller_id = $amazonAppCollection->seller_id;
 
             $amazonSDK = new AmazonSDK($amazonAppCollection);
 
@@ -154,24 +153,32 @@ class AmazonApp
 
             try {
                 $sdk = $amazonSDK->getSdk();
-            } catch (ApiException|\JsonException|ClientExceptionInterface $exception) {
-                return true;
+            } catch (ApiException|JsonException|ClientExceptionInterface $exception) {
+                $log = sprintf('Amazon App SDK构建失败，请检查. %s merchant_id:%s merchant_store_id:%s ', $exception->getMessage(), $merchant_id, $merchant_store_id);
+                $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+                $console->error($log);
+
+                return false;
             }
 
             try {
                 $accessToken = $amazonSDK->getToken($region);
             } catch (ApiException|ClientExceptionInterface $exception) {
-                return true;
+                $log = sprintf('Amazon App Token获取失败，请检查. %s merchant_id:%s merchant_store_id:%s ', $exception->getMessage(), $merchant_id, $merchant_store_id);
+                $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+                $console->error($log);
+
+                return false;
             }
 
-            return $func($amazonSDK, $merchant_id, $merchant_store_id, $seller_id, $sdk, $accessToken, $region, $marketplace_ids);
+            return $func($amazonSDK, $merchant_id, $merchant_store_id, $sdk, $accessToken, $region, $marketplace_ids);
         });
     }
 
     /**
      * @param string[] $regions
      */
-    public static function regions(array $regions)
+    public static function regions(array $regions): void
     {
         foreach ($regions as $region) {
             if (Regions::isValid($region)) {
@@ -179,10 +186,10 @@ class AmazonApp
         }
     }
 
-    public static function region(string $region)
+    public static function region(string $region): void
     {
         if (Regions::isValid($region)) {
-            throw new BusinessException('Invalid Region');
+            throw new BusinessException(1, 'Invalid Region');
         }
     }
 }

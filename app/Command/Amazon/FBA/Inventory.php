@@ -54,7 +54,7 @@ class Inventory extends HyperfCommand
         $merchant_id = (int) $this->input->getArgument('merchant_id');
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
 
-        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
             $logger = ApplicationContext::getContainer()->get(AmazonFbaInventoryLog::class);
 
             $startDate = new \DateTime();
