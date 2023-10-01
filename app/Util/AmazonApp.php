@@ -19,12 +19,18 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Database\Model\ModelNotFoundException;
 use JsonException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 
 class AmazonApp
 {
     /**
-     * 单个Amazon应用配置回调.
+     * 单个Amazon应用配置回调
+     * @param int $merchant_id
+     * @param int $merchant_store_id
+     * @param callable $func
+     * @return bool
      */
     public static function tick(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
@@ -74,10 +80,14 @@ class AmazonApp
     }
 
     /**
-     * 单个Amazon应用配置回调并触发Amazon SDK.
+     * 单个Amazon应用配置回调并触发Amazon SDK
+     * @param int $merchant_id
+     * @param int $merchant_store_id
+     * @param callable $func
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws JsonException
+     * @return bool
      */
     public static function tok(int $merchant_id, int $merchant_store_id, callable $func): bool
     {
@@ -117,7 +127,9 @@ class AmazonApp
     }
 
     /**
-     * 所有Amazon应用配置回调.
+     * 所有Amazon应用配置回调
+     * @param callable $func
+     * @return bool
      */
     public static function trigger(callable $func): bool
     {
@@ -135,6 +147,10 @@ class AmazonApp
 
     /**
      * 所有Amazon应用配置回调并触发Amazon SDK.
+     * @param callable $func
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @return void
      */
     public static function process(callable $func): void
     {
@@ -177,15 +193,19 @@ class AmazonApp
 
     /**
      * @param string[] $regions
+     * @return void
      */
     public static function regions(array $regions): void
     {
         foreach ($regions as $region) {
-            if (Regions::isValid($region)) {
-            }
+            self::region($region);
         }
     }
 
+    /**
+     * @param string $region
+     * @return void
+     */
     public static function region(string $region): void
     {
         if (Regions::isValid($region)) {

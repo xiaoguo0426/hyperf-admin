@@ -64,7 +64,7 @@ class AmazonGetReportQueue extends Queue
 
         $logger->info(sprintf('Get 报告队列数据： %s', $queueData->toJson()));
 
-        return AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_id, $start_time, $end_time, $logger) {
+        return AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_id, $start_time, $end_time, $logger) {
             $queue = new AmazonActionReportQueue();
 
             $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);

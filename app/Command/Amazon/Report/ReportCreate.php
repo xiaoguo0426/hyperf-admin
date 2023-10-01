@@ -117,6 +117,7 @@ class ReportCreate extends HyperfCommand
      * @param string $report_type
      * @param string $report_start_date
      * @param string $report_end_date
+     * @param string $is_force_create
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws \JsonException
@@ -124,7 +125,7 @@ class ReportCreate extends HyperfCommand
      */
     private function fly(int $merchant_id, int $merchant_store_id, string $report_type, string $report_start_date, string $report_end_date, string $is_force_create): void
     {
-        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, string $seller_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_start_date, $report_end_date, $is_force_create) {
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($report_type, $report_start_date, $report_end_date, $is_force_create) {
             $logger = di(AmazonReportCreateLog::class);
 
             $instance = ReportFactory::getInstance($merchant_id, $merchant_store_id, $report_type);
