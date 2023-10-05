@@ -34,11 +34,17 @@ use Symfony\Component\Console\Input\InputArgument;
 #[Command]
 class GetShipmentItemsByShipmentId extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:fulfillment-inbound:get-shipment-items-by-shipment-id');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -50,8 +56,8 @@ class GetShipmentItemsByShipmentId extends HyperfCommand
 
     /**
      * @throws ApiException
-     * @throws JsonException
      * @throws ClientExceptionInterface
+     * @throws JsonException
      * @return void
      */
     public function handle(): void

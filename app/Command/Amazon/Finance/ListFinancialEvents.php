@@ -17,11 +17,17 @@ use Psr\Container\ContainerInterface;
 #[Command]
 class ListFinancialEvents extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:finance:list-financial-events');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();

@@ -30,11 +30,17 @@ use Symfony\Component\Console\Input\InputArgument;
 #[Command]
 class VoidTransport extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:fulfillment-inbound:void-transport');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -48,6 +54,7 @@ class VoidTransport extends HyperfCommand
      * @throws ApiException
      * @throws ClientExceptionInterface
      * @throws \JsonException
+     * @return void
      */
     public function handle(): void
     {

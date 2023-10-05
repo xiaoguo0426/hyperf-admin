@@ -25,6 +25,7 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
+use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,11 +33,17 @@ use Symfony\Component\Console\Input\InputArgument;
 #[Command]
 class GetShipments extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:fulfillment-inbound:get-shipments');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -48,7 +55,8 @@ class GetShipments extends HyperfCommand
     /**
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
+     * @return void
      */
     public function handle(): void
     {

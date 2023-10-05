@@ -27,6 +27,7 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
+use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,11 +36,17 @@ use Symfony\Component\Console\Input\InputOption;
 #[Command]
 class ReportCreate extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:report:create');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -55,9 +62,10 @@ class ReportCreate extends HyperfCommand
     }
 
     /**
-     * @throws ClientExceptionInterface
      * @throws ApiException
-     * @throws \JsonException
+     * @throws ClientExceptionInterface
+     * @throws JsonException
+     * @return void
      */
     public function handle(): void
     {
@@ -120,7 +128,7 @@ class ReportCreate extends HyperfCommand
      * @param string $is_force_create
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
      * @return void
      */
     private function fly(int $merchant_id, int $merchant_store_id, string $report_type, string $report_start_date, string $report_end_date, string $is_force_create): void

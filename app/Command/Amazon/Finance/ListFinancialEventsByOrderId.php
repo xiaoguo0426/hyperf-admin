@@ -17,17 +17,26 @@ use Psr\Container\ContainerInterface;
 #[Command]
 class ListFinancialEventsByOrderId extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:finance:list-financial-events-by-order-id');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
         $this->setDescription('Amazon Finance List Financial Events By Order Id Command');
     }
 
+    /**
+     * @return void
+     */
     public function handle(): void
     {
     }

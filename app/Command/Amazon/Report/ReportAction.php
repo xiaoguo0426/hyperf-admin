@@ -11,25 +11,28 @@ declare(strict_types=1);
 namespace App\Command\Amazon\Report;
 
 use App\Queue\AmazonActionReportQueue;
-use App\Util\Log\AmazonReportActionLog;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
-use Hyperf\Di\Annotation\Inject;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use RedisException;
 
 #[Command]
 class ReportAction extends HyperfCommand
 {
-    #[Inject]
-    private AmazonReportActionLog $amazonReportLog;
 
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:report:action');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -39,7 +42,8 @@ class ReportAction extends HyperfCommand
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws \RedisException
+     * @throws RedisException
+     * @return void
      */
     public function handle(): void
     {

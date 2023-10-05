@@ -26,6 +26,9 @@ class ScheduleCreateReport extends HyperfCommand
         $this->setDescription('定时创建指定报告类型指定时间范围报告');
     }
 
+    /**
+     * @return void
+     */
     public function handle(): void
     {
         $report_schedule_list = [

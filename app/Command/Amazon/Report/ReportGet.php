@@ -21,11 +21,17 @@ use RedisException;
 #[Command]
 class ReportGet extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:report:get');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -36,6 +42,7 @@ class ReportGet extends HyperfCommand
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws RedisException
+     * @return void
      */
     public function handle(): void
     {

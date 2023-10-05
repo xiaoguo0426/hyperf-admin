@@ -22,6 +22,7 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
+use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -29,11 +30,17 @@ use Symfony\Component\Console\Input\InputArgument;
 #[Command]
 class GetCatalogItem extends HyperfCommand
 {
+    /**
+     * @param ContainerInterface $container
+     */
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('amazon:catalog:get-catalog-items');
     }
 
+    /**
+     * @return void
+     */
     public function configure(): void
     {
         parent::configure();
@@ -45,9 +52,9 @@ class GetCatalogItem extends HyperfCommand
     /**
      * @throws ApiException
      * @throws ClientExceptionInterface
-     * @throws \JsonException
+     * @throws JsonException
      */
-    public function handle()
+    public function handle(): void
     {
         $merchant_id = (int) $this->input->getArgument('merchant_id');
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
