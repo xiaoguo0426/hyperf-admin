@@ -13,6 +13,7 @@ namespace App\Command\Amazon\FBA;
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
 use AmazonPHP\SellingPartner\Exception\InvalidArgumentException;
+use AmazonPHP\SellingPartner\Marketplace;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
 use App\Model\AmazonInventoryModel;
 use App\Util\AmazonApp;
@@ -66,8 +67,9 @@ class Inventory extends HyperfCommand
         AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
             $logger = ApplicationContext::getContainer()->get(AmazonFbaInventoryLog::class);
 
-            $startDate = new \DateTime();
-            $startDate->setDate(2022, 03, 01)->setTime(00, 00, 00);
+//            $startDate = new \DateTime();
+//            $startDate->setDate(2023, 01, 01)->setTime(00, 00, 00);
+            $startDate = null;
 
             $seller_skus = null; // 最多50个
             $granularity_type = 'Marketplace';
@@ -80,28 +82,45 @@ class Inventory extends HyperfCommand
                 $retry = 30;
                 $nextToken = null;
 
+                $country_code = $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id);
+
+                $console->info(sprintf('merchant_id:%s merchant_store_id:%s 现在开始处理 %s 市场数据', $merchant_id, $merchant_store_id, $country_code));
+
                 while (true) {
                     $asin_list = [];
-
                     $collections = new Collection();
-
                     try {
-                        $response = $sdk->fbaInventory()->getInventorySummaries($accessToken, $region, $granularity_type, $marketplace_id, [$marketplace_id], true, $startDate, $seller_skus, $nextToken);
+                        $response = $sdk->fbaInventory()->getInventorySummaries($accessToken, $region, $granularity_type, $marketplace_id, [$marketplace_id], true, $startDate, $seller_skus, null, $nextToken);
                         $payload = $response->getPayload();
-                        if ($payload === null) {
+                        if (is_null($payload)) {
+                            $console->notice(sprintf('merchant_id:%s merchant_store_id:%s payload为空', $merchant_id, $merchant_store_id));
                             break;
                         }
-                        if (! is_null($response->getErrors())) {
+                        $errorsList = $response->getErrors();
+                        if (! is_null($errorsList)) {
+                            $errors = [];
+                            foreach ($errorsList as $error) {
+                                $errors[] = [
+                                    'code' => $error->getCode(),
+                                    'message' => $error->getMessage() ?? '',
+                                    'details' => $error->getDetails() ?? ''
+                                ];
+                            }
+                            $console->error(sprintf('merchant_id:%s merchant_store_id:%s 处理 %s 市场数据发生错误 %s', $merchant_id, $merchant_store_id, $country_code, json_encode($errors, JSON_THROW_ON_ERROR)));
                             break;
                         }
 
                         $summaries = $payload->getInventorySummaries();
+                        if (count($summaries) === 0) {
+                            $console->notice(sprintf('merchant_id:%s merchant_store_id:%s summaries为空', $merchant_id, $merchant_store_id));
+                            break;
+                        }
 
                         foreach ($summaries as $summary) {
-                            $asin = $summary->getAsin();
-                            $fn_sku = $summary->getFnSku();
-                            $seller_sku = $summary->getSellerSku();
-                            $condition = $summary->getCondition();
+                            $asin = $summary->getAsin() ?? '';
+                            $fn_sku = $summary->getFnSku() ?? '';
+                            $seller_sku = $summary->getSellerSku() ?? '';
+                            $condition = $summary->getCondition() ?? '';
 
                             $fulfillable_quantity = 0;
                             $inbound_working_quantity = 0;
@@ -112,7 +131,6 @@ class Inventory extends HyperfCommand
                             $pending_transshipment_quantity = 0;
                             $fc_processing_quantity = 0;
                             $total_researching_quantity = 0;
-                            $researching_quantity_breakdown = [];
                             $researching_quantity_in_short_term = 0;
                             $researching_quantity_in_mid_term = 0;
                             $researching_quantity_in_long_term = 0;
@@ -123,35 +141,24 @@ class Inventory extends HyperfCommand
                             $carrier_damaged_quantity = 0;
                             $defective_quantity = 0;
                             $expired_quantity = 0;
-                            $last_updated_time = 0;
-                            $total_quantity = 0;
 
                             $inventoryDetails = $summary->getInventoryDetails();
-                            $inventoryDetailsJson = [];
-                            if ($inventoryDetails) {
+                            if (! is_null($inventoryDetails)) {
                                 $fulfillable_quantity = $inventoryDetails->getFulfillableQuantity() ?: 0; // 可拣选，包装，运输的货品数
                                 $inbound_working_quantity = $inventoryDetails->getInboundWorkingQuantity() ?: 0; // 通知亚马逊入库的货品数
                                 $inbound_shipped_quantity = $inventoryDetails->getInboundShippedQuantity() ?: 0; // 通知亚马逊并有物流跟踪号的货品数
                                 $inbound_receiving_quantity = $inventoryDetails->getInboundReceivingQuantity() ?: 0; // 亚马逊物流未处理的入库货数
 
                                 $reservedQuantity = $inventoryDetails->getReservedQuantity();
-                                //                                $reservedQuantityJson = [];
-                                if ($reservedQuantity) {
+                                if (! is_null($reservedQuantity)) {
                                     $total_reserved_quantity = $reservedQuantity->getTotalReservedQuantity() ?: 0; // 开始配送。正在包装，运输等动态状态的货数
                                     $pending_customer_order_quantity = $reservedQuantity->getPendingCustomerOrderQuantity() ?: 0; // 为客户订单保留的货品数
                                     $pending_transshipment_quantity = $reservedQuantity->getPendingTransshipmentQuantity() ?: 0; // 从亚马逊库存转移到另一个亚马逊库存的货品数
                                     $fc_processing_quantity = $reservedQuantity->getFcProcessingQuantity() ?: 0; // 被亚马逊物流搁置以进行其他处理的货品数
-                                    //                                    $reservedQuantityJson = [
-                                    //                                        'total_reserved_quantity' => $total_reserved_quantity,
-                                    //                                        'pending_customer_order_quantity' => $pending_customer_order_quantity,
-                                    //                                        'pending_transshipment_quantity' => $pending_transshipment_quantity,
-                                    //                                        'fc_processing_quantity' => $fc_processing_quantity,
-                                    //                                    ];
                                 }
 
                                 $researchingQuantity = $inventoryDetails->getResearchingQuantity();
-                                $researchingQuantityJson = [];
-                                if ($researchingQuantity) {
+                                if (! is_null($researchingQuantity)) {
                                     $total_researching_quantity = $researchingQuantity->getTotalResearchingQuantity() ?: 0; // 放错位置或损坏的货品总数
                                     $researchingQuantityBreakdowns = $researchingQuantity->getResearchingQuantityBreakdown() ?: []; // 正在判断是否放错位置或损坏的货品总数和货品名称
                                     if ($researchingQuantityBreakdowns) {
@@ -164,21 +171,12 @@ class Inventory extends HyperfCommand
                                                 'researchingQuantityInMidTerm' => $researching_quantity_in_mid_term = $quantity,
                                                 'researchingQuantityInLongTerm' => $researching_quantity_in_long_term = $quantity,
                                             };
-                                            //                                            $researching_quantity_breakdown[] = [
-                                            //                                                'name' => $name,
-                                            //                                                'quantity' => $quantity
-                                            //                                            ];
                                         }
                                     }
-                                    //                                    $researchingQuantityJson = [
-                                    //                                        'total_researching_quantity' => $total_researching_quantity,
-                                    //                                        'researching_quantity_breakdown' => $researchingQuantityBreakdownArr
-                                    //                                    ];
                                 }
 
                                 $unfulfillableQuantity = $inventoryDetails->getUnfulfillableQuantity();
-                                $unfulfillableQuantityJson = [];
-                                if ($unfulfillableQuantity) {
+                                if (! is_null($unfulfillableQuantity)) {
                                     $total_unfulfillable_quantity = $unfulfillableQuantity->getTotalUnfulfillableQuantity() ?: 0; // 库存中不可售的货品数
                                     $customer_damaged_quantity = $unfulfillableQuantity->getCustomerDamagedQuantity() ?: 0; // 客户损坏的货品数
                                     $warehouse_damaged_quantity = $unfulfillableQuantity->getWarehouseDamagedQuantity() ?: 0; // 损坏的货品总数
@@ -186,28 +184,18 @@ class Inventory extends HyperfCommand
                                     $carrier_damaged_quantity = $unfulfillableQuantity->getCarrierDamagedQuantity() ?: 0; // 承运人损坏的货品数
                                     $defective_quantity = $unfulfillableQuantity->getDefectiveQuantity() ?: 0; // 正在处理的损坏的货品数
                                     $expired_quantity = $unfulfillableQuantity->getExpiredQuantity() ?: 0; // 已过期的货品数
-
-                                    //                                    $unfulfillableQuantityJson = [
-                                    //                                        'total_unfulfillable_quantity' => $total_unfulfillable_quantity,
-                                    //                                        'customer_damaged_quantity' => $customer_damaged_quantity,
-                                    //                                        'warehouse_damaged_quantity' => $warehouse_damaged_quantity,
-                                    //                                        'distributor_damaged_quantity' => $distributor_damaged_quantity,
-                                    //                                        'carrier_damaged_quantity' => $carrier_damaged_quantity,
-                                    //                                        'defective_quantity' => $defective_quantity,
-                                    //                                        'expired_quantity' => $expired_quantity,
-                                    //                                    ];
                                 }
                             }
 
                             $lastUpdatedTime = $summary->getLastUpdatedTime();
-                            $last_updated_time = '';
-                            if ($lastUpdatedTime) {
+                            $last_updated_time = null;
+                            if (! is_null($lastUpdatedTime)) {
                                 $last_updated_time = $lastUpdatedTime->format('Y-m-d H:i:s');
                             }
 
-                            $product_name = $summary->getProductName() ?: '';
+                            $product_name = $summary->getProductName() ?? '';
 
-                            $total_quantity = $summary->getTotalQuantity() ?: 0;
+                            $total_quantity = $summary->getTotalQuantity() ?? 0;
 
                             $collections->offsetSet($asin, [
                                 'merchant_id' => $merchant_id,
@@ -241,9 +229,9 @@ class Inventory extends HyperfCommand
                                 'country_ids' => $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id),
                                 'created_at' => $now,
                             ]);
-
                             $asin_list[] = $asin;
                         }
+
                         $existAmazonInventoryCollections = AmazonInventoryModel::query()
                             ->where('merchant_id', $merchant_id)
                             ->where('merchant_store_id', $merchant_store_id)
@@ -274,6 +262,7 @@ class Inventory extends HyperfCommand
                                 AmazonInventoryModel::insert($collections->toArray());
                             }
                         }
+
                         $pagination = $response->getPagination();
                         if (is_null($pagination)) {
                             break;
@@ -311,9 +300,12 @@ class Inventory extends HyperfCommand
                             'message' => $exception->getMessage(),
                             'trace' => $exception->getTraceAsString(),
                         ]);
+                        continue;
                     }
                 }
             }
+
+            return true;
         });
     }
 }
