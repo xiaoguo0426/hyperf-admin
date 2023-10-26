@@ -39,6 +39,9 @@ class OrderEngine implements EngineInterface
 
         $region = $amazonSDK->getRegion();
 
+        /**
+         * @var OrderCreator $creator
+         */
         $marketplace_ids = $creator->getMarketplaceIds();
         $created_after = $creator->getCreatedAfter();
         $created_before = $creator->getCreatedBefore();
@@ -300,29 +303,29 @@ class OrderEngine implements EngineInterface
                     'latest_ship_date' => $order->getLatestShipDate() ?? '',//您承诺发货订单的时间段结束
                     'earliest_delivery_date' => $order->getEarliestDeliveryDate() ?? '',//您承诺履行订单的时间段的开始。采用ISO 8601日期时间格式。仅针对卖方完成的订单退回。
                     'latest_delivery_date' => $order->getLatestDeliveryDate() ?? '',//您承诺履行订单的期限结束。采用ISO 8601日期时间格式。仅针对卖家完成的订单返回，这些订单没有挂起可用性、挂起或取消状态
-                    'is_business_order' => $order->getIsBusinessOrder(),//如果为true，则订单为Amazon Business订单。亚马逊商业订单是指买方是经验证的商业买家的订单
-                    'is_prime' => $order->getIsPrime(),//如果为true，则订单是卖家完成的亚马逊Prime订单。
-                    'is_premium_order' => $order->getIsPremiumOrder(),//如果为true，则订单具有“高级配送服务级别协议”。有关高级配送订单的更多信息，请参阅您所在市场的卖家中心帮助中的“高级配送选项”
-                    'is_global_express_enabled' => $order->getIsGlobalExpressEnabled(),//如果为true，则订单为GlobalExpress订单
+                    'is_business_order' => (int) ($order->getIsBusinessOrder() ?? false),//如果为true，则订单为Amazon Business订单。亚马逊商业订单是指买方是经验证的商业买家的订单
+                    'is_prime' => (int) ($order->getIsPrime() ?? false),//如果为true，则订单是卖家完成的亚马逊Prime订单。
+                    'is_premium_order' => (int) ($order->getIsPremiumOrder() ?? false),//如果为true，则订单具有“高级配送服务级别协议”。有关高级配送订单的更多信息，请参阅您所在市场的卖家中心帮助中的“高级配送选项”
+                    'is_global_express_enabled' => (int) ($order->getIsGlobalExpressEnabled() ?? false),//如果为true，则订单为GlobalExpress订单
                     'replaced_order_id' => $order->getReplacedOrderId() ?? '',//正在替换的订单的订单ID值。仅当IsReplacementOrder=true时返回。
-                    'is_replacement_order' => $order->getIsReplacementOrder(),//如果为true，则这是替换订单。
+                    'is_replacement_order' => (int) ($order->getIsReplacementOrder() ?? false),//如果为true，则这是替换订单。
                     'promise_response_due_date' => $order->getPromiseResponseDueDate() ?? '',//表示卖方必须以预计发货日期回复买方的日期。仅针对按需采购订单退回。
-                    'is_estimated_ship_date_set' => $order->getIsEstimatedShipDateSet() ?? false,//如果为true，则为订单设置预计发货日期。仅针对按需采购订单退回
-                    'is_sold_by_ab' => $order->getIsSoldByAb(),//如果为true，则此订单中的商品由Amazon Business EU SARL（ABEU）购买并转售。通过购买并立即转售您的物品，ABEU成为记录的卖家，使您的库存可供不从第三方卖家购买的客户出售。
-                    'is_iba' => $order->getIsIba() ?? false,//如果为true，则此订单中的商品由Amazon Business EU SARL（ABEU）购买并转售。通过购买并立即转售您的物品，ABEU成为记录的卖家，使您的库存可供不从第三方卖家购买的客户出售。
+                    'is_estimated_ship_date_set' => (int) ($order->getIsEstimatedShipDateSet() ?? false),//如果为true，则为订单设置预计发货日期。仅针对按需采购订单退回
+                    'is_sold_by_ab' => (int) ($order->getIsSoldByAb() ?? false),//如果为true，则此订单中的商品由Amazon Business EU SARL（ABEU）购买并转售。通过购买并立即转售您的物品，ABEU成为记录的卖家，使您的库存可供不从第三方卖家购买的客户出售。
+                    'is_iba' => (int) ($order->getIsIba() ?? false),//如果为true，则此订单中的商品由Amazon Business EU SARL（ABEU）购买并转售。通过购买并立即转售您的物品，ABEU成为记录的卖家，使您的库存可供不从第三方卖家购买的客户出售。
                     'default_ship_from_location_address' => json_encode($defaultShipFromLocationAddressJson, JSON_THROW_ON_ERROR),//卖方装运物品的推荐地点。结账时计算。卖方可以选择或不选择从该地点发货
                     'buyer_invoice_preference' => $order->getBuyerInvoicePreference() ?? '',//买方的发票偏好。仅在TR市场上可用
                     'buyer_tax_information' => json_encode($buyerTaxInformationJson, JSON_THROW_ON_ERROR),//包含业务发票税务信息
                     'fulfillment_instruction' => json_encode($fulfillmentInstructionJson, JSON_THROW_ON_ERROR),//包含有关履行的说明，如从何处履行
-                    'is_ispu' => $order->getIsIspu(),//如果为true，则此订单标记为从商店提货，而不是交付
-                    'is_access_point_order' => $order->getIsAccessPointOrder(),//如果为true，则将此订单标记为要交付给接入点。访问位置由客户选择。接入点包括亚马逊中心储物柜、亚马逊中心柜台和运营商运营的取货点。
+                    'is_ispu' => (int) ($order->getIsIspu() ?? false),//如果为true，则此订单标记为从商店提货，而不是交付
+                    'is_access_point_order' => (int) ($order->getIsAccessPointOrder() ?? false),//如果为true，则将此订单标记为要交付给接入点。访问位置由客户选择。接入点包括亚马逊中心储物柜、亚马逊中心柜台和运营商运营的取货点。
                     'marketplace_tax_info' => json_encode($marketplaceTaxInfoJson, JSON_THROW_ON_ERROR),//有关市场的税务信息
                     'seller_display_name' => $order->getSellerDisplayName() ?? '',//卖家在市场上注册的友好名称。
                     'shipping_address' => json_encode($shippingAddressJson, JSON_THROW_ON_ERROR),//订单的发货地址。
                     'buyer_email' => $buyerInfoJson['buyer_info_email'] ?? '',// 买家邮箱信息
                     'buyer_info' => json_encode($buyerInfoJson, JSON_THROW_ON_ERROR),//买方信息
                     'automated_shipping_settings' => json_encode($automatedShippingSettingsJson, JSON_THROW_ON_ERROR),//包含有关配送设置自动程序的信息，例如订单的配送设置是否自动生成，以及这些设置是什么
-                    'has_regulated_items' => $order->getHasRegulatedItems() ?? false,//订单是否包含在履行之前可能需要额外批准步骤的监管项目
+                    'has_regulated_items' => (int) ($order->getHasRegulatedItems() ?? false),//订单是否包含在履行之前可能需要额外批准步骤的监管项目
                     'electronic_invoice_status' => $order->getElectronicInvoiceStatus() ? $order->getElectronicInvoiceStatus()->toString() : '',//电子发票的状态 NotRequired,NotFound,Processing,Errored,Accepted
                     'created_at' => $cur_date
                 ];
@@ -369,12 +372,58 @@ class OrderEngine implements EngineInterface
 //                                        continue;
 //                                    }
 
-                            $save = $existOrder->save($data[$existOrder->amazon_order_id]);
+                            $existOrder->last_update_date = $item['last_update_date'];
+                            $existOrder->order_status = $item['order_status'];
+                            $existOrder->fulfillment_channel = $item['fulfillment_channel'];
+                            $existOrder->sales_channel = $item['sales_channel'];
+                            $existOrder->order_channel = $item['order_channel'];
+                            $existOrder->ship_service_level = $item['ship_service_level'];
+                            $existOrder->order_total_currency = $item['order_total_currency'];
+                            $existOrder->order_total_amount = $item['order_total_amount'];
+                            $existOrder->number_of_items_shipped = $item['number_of_items_shipped'];
+                            $existOrder->number_of_items_unshipped = $item['number_of_items_unshipped'];
+                            $existOrder->payment_execution_detail = $item['payment_execution_detail'];
+                            $existOrder->payment_method = $item['payment_method'];
+                            $existOrder->payment_method_details = $item['payment_method_details'];
+                            $existOrder->shipment_service_level_category = $item['shipment_service_level_category'];
+                            $existOrder->easy_ship_shipment_status = $item['easy_ship_shipment_status'];
+                            $existOrder->cba_displayable_shipping_label = $item['cba_displayable_shipping_label'];
+                            $existOrder->earliest_ship_date = $item['earliest_ship_date'];
+                            $existOrder->latest_ship_date = $item['latest_ship_date'];
+                            $existOrder->earliest_delivery_date = $item['earliest_delivery_date'];
+                            $existOrder->latest_delivery_date = $item['latest_delivery_date'];
+                            $existOrder->is_business_order = $item['is_business_order'];
+                            $existOrder->is_prime = $item['is_prime'];
+                            $existOrder->is_premium_order = $item['is_premium_order'];
+                            $existOrder->is_global_express_enabled = $item['is_global_express_enabled'];
+                            $existOrder->replaced_order_id = $item['replaced_order_id'];
+                            $existOrder->is_replacement_order = $item['is_replacement_order'];
+                            $existOrder->promise_response_due_date = $item['promise_response_due_date'];
+                            $existOrder->is_estimated_ship_date_set = $item['is_estimated_ship_date_set'];
+                            $existOrder->is_sold_by_ab = $item['is_sold_by_ab'];
+                            $existOrder->is_iba = $item['is_iba'];
+                            $existOrder->default_ship_from_location_address = $item['default_ship_from_location_address'];
+                            $existOrder->buyer_invoice_preference = $item['buyer_invoice_preference'];
+                            $existOrder->buyer_tax_information = $item['buyer_tax_information'];
+                            $existOrder->fulfillment_instruction = $item['fulfillment_instruction'];
+                            $existOrder->is_ispu = $item['is_ispu'];
+                            $existOrder->is_access_point_order = $item['is_access_point_order'];
+                            $existOrder->marketplace_tax_info = $item['marketplace_tax_info'];
+                            $existOrder->seller_display_name = $item['seller_display_name'];
+                            $existOrder->shipping_address = $item['shipping_address'];
+                            $existOrder->buyer_email = $item['buyer_email'];
+                            $existOrder->buyer_info = $item['buyer_info'];
+                            $existOrder->automated_shipping_settings = $item['automated_shipping_settings'];
+                            $existOrder->has_regulated_items = $item['has_regulated_items'];
+                            $existOrder->electronic_invoice_status = $item['electronic_invoice_status'];
+
+                            $save = $existOrder->save();
 
                             $real_order_ids[] = $existOrder->amazon_order_id;
                         }
                     }
                 }
+
                 $order_ids = $real_order_ids;
             }
 
@@ -397,7 +446,6 @@ class OrderEngine implements EngineInterface
             $page++;
 
             echo "\r\n";
-//            $that->output->newLine();
         }
 
         return true;

@@ -4,7 +4,7 @@ namespace App\Util\Amazon;
 
 use Carbon\Carbon;
 
-class ScheduleReportCreator
+class ScheduleReportCreator implements CreatorInterface
 {
 
     public string $report_type;

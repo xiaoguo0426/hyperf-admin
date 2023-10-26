@@ -25,7 +25,24 @@ return [
             ],
         ],
     ],
-
+    'sql' => [
+        'handler' => [
+            'class' => Monolog\Handler\RotatingFileHandler::class,
+            'constructor' => [
+                'dateFormat' => 'Y-m-d',
+                'filenameFormat' => '{date}',
+                'filename' => BASE_PATH . '/runtime/logs/sql/.log',
+            ],
+        ],
+        'formatter' => [
+            'class' => Monolog\Formatter\LineFormatter::class,
+            'constructor' => [
+                'format' => null,
+                'dateFormat' => 'Y-m-d H:i:s',
+                'allowInlineLineBreaks' => true,
+            ],
+        ],
+    ],
     // 队列日志 日志文件按日期轮转
     'queue' => [
         'handler' => [
