@@ -25,10 +25,12 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Stringable\Str;
 use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 #[Command]
 class Inventory extends HyperfCommand
@@ -49,6 +51,7 @@ class Inventory extends HyperfCommand
         parent::configure();
         $this->addArgument('merchant_id', InputArgument::REQUIRED, '商户id')
             ->addArgument('merchant_store_id', InputArgument::REQUIRED, '店铺id')
+            ->addOption('seller_skus', null, InputOption::VALUE_OPTIONAL, 'seller_skus集合', null)
             ->setDescription('Amazon FBA Inventory Command');
     }
 
@@ -63,24 +66,36 @@ class Inventory extends HyperfCommand
     {
         $merchant_id = (int) $this->input->getArgument('merchant_id');
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
+        $seller_skus = $this->input->getOption('seller_skus');
 
-        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($seller_skus) {
             $logger = ApplicationContext::getContainer()->get(AmazonFbaInventoryLog::class);
+            $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
 //            $startDate = new \DateTime();
 //            $startDate->setDate(2023, 01, 01)->setTime(00, 00, 00);
             $startDate = null;
 
-            $seller_skus = null; // 最多50个
+            if (! is_null($seller_skus)) {
+                $seller_skus = explode(',', $seller_skus);// 最多50个
+                $seller_skus_count = count($seller_skus);
+                if (count($seller_skus) > 50) {
+                    $console->info(sprintf('seller_skus 数量最多为50个. 当前 %s 个', $seller_skus_count));
+                    return true;
+                }
+            }
+//            $seller_skus = null;
             $granularity_type = 'Marketplace';
-
-            $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
 
             $now = Carbon::now()->format('Y-m-d H:i:s');
 
             foreach ($marketplace_ids as $marketplace_id) {
                 $retry = 30;
                 $nextToken = null;
+
+//                if ($marketplace_id !== Marketplace::US()->id()) {
+//                    continue;
+//                }
 
                 $country_code = $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id);
 
@@ -226,7 +241,7 @@ class Inventory extends HyperfCommand
                                 'expired_quantity' => $expired_quantity,
                                 'last_updated_time' => $last_updated_time,
                                 'total_quantity' => $total_quantity,
-                                'country_ids' => $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id),
+//                                'country_ids' => $amazonSDK->fetchCountryFromMarketplaceId($marketplace_id),
                                 'created_at' => $now,
                             ]);
                             $asin_list[] = $asin;
@@ -245,11 +260,7 @@ class Inventory extends HyperfCommand
 
                                 if ($collections->offsetExists($existAmazonInventoryCollection->asin)) {
                                     // update
-                                    if (! str_contains($existAmazonInventoryCollection->country_ids, $country_id)) {
-                                        $existAmazonInventoryCollection->country_ids = trim($existAmazonInventoryCollection->country_ids . ',' . $country_id, ',');
-                                    }
-
-                                    $existAmazonInventoryCollection->save();
+                                    $existAmazonInventoryCollection->save($collections->offsetGet($existAmazonInventoryCollection->asin));
                                 } else {
                                     // delete -- 一般情况下不会走到这里
                                     $console->warning('merchant_id:%s merchant_store_id:%s asin:%s 被标记为删除，请检查');

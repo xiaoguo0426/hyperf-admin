@@ -126,10 +126,11 @@ class SalesAndTrafficReport extends ReportBase
             $orderedProductSalesCurrencyCode = $orderedProductSales['currencyCode'];
             $orderedProductSalesB2B = $salesByAsin['orderedProductSalesB2B'] ?? null;
             $orderedProductSalesB2BAmount = 0;
-            $orderedProductSalesB2BCurrencyCode = '';
             if (! is_null($orderedProductSalesB2B)) {
                 $orderedProductSalesB2BAmount = $orderedProductSalesB2B['amount'];
                 $orderedProductSalesB2BCurrencyCode = $orderedProductSalesB2B['currencyCode'];
+            } else {
+                $orderedProductSalesB2BCurrencyCode = $orderedProductSalesCurrencyCode;
             }
             $totalOrderItems = $salesByAsin['totalOrderItems'];
             $totalOrderItemsB2B = $salesByAsin['totalOrderItemsB2B'] ?? 0;
@@ -233,12 +234,12 @@ class SalesAndTrafficReport extends ReportBase
             $orderedProductSalesCurrencyCode = $orderedProductSales['currencyCode'];
 
             $orderedProductSalesB2B = $salesByDate['orderedProductSalesB2B'] ?? null;
-
             $orderedProductSalesB2BAmount = 0;
-            $orderedProductSalesB2BCurrencyCode = '';
             if (! is_null($orderedProductSalesB2B)) {
                 $orderedProductSalesB2BAmount = $orderedProductSalesB2B['amount'];
                 $orderedProductSalesB2BCurrencyCode = $orderedProductSalesB2B['currencyCode'];
+            } else {
+                $orderedProductSalesB2BCurrencyCode = $orderedProductSalesCurrencyCode;
             }
 
             $unitsOrdered = $salesByDate['unitsOrdered'];
@@ -252,10 +253,11 @@ class SalesAndTrafficReport extends ReportBase
 
             $averageSalesPerOrderItemB2B = $salesByDate['averageSalesPerOrderItemB2B'] ?? null;
             $averageSalesPerOrderItemB2BAmount = 0;
-            $averageSalesPerOrderItemB2BCurrencyCode = '';
             if (! is_null($averageSalesPerOrderItemB2B)) {
                 $averageSalesPerOrderItemB2BAmount = $averageSalesPerOrderItemB2B['amount'];
                 $averageSalesPerOrderItemB2BCurrencyCode = $averageSalesPerOrderItemB2B['currencyCode'];
+            } else {
+                $averageSalesPerOrderItemB2BCurrencyCode = $averageSalesPerOrderItemCurrencyCode;
             }
 
             $averageUnitsPerOrderItem = $salesByDate['averageUnitsPerOrderItem'] ?? 0;
@@ -267,10 +269,11 @@ class SalesAndTrafficReport extends ReportBase
 
             $averageSellingPriceB2B = $salesByDate['averageSellingPriceB2B'] ?? null;
             $averageSellingPriceB2BAmount = 0;
-            $averageSellingPriceB2BCurrencyCode = '';
             if (! is_null($averageSellingPriceB2B)) {
                 $averageSellingPriceB2BAmount = $averageSellingPriceB2B['amount'];
                 $averageSellingPriceB2BCurrencyCode = $averageSellingPriceB2B['currencyCode'];
+            } else {
+                $averageSellingPriceB2BCurrencyCode = $averageSellingPriceCurrencyCode;
             }
 
             $unitsRefunded = $salesByDate['unitsRefunded'];

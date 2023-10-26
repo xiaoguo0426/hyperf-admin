@@ -371,6 +371,7 @@ return [
         'Order ID' => 'order_id',
         'Rater Email' => 'rater_email',
     ],
+    'GET_V2_SELLER_PERFORMANCE_REPORT' => [],
     'GET_REFERRAL_FEE_PREVIEW_REPORT' => [],
     'GET_V2_SETTLEMENT_REPORT_DATA_FLAT_FILE_V2' => [
         'settlement-id' => 'settlement_id',

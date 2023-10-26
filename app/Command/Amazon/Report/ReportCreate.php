@@ -166,7 +166,6 @@ class ReportCreate extends HyperfCommand
 
                 $data_start_time = $body->getDataStartTime() ? $body->getDataStartTime()->format('Y-m-d H:i:s') : '';
                 $data_end_time = $body->getDataEndTime() ? $body->getDataEndTime()->format('Y-m-d H:i:s') : '';
-
                 $queue = new AmazonGetReportQueue();
 
                 while (true) {

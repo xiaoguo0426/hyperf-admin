@@ -46,7 +46,7 @@ class BrandAnalyticsMarketBasketReport extends ReportBase
     {
         return new CreateReportSpecification([
             'report_options' => [
-                'reportPeriod' => 'WEEK',
+                'reportPeriod' => 'DAY',
                 //                'reportPeriod' => 'MONTH',
             ],
             'report_type' => $report_type, // 报告类型
@@ -55,4 +55,15 @@ class BrandAnalyticsMarketBasketReport extends ReportBase
             'marketplace_ids' => $marketplace_ids, // 市场标识符列表
         ]);
     }
+
+    /**
+     * @throws \Exception
+     */
+    public function requestReport(array $marketplace_ids, callable $func): void
+    {
+        foreach ($marketplace_ids as $marketplace_id) {
+            is_callable($func) && $func($this, $this->report_type, $this->buildReportBody($this->report_type, [$marketplace_id]), [$marketplace_id]);
+        }
+    }
+
 }

@@ -331,7 +331,6 @@ class AmazonSDK
      */
     public function getToken(string $region): AccessToken
     {
-        //        $region = $this->getRegion();
         $hash = \Hyperf\Support\make(AmazonAccessTokenHash::class, ['merchant_id' => $this->getMerchantId(), 'merchant_store_id' => $this->getMerchantStoreId(), 'region' => $region]);
         $token = $hash->token;
         if ($hash->token) {
