@@ -13,11 +13,11 @@ namespace App\Queue;
 use App\Queue\Data\AmazonOrderItemData;
 use App\Queue\Data\QueueDataInterface;
 
-class AmazonOrderItemQueue extends Queue
+class AmazonOrderQueue extends Queue
 {
     public function getQueueName(): string
     {
-        return 'amazon-order-item';
+        return 'amazon-order';
     }
 
     public function getQueueDataClass(): string
@@ -33,6 +33,8 @@ class AmazonOrderItemQueue extends Queue
         $merchant_id = $queueData->getMerchantId();
         $merchant_store_id = $queueData->getMerchantStoreId();
         $order_id = $queueData->getOrderId();
+
+
 
         return true;
     }

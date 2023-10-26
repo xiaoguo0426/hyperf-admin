@@ -179,9 +179,9 @@ class GetListingsItem extends HyperfCommand
                             $retry = 10;
                             break;
                         } catch (InvalidArgumentException $e) {
-                            $log = 'GetOrderMetrics 请求出错 %s merchant_id:% merchant_store_id:%s ' . $e->getMessage();
+                            $log = 'GetOrderMetrics 请求出错 InvalidArgumentException %s merchant_id:% merchant_store_id:%s ' . $e->getMessage();
                             $console->error($log);
-                            continue;
+                            break;
                         }
                     }
                 }
