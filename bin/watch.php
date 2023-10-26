@@ -2,12 +2,14 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  *
  * @author   xiaoguo0426
  * @contact  740644717@qq.com
  * @license  MIT
  */
+
 use Swoole\Process as SwooleProcess;
 use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\Process;
@@ -69,15 +71,15 @@ $watchCmd = [
     'poll_monitor',
 ];
 $watchProcess = new SwooleProcess(static function () use ($watchCmd, $rootPath, $sererPidFile): void {
-    console_info('watcher startted at ' . getmypid());
+    console_info('watcher started at ' . getmypid());
 
     $symfonyProcess = new Process($watchCmd, $rootPath);
-    $wathcLock = false;
-    $symfonyProcess->setTimeout(0)->run(static function ($type, $buffer) use (&$wathcLock, $sererPidFile): void {
+    $watchLock = false;
+    $symfonyProcess->setTimeout(0)->run(static function ($type, $buffer) use (&$watchLock, $sererPidFile): void {
         // 只监听以下四种事件
         $logs = fswatch_event_parser($buffer, ['Created', 'Updated', 'Removed', 'Renamed']);
-        if (! $wathcLock && $logs) {
-            $wathcLock = true;
+        if (! $watchLock && $logs) {
+            $watchLock = true;
 
             // 输出日志
             foreach ($logs as $log) {
@@ -86,9 +88,9 @@ $watchProcess = new SwooleProcess(static function () use ($watchCmd, $rootPath, 
 
             // kill掉server，另外一个进程会拉起
             if (is_running($sererPidFile)) {
-                SwooleProcess::kill(file_get_contents($sererPidFile), SIGTERM);
+                SwooleProcess::kill((int) file_get_contents($sererPidFile), SIGTERM);
             }
-            $wathcLock = false;
+            $watchLock = false;
         }
     });
 }, false, 1);
@@ -121,7 +123,7 @@ function is_running(string $pidFile): bool
     }
     $pid = file_get_contents($pidFile);
     try {
-        return SwooleProcess::kill($pid, 0);
+        return SwooleProcess::kill((int) $pid, 0);
     } catch (\Throwable $e) {
         return false;
     }
@@ -149,7 +151,7 @@ function fswatch_event_parser(string $event, array $eventTypes): array
 {
     $logs = [];
     foreach ($eventTypes as $eventType) {
-        if (strpos($event, $eventType) !== false) {
+        if (str_contains($event, $eventType)) {
             $logs[] = $event;
             break;
         }

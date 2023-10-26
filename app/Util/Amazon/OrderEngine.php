@@ -54,11 +54,18 @@ class OrderEngine implements EngineInterface
         $electronic_invoice_statuses = $creator->getElectronicInvoiceStatuses();
         $nextToken = $creator->getNextToken();
         $amazon_order_ids = $creator->getAmazonOrderIds();
+        if (! is_null($amazon_order_ids)) {
+            $amazon_order_ids_count = count($amazon_order_ids);
+            if ($amazon_order_ids_count > 50) {
+                $console->error(sprintf('amazon_order_ids 个数不能超过50. 当前 %s 个', $amazon_order_ids_count));
+                return true;
+            }
+        }
 
         $merchant_id = $amazonSDK->getMerchantId();
         $merchant_store_id = $amazonSDK->getMerchantStoreId();
 
-        $retry = 10;
+        $retry = 30;
 
         $page = 1;//分页数
 

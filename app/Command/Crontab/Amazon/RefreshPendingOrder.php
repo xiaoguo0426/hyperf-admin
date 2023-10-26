@@ -5,12 +5,15 @@ namespace App\Command\Crontab\Amazon;
 use AmazonPHP\SellingPartner\AccessToken;
 use AmazonPHP\SellingPartner\Exception\ApiException;
 use AmazonPHP\SellingPartner\SellingPartnerSDK;
+use App\Model\AmazonOrderModel;
 use App\Util\Amazon\OrderCreator;
 use App\Util\Amazon\OrderEngine;
 use App\Util\AmazonApp;
 use App\Util\AmazonSDK;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\StdoutLoggerInterface;
 use JsonException;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Client\ClientExceptionInterface;
@@ -48,26 +51,43 @@ class RefreshPendingOrder extends HyperfCommand
     {
         $merchant_id = (int) $this->input->getArgument('merchant_id');
         $merchant_store_id = (int) $this->input->getArgument('merchant_store_id');
-        $amazon_order_ids = $this->input->getOption('order_ids');
 
-        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) use ($amazon_order_ids) {
+        AmazonApp::tok($merchant_id, $merchant_store_id, static function (AmazonSDK $amazonSDK, int $merchant_id, int $merchant_store_id, SellingPartnerSDK $sdk, AccessToken $accessToken, string $region, array $marketplace_ids) {
 
-            if (! is_null($amazon_order_ids)) {
-                $amazon_order_ids = explode(',', $amazon_order_ids);
+            $console = ApplicationContext::getContainer()->get(StdoutLoggerInterface::class);
+
+            $orders = AmazonOrderModel::query()
+                ->where('merchant_id', $merchant_id)
+                ->where('merchant_store_id', $merchant_store_id)
+                ->select('amazon_order_id')
+                ->where('order_status', 'Pending')
+                ->get();
+            if ($orders->isEmpty()) {
+                $console->warning('没有符合条件的数据');
+                return true;
             }
 
-            $created_after = null;
-            $nextToken = null;
-            $max_results_per_page = 100;
+            $orders->chunk(50)->each(function ($collections) use ($marketplace_ids, $amazonSDK, $sdk, $accessToken) {
+                $amazon_order_ids = [];
+                foreach ($collections as $collection) {
+                    $amazon_order_ids[] = $collection->amazon_order_id;
+                }
 
-            $orderCreator = new OrderCreator();
-            $orderCreator->setMarketplaceIds($marketplace_ids);
-            $orderCreator->setMaxResultsPerPage($max_results_per_page);
-            $orderCreator->setCreatedAfter($created_after);
-            $orderCreator->setNextToken($nextToken);
-            $orderCreator->setAmazonOrderIds($amazon_order_ids);
+                $created_after = null;
+                $nextToken = null;
+                $max_results_per_page = 100;
 
-            \Hyperf\Support\make(OrderEngine::class)->launch($amazonSDK, $sdk, $accessToken, $orderCreator);
+                $orderCreator = new OrderCreator();
+                $orderCreator->setMarketplaceIds($marketplace_ids);
+                $orderCreator->setMaxResultsPerPage($max_results_per_page);
+                $orderCreator->setCreatedAfter($created_after);
+                $orderCreator->setNextToken($nextToken);
+                $orderCreator->setAmazonOrderIds($amazon_order_ids);
+
+                \Hyperf\Support\make(OrderEngine::class)->launch($amazonSDK, $sdk, $accessToken, $orderCreator);
+
+            });
+
 
             return true;
         });
