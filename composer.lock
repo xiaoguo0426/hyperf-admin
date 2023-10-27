@@ -578,16 +578,16 @@
         },
         {
             "name": "friendsofhyperf/sentry",
-            "version": "v3.0.89",
+            "version": "v3.0.91",
             "source": {
                 "type": "git",
                 "url": "https://github.com/friendsofhyperf/sentry.git",
-                "reference": "00a83ca7f7a0e7eb90d6c62b74aac589a7cfb44c"
+                "reference": "9bbfd4cec152178611b10e029cae5a8d947e9d0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/friendsofhyperf/sentry/zipball/00a83ca7f7a0e7eb90d6c62b74aac589a7cfb44c",
-                "reference": "00a83ca7f7a0e7eb90d6c62b74aac589a7cfb44c",
+                "url": "https://api.github.com/repos/friendsofhyperf/sentry/zipball/9bbfd4cec152178611b10e029cae5a8d947e9d0b",
+                "reference": "9bbfd4cec152178611b10e029cae5a8d947e9d0b",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -641,7 +641,7 @@
                 "issues": "https://github.com/friendsofhyperf/components/issues",
                 "source": "https://github.com/friendsofhyperf/components"
             },
-            "time": "2023-10-19T00:10:01+00:00"
+            "time": "2023-10-26T07:20:38+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1367,16 +1367,16 @@
         },
         {
             "name": "hyperf/command",
-            "version": "v3.0.37",
+            "version": "v3.0.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/command.git",
-                "reference": "20731f30a2fb8aed76874f6e2d9f57b757cd7710"
+                "reference": "b88631cf2fbd2fb6ba67d4727ad133d495bfccc8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/command/zipball/20731f30a2fb8aed76874f6e2d9f57b757cd7710",
-                "reference": "20731f30a2fb8aed76874f6e2d9f57b757cd7710",
+                "url": "https://api.github.com/repos/hyperf/command/zipball/b88631cf2fbd2fb6ba67d4727ad133d495bfccc8",
+                "reference": "b88631cf2fbd2fb6ba67d4727ad133d495bfccc8",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -1419,9 +1419,9 @@
             ],
             "support": {
                 "issues": "https://github.com/hyperf/command/issues",
-                "source": "https://github.com/hyperf/command/tree/v3.0.37"
+                "source": "https://github.com/hyperf/command/tree/v3.0.41"
             },
-            "time": "2023-09-19T01:50:18+00:00"
+            "time": "2023-10-27T01:21:47+00:00"
         },
         {
             "name": "hyperf/conditionable",
@@ -2672,16 +2672,16 @@
         },
         {
             "name": "hyperf/http-server",
-            "version": "v3.0.37",
+            "version": "v3.0.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/http-server.git",
-                "reference": "e177b49c181e213c969d69bc2d333295dbab894d"
+                "reference": "2aabe1c328e1408457433952f5a8f779e561c289"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/http-server/zipball/e177b49c181e213c969d69bc2d333295dbab894d",
-                "reference": "e177b49c181e213c969d69bc2d333295dbab894d",
+                "url": "https://api.github.com/repos/hyperf/http-server/zipball/2aabe1c328e1408457433952f5a8f779e561c289",
+                "reference": "2aabe1c328e1408457433952f5a8f779e561c289",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -2744,7 +2744,7 @@
                 "pull-request": "https://github.com/hyperf/hyperf/pulls",
                 "source": "https://github.com/hyperf/hyperf"
             },
-            "time": "2023-09-19T01:50:18+00:00"
+            "time": "2023-10-26T10:42:14+00:00"
         },
         {
             "name": "hyperf/logger",
